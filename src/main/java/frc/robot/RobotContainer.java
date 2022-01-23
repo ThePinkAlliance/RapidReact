@@ -39,7 +39,7 @@ public class RobotContainer {
   private final Base m_base = new Base();
 
   private final SelectableTrajectory leaveBlueLeft = new SelectableTrajectory("Leave Blue Left",
-      "output/LeaveBlue1.wpilib.json");
+      "output/LeaveBlueLeft.wpilib.json");
 
   Trajectory trajectory = new Trajectory();
   ShuffleboardTab driverDashboard = Shuffleboard.getTab("dashboard");
