@@ -12,14 +12,11 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.commands.Drive;
 import frc.robot.subsystems.Base;
-import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
-import edu.wpi.first.math.trajectory.constraint.TrajectoryConstraint;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -87,7 +84,8 @@ public class RobotContainer {
     // set the current trajectory to execute
     selectTrajectory(selectedPath.getSelected());
 
-    m_base.resetOdometry(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0)));
+    // set the initial pose of the robot to the starting pose of the trajectory
+    m_base.resetOdometry(trajectory.getInitialPose());
 
     return new SwerveControllerCommand(
         trajectory,
@@ -102,8 +100,21 @@ public class RobotContainer {
             new TrapezoidProfile.Constraints(Constants.MAX_VELOCITY_METERS_PER_SECOND,
                 Constants.MAX_ACCELERATION_METERS_PER_SECOND)),
         (states) -> {
+          SwerveModuleState frontLeft = states[0];
+          SwerveModuleState frontRight = states[1];
+          SwerveModuleState backLeft = states[2];
+          SwerveModuleState backRight = states[3];
+
           m_base.setStates(states);
+
+          driverDashboard.add("Front Left m/s", frontLeft.speedMetersPerSecond);
+          driverDashboard.add("Front Right m/s", frontRight.speedMetersPerSecond);
+          driverDashboard.add("Back Left m/s", backLeft.speedMetersPerSecond);
+          driverDashboard.add("Back Right m/s", backRight.speedMetersPerSecond);
         },
-        m_base);
+        m_base).andThen(() -> {
+          // set the target speed to 0 to stop the robot
+          m_base.drive(new ChassisSpeeds(0, 0, 0));
+        });
   }
 }

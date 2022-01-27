@@ -18,6 +18,9 @@ public class ClimberModule {
     this.lockerSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
     this.angleMotor = new TalonFX(motorId);
     this.angleController = new PIDController(0, 0, 0);
+
+    // turn off the solinoide for safety
+    this.lockerSolenoid.set(false);
   }
 
   public void setPosition(double pos) {
