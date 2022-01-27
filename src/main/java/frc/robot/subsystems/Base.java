@@ -17,7 +17,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -26,8 +25,6 @@ public class Base extends SubsystemBase {
         private AHRS gyro = new AHRS();
 
         private ShuffleboardTab tab;
-
-        private static final double MAX_VOLTAGE = 12.0;
 
         private final SwerveModule frontLeftModule;
         private final SwerveModule frontRightModule;
@@ -45,7 +42,7 @@ public class Base extends SubsystemBase {
                                         -Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0));
 
         private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics,
-                        Rotation2d.fromDegrees(gyro.getFusedHeading()));
+                        Rotation2d.fromDegrees(0));
 
         private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
         private SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
@@ -142,6 +139,7 @@ public class Base extends SubsystemBase {
 
         public Rotation2d getRotation() {
                 return Rotation2d.fromDegrees(gyro.getFusedHeading());
+                // return Rotation2d.fromDegrees(0);
         }
 
         public boolean isInverted() {
