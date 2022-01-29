@@ -96,8 +96,8 @@ public class RobotContainer {
         // this is the y axis PID Contrller
         new PIDController(0.4, 0, 0),
         new ProfiledPIDController(1, 0, 0,
-            new TrapezoidProfile.Constraints(Constants.MAX_VELOCITY_METERS_PER_SECOND,
-                Constants.MAX_ACCELERATION_METERS_PER_SECOND)),
+            new TrapezoidProfile.Constraints(Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
+                Constants.Base.MAX_ACCELERATION_METERS_PER_SECOND)),
         (states) -> {
           SwerveModuleState frontLeft = states[0];
           SwerveModuleState frontRight = states[1];

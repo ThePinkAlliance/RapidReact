@@ -32,14 +32,14 @@ public class Base extends SubsystemBase {
         private final SwerveModule backRightModule;
 
         public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-                        new Translation2d(Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-                                        Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
-                        new Translation2d(Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-                                        -Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
-                        new Translation2d(-Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-                                        Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
-                        new Translation2d(-Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-                                        -Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0));
+                        new Translation2d(Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+                                        Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+                        new Translation2d(Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+                                        -Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+                        new Translation2d(-Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+                                        Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+                        new Translation2d(-Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+                                        -Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0));
 
         private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics,
                         Rotation2d.fromDegrees(0));
@@ -51,6 +51,7 @@ public class Base extends SubsystemBase {
 
         /** Creates a new Base. */
         public Base() {
+
                 this.tab = Shuffleboard.getTab("debug");
 
                 this.backRightModule = Mk4SwerveModuleHelper.createFalcon500(
@@ -58,44 +59,44 @@ public class Base extends SubsystemBase {
                                                 4).withPosition(0,
                                                                 0),
                                 configuration,
-                                Constants.motorRatio,
-                                Constants.BACK_RIGHT_DRIVE_MOTOR_PORT,
-                                Constants.BACK_RIGHT_STEER_MOTOR_PORT,
-                                Constants.BACK_RIGHT_CANCODER_ID,
-                                Constants.BACK_RIGHT_MODULE_STEER_OFFSET);
+                                Constants.Base.motorRatio,
+                                Constants.Base.BACK_RIGHT_DRIVE_MOTOR_PORT,
+                                Constants.Base.BACK_RIGHT_STEER_MOTOR_PORT,
+                                Constants.Base.BACK_RIGHT_CANCODER_ID,
+                                Constants.Base.BACK_RIGHT_MODULE_STEER_OFFSET);
 
                 this.backLeftModule = Mk4SwerveModuleHelper.createFalcon500(
                                 tab.getLayout("Back Left Module", BuiltInLayouts.kList).withSize(2,
                                                 4).withPosition(1,
                                                                 0),
                                 configuration,
-                                Constants.motorRatio,
-                                Constants.BACK_LEFT_DRIVE_MOTOR_PORT,
-                                Constants.BACK_LEFT_STEER_MOTOR_PORT,
-                                Constants.BACK_LEFT_CANCODER_ID,
-                                Constants.BACK_LEFT_MODULE_STEER_OFFSET);
+                                Constants.Base.motorRatio,
+                                Constants.Base.BACK_LEFT_DRIVE_MOTOR_PORT,
+                                Constants.Base.BACK_LEFT_STEER_MOTOR_PORT,
+                                Constants.Base.BACK_LEFT_CANCODER_ID,
+                                Constants.Base.BACK_LEFT_MODULE_STEER_OFFSET);
 
                 this.frontRightModule = Mk4SwerveModuleHelper.createFalcon500(
                                 tab.getLayout("Front Right Module", BuiltInLayouts.kList).withSize(2,
                                                 4).withPosition(2,
                                                                 0),
                                 configuration,
-                                Constants.motorRatio,
-                                Constants.FRONT_LEFT_DRIVE_MOTOR_PORT,
-                                Constants.FRONT_LEFT_STEER_MOTOR_PORT,
-                                Constants.FRONT_LEFT_CANCODER_ID,
-                                Constants.FRONT_LEFT_MODULE_STEER_OFFSET);
+                                Constants.Base.motorRatio,
+                                Constants.Base.FRONT_LEFT_DRIVE_MOTOR_PORT,
+                                Constants.Base.FRONT_LEFT_STEER_MOTOR_PORT,
+                                Constants.Base.FRONT_LEFT_CANCODER_ID,
+                                Constants.Base.FRONT_LEFT_MODULE_STEER_OFFSET);
 
                 this.frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
                                 tab.getLayout("Front Left Module", BuiltInLayouts.kList).withSize(2,
                                                 4).withPosition(3,
                                                                 0),
                                 configuration,
-                                Constants.motorRatio,
-                                Constants.BACK_RIGHT_DRIVE_MOTOR_PORT,
-                                Constants.BACK_RIGHT_STEER_MOTOR_PORT,
-                                Constants.BACK_RIGHT_CANCODER_ID,
-                                Constants.BACK_RIGHT_MODULE_STEER_OFFSET);
+                                Constants.Base.motorRatio,
+                                Constants.Base.BACK_RIGHT_DRIVE_MOTOR_PORT,
+                                Constants.Base.BACK_RIGHT_STEER_MOTOR_PORT,
+                                Constants.Base.BACK_RIGHT_CANCODER_ID,
+                                Constants.Base.BACK_RIGHT_MODULE_STEER_OFFSET);
         }
 
         public void drive(ChassisSpeeds speeds) {
@@ -105,17 +106,17 @@ public class Base extends SubsystemBase {
         public void setStates(SwerveModuleState[] states) {
                 // This method will be called once per scheduler run
                 this.frontLeftModule.set(
-                                (states[0].speedMetersPerSecond / Constants.MAX_VELOCITY_METERS_PER_SECOND) *
+                                (states[0].speedMetersPerSecond / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) *
                                                 -1.0,
                                 states[0].angle.getDegrees());
                 this.frontRightModule.set((states[1].speedMetersPerSecond
-                                / Constants.MAX_VELOCITY_METERS_PER_SECOND) * 1.0,
+                                / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) * 1.0,
                                 states[1].angle.getDegrees());
                 this.backLeftModule.set((states[2].speedMetersPerSecond
-                                / Constants.MAX_VELOCITY_METERS_PER_SECOND) * 1.0,
+                                / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) * 1.0,
                                 states[2].angle.getDegrees());
                 this.backRightModule.set((states[3].speedMetersPerSecond
-                                / Constants.MAX_VELOCITY_METERS_PER_SECOND) * -1.0,
+                                / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) * -1.0,
                                 states[3].angle.getDegrees());
 
                 odometry.update(getRotation(), this.states);
@@ -163,17 +164,17 @@ public class Base extends SubsystemBase {
         public void periodic() {
                 // This method will be called once per scheduler run
                 this.frontLeftModule.set(
-                                (states[0].speedMetersPerSecond / Constants.MAX_VELOCITY_METERS_PER_SECOND) *
+                                (states[0].speedMetersPerSecond / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) *
                                                 -1.0,
                                 states[0].angle.getDegrees());
                 this.frontRightModule.set((states[1].speedMetersPerSecond
-                                / Constants.MAX_VELOCITY_METERS_PER_SECOND) * 1.0,
+                                / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) * 1.0,
                                 states[1].angle.getDegrees());
                 this.backLeftModule.set((states[2].speedMetersPerSecond
-                                / Constants.MAX_VELOCITY_METERS_PER_SECOND) * 1.0,
+                                / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) * 1.0,
                                 states[2].angle.getDegrees());
                 this.backRightModule.set((states[3].speedMetersPerSecond
-                                / Constants.MAX_VELOCITY_METERS_PER_SECOND) * -1.0,
+                                / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) * -1.0,
                                 states[3].angle.getDegrees());
 
                 odometry.update(getRotation(), this.states);
