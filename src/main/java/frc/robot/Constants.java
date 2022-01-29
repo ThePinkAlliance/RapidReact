@@ -17,8 +17,9 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 
-import frc.robot.constants.Base;
+import frc.robot.constants.*;
 
 public final class Constants {
   public static Base Base = new Base();
+  public static Collector Collector = new Collector();
 }

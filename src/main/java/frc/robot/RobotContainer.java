@@ -65,9 +65,14 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    
+//base controller
+    //left joystick
     this.m_base.setDefaultCommand(
         new Drive(m_base, () -> gamepad_base.getRawAxis(0),
             () -> gamepad_base.getRawAxis(1), () -> gamepad_base.getRawAxis(2)));
+
+    
   }
 
   public void selectTrajectory(SelectableTrajectory selectableTrajectory) {
