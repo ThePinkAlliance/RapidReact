@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+// this will be used to control the angle of the climber module
 public class AngleTalon extends TalonFX {
 
   public AngleTalon(int deviceNumber) {

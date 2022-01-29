@@ -31,7 +31,6 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
   private final Joystick gamepad_base = new Joystick(0);
   private final Base m_base = new Base();
 
