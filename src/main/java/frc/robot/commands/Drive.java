@@ -40,9 +40,9 @@ public class Drive extends CommandBase {
   @Override
   public void execute() {
     this.base.drive(ChassisSpeeds.fromFieldRelativeSpeeds(x.getAsDouble() *
-        Constants.MAX_VELOCITY_METERS_PER_SECOND,
-        y.getAsDouble() * Constants.MAX_VELOCITY_METERS_PER_SECOND,
-        rot.getAsDouble() * Constants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+        Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
+        y.getAsDouble() * Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
+        rot.getAsDouble() * Constants.Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
         base.getRotation()));
   }
 
