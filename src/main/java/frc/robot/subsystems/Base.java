@@ -126,10 +126,6 @@ public class Base extends SubsystemBase {
                 return chassisSpeeds;
         }
 
-        public ChassisSpeeds getChassisSpeeds(double x, double y) {
-                return chassisSpeeds;
-        }
-
         public void zeroGyro() {
                 gyro.reset();
         }
@@ -140,7 +136,6 @@ public class Base extends SubsystemBase {
 
         public Rotation2d getRotation() {
                 return Rotation2d.fromDegrees(gyro.getFusedHeading());
-                // return Rotation2d.fromDegrees(0);
         }
 
         public boolean isInverted() {
