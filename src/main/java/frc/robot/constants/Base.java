@@ -14,31 +14,23 @@ public class Base {
       / Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
           DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
-  public double kMaxSpeedMetersPerSecond = 3;
-  public double kMaxAccelerationMetersPerSecondSquared = 3;
-
-  // Reasonable baseline values for a RAMSETE follower in units of meters and
-  // seconds
-  public double kRamseteB = 2;
-  public double kRamseteZeta = 0.7;
-
   public double BACK_LEFT_MODULE_STEER_OFFSET = 1;
   public double BACK_RIGHT_MODULE_STEER_OFFSET = 1;
   public double FRONT_LEFT_MODULE_STEER_OFFSET = 1;
   public double FRONT_RIGHT_MODULE_STEER_OFFSET = 1;
 
-  public int BACK_RIGHT_DRIVE_MOTOR_PORT = 0;
-  public int BACK_LEFT_DRIVE_MOTOR_PORT = 0;
-  public int FRONT_RIGH_DRIVE_MOTOR_PORT = 0;
-  public int FRONT_LEFT_DRIVE_MOTOR_PORT = 20;
+  public int BACK_RIGHT_DRIVE_MOTOR_PORT = 27;
+  public int BACK_LEFT_DRIVE_MOTOR_PORT = 25;
+  public int FRONT_RIGHT_DRIVE_MOTOR_PORT = 23;
+  public int FRONT_LEFT_DRIVE_MOTOR_PORT = 21;
 
-  public int BACK_RIGHT_STEER_MOTOR_PORT = 0;
-  public int BACK_LEFT_STEER_MOTOR_PORT = 0;
-  public int FRONT_RIGHT_STEER_MOTOR_PORT = 0;
-  public int FRONT_LEFT_STEER_MOTOR_PORT = 21;
+  public int BACK_RIGHT_STEER_MOTOR_PORT = 26;
+  public int BACK_LEFT_STEER_MOTOR_PORT = 24;
+  public int FRONT_RIGHT_STEER_MOTOR_PORT = 20;
+  public int FRONT_LEFT_STEER_MOTOR_PORT = 22;
 
-  public int BACK_LEFT_CANCODER_ID = 0;
-  public int BACK_RIGHT_CANCODER_ID = 0;
-  public int FRONT_LEFT_CANCODER_ID = 0;
-  public int FRONT_RIGHT_CANCODER_ID = 0;
+  public int BACK_LEFT_CANCODER_ID = 22;
+  public int BACK_RIGHT_CANCODER_ID = 23;
+  public int FRONT_LEFT_CANCODER_ID = 21;
+  public int FRONT_RIGHT_CANCODER_ID = 24;
 }
