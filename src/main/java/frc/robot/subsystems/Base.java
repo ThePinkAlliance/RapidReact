@@ -99,14 +99,20 @@ public class Base extends SubsystemBase {
                                 Constants.Base.FRONT_LEFT_MODULE_STEER_OFFSET);
         }
 
+        /**
+         * Sets the current chassis speeds of the robot to the given speeds and updates
+         * the swerve module states to the current robot speeds.
+         */
         public void drive(ChassisSpeeds speeds) {
                 this.chassisSpeeds = speeds;
 
                 this.states = kinematics.toSwerveModuleStates(chassisSpeeds);
         }
 
+        /**
+         * Set the robot's states to the given states.
+         */
         public void setStates(SwerveModuleState[] states) {
-                // This method will be called once per scheduler run
                 this.frontLeftModule.set(
                                 (states[0].speedMetersPerSecond / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) *
                                                 -1.0,
@@ -124,31 +130,55 @@ public class Base extends SubsystemBase {
                 odometry.update(getRotation(), this.states);
         }
 
+        /**
+         * @return ChassisSpeeds of the robot
+         */
         public ChassisSpeeds getChassisSpeeds() {
                 return chassisSpeeds;
         }
 
+        /**
+         * This resets the gyroscope's Yaw axis to zero.
+         */
         public void zeroGyro() {
                 gyro.reset();
         }
 
+        /**
+         * This resets the odometry to the given position and sets the rotation to the
+         * current one from the gyro.
+         */
         public void resetOdometry(Pose2d pose) {
                 this.odometry.resetPosition(pose, this.getRotation());
         }
 
+        /**
+         * Returns the robot's current rotation.
+         * 
+         * @return the robot's current rotation.
+         */
         public Rotation2d getRotation() {
                 return Rotation2d.fromDegrees(gyro.getFusedHeading());
         }
 
+        /**
+         * Returns if the robot inverted.
+         */
         public boolean isInverted() {
                 return getRotation().getDegrees() <= 190 && getRotation().getDegrees() > 90
                                 || getRotation().getDegrees() >= 290 && getRotation().getDegrees() < 90;
         }
 
+        /**
+         * Returns the current odometry pose of the robot.
+         */
         public Pose2d getPose() {
                 return odometry.getPoseMeters();
         }
 
+        /**
+         * Returns the current direction of the robot.
+         */
         public double getDirection() {
                 if (isInverted()) {
                         return 1.0;
