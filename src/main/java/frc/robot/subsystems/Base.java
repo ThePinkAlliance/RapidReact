@@ -110,16 +110,16 @@ public class Base extends SubsystemBase {
                 this.frontLeftModule.set(
                                 (states[0].speedMetersPerSecond / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) *
                                                 -1.0,
-                                states[0].angle.getDegrees());
+                                states[0].angle.getRadians());
                 this.frontRightModule.set((states[1].speedMetersPerSecond
                                 / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) * 1.0,
-                                states[1].angle.getDegrees());
+                                states[1].angle.getRadians());
                 this.backLeftModule.set((states[2].speedMetersPerSecond
                                 / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) * 1.0,
-                                states[2].angle.getDegrees());
+                                states[2].angle.getRadians());
                 this.backRightModule.set((states[3].speedMetersPerSecond
                                 / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) * -1.0,
-                                states[3].angle.getDegrees());
+                                states[3].angle.getRadians());
 
                 odometry.update(getRotation(), this.states);
         }
