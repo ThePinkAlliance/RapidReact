@@ -4,21 +4,26 @@
 
 package frc.robot.commands;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Base;
+import java.util.function.DoubleSupplier;
 
 public class Drive extends CommandBase {
+
   private Base base;
   private DoubleSupplier x;
   private DoubleSupplier y;
   private DoubleSupplier rot;
 
   /** Creates a new Drive. */
-  public Drive(Base base, DoubleSupplier x, DoubleSupplier y, DoubleSupplier rot) {
+  public Drive(
+    Base base,
+    DoubleSupplier x,
+    DoubleSupplier y,
+    DoubleSupplier rot
+  ) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.base = base;
 
@@ -33,17 +38,21 @@ public class Drive extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    this.base.drive(ChassisSpeeds.fromFieldRelativeSpeeds(x.getAsDouble() *
-        Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
-        y.getAsDouble() * Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
-        rot.getAsDouble() * Constants.Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
-        base.getRotation()));
+    this.base.drive(
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+          (x.getAsDouble() * Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) *
+          -1.0,
+          y.getAsDouble() * Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
+          rot.getAsDouble() *
+          Constants.Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+          base.getRotation()
+        )
+      );
   }
 
   // Called once the command ends or is interrupted.
