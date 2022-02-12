@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Base;
@@ -44,13 +45,14 @@ public class Drive extends CommandBase {
   @Override
   public void execute() {
     this.base.drive(
-        new ChassisSpeeds(
+        ChassisSpeeds.fromFieldRelativeSpeeds(
           modifyAxis(y.getAsDouble()) *
           Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
           modifyAxis(x.getAsDouble()) *
           Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
           modifyAxis(rot.getAsDouble()) *
-          Constants.Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+          Constants.Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+          base.getRotation()
         )
       );
   }

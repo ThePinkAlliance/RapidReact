@@ -14,6 +14,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import org.ejml.simple.SimpleMatrix;
 
 /** Add your docs here. */
@@ -26,6 +28,8 @@ public class PinkKinematics extends SwerveDriveKinematics {
   private final Translation2d[] m_modules;
   private Translation2d m_prevCoR = new Translation2d();
 
+  private HashMap<Integer, Boolean> inverted = new HashMap<>();
+
   /**
    * Constructs a swerve drive kinematics object. This takes in a variable number of wheel locations
    * as Translation2ds. The order in which you pass in the wheel locations is the same order that
@@ -35,7 +39,7 @@ public class PinkKinematics extends SwerveDriveKinematics {
    * @param wheelsMeters The locations of the wheels relative to the physical center of the robot.
    */
   public PinkKinematics(Translation2d... wheelsMeters) {
-    // super(wheelsMeters);
+    super(wheelsMeters);
     if (wheelsMeters.length < 2) {
       throw new IllegalArgumentException(
         "A swerve drive requires at least two modules"
@@ -124,12 +128,46 @@ public class PinkKinematics extends SwerveDriveKinematics {
     for (int i = 0; i < m_numModules; i++) {
       double x = moduleStatesMatrix.get(i * 2, 0);
       double y = moduleStatesMatrix.get(i * 2 + 1, 0);
+      double omega = moduleStatesMatrix.get(i * 2 + 2, 0);
 
       double speed = Math.hypot(x, y);
       Rotation2d angle = new Rotation2d(x, y);
 
-      moduleStates[i] = new SwerveModuleState(speed, angle);
+      SmartDashboard.putNumber("s", speed);
+
+      if (speed > 0 && omega > 0) {
+        var state = new SwerveModuleState(speed, angle);
+
+        moduleStates[i] = SwerveModuleState.optimize(state, angle);
+      } else if (speed < 0 && omega > 0) {
+        var state = new SwerveModuleState(-speed, angle);
+
+        moduleStates[i] = SwerveModuleState.optimize(state, angle);
+      }
     }
+
+    // for (int i = 0; i < inverted.size(); i++) {
+    //   if (inverted.get(i)) {
+    //     var oldState = moduleStates[i];
+    //     // var oldNeighborState = moduleStates[i + 2];
+
+    //     var newState = new SwerveModuleState(
+    //       oldState.speedMetersPerSecond,
+    //       oldState.angle
+    //     );
+    //     // var newNeighborState = new SwerveModuleState(
+    //     //   oldNeighborState.speedMetersPerSecond,
+    //     //   oldNeighborState.angle
+    //     // );
+
+    //     moduleStates[i] = SwerveModuleState.optimize(newState, newState.angle);
+    //     // moduleStates[i + 2] =
+    //     //   SwerveModuleState.optimize(
+    //     //     newNeighborState,
+    //     //     newNeighborState.angle
+    //     //   );
+    //   }
+    // }
 
     return moduleStates;
   }

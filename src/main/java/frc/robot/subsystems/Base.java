@@ -41,19 +41,23 @@ public class Base extends SubsystemBase {
   /** 3 */
   private final SwerveModule backRightModule;
 
-  public SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+  public PinkKinematics kinematics = new PinkKinematics(
+    // Front Left Pod
     new Translation2d(
       Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
       Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
     ),
+    // Front Right
     new Translation2d(
       Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
       -Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
     ),
+    // Back Left
     new Translation2d(
       -Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
       Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
     ),
+    // Back Right
     new Translation2d(
       -Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
       -Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
