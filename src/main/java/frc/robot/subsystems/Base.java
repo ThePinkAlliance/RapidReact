@@ -15,6 +15,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -42,20 +43,20 @@ public class Base extends SubsystemBase {
 
   public SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
     new Translation2d(
-      Units.inchesToMeters(Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
-      Units.inchesToMeters(Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0)
+      Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+      Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
     ),
     new Translation2d(
-      Units.inchesToMeters(Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
-      -Units.inchesToMeters(Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0)
+      Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+      -Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
     ),
     new Translation2d(
-      -Units.inchesToMeters(Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
-      Units.inchesToMeters(Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0)
+      -Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+      Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
     ),
     new Translation2d(
-      -Units.inchesToMeters(Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
-      -Units.inchesToMeters(Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0)
+      -Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+      -Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
     )
   );
 
@@ -258,6 +259,8 @@ public class Base extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
+    odometry.update(getRotation(), this.states);
+
     SwerveDriveKinematics.desaturateWheelSpeeds(
       states,
       Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
@@ -299,7 +302,5 @@ public class Base extends SubsystemBase {
         Constants.Base.MAX_VOLTAGE,
         states[3].angle.getRadians()
       );
-
-    odometry.update(getRotation(), this.states);
   }
 }

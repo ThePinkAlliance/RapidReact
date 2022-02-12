@@ -35,7 +35,7 @@ public class PinkKinematics extends SwerveDriveKinematics {
    * @param wheelsMeters The locations of the wheels relative to the physical center of the robot.
    */
   public PinkKinematics(Translation2d... wheelsMeters) {
-    super(wheelsMeters);
+    // super(wheelsMeters);
     if (wheelsMeters.length < 2) {
       throw new IllegalArgumentException(
         "A swerve drive requires at least two modules"

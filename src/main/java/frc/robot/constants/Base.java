@@ -2,6 +2,7 @@ package frc.robot.constants;
 
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
+import edu.wpi.first.math.util.Units;
 
 public class Base {
 
@@ -10,8 +11,8 @@ public class Base {
 
   public final double MAX_VOLTAGE = 12.0;
 
-  public final double DRIVETRAIN_WHEELBASE_METERS = 24;
-  public final double DRIVETRAIN_TRACKWIDTH_METERS = 24;
+  public final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(24);
+  public final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(24);
 
   public final double MAX_VELOCITY_METERS_PER_SECOND =
     6380.0 /
