@@ -4,21 +4,26 @@
 
 package frc.robot.commands;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Base;
+import java.util.function.DoubleSupplier;
 
 public class Drive extends CommandBase {
+
   private Base base;
   private DoubleSupplier x;
   private DoubleSupplier y;
   private DoubleSupplier rot;
 
   /** Creates a new Drive. */
-  public Drive(Base base, DoubleSupplier x, DoubleSupplier y, DoubleSupplier rot) {
+  public Drive(
+    Base base,
+    DoubleSupplier x,
+    DoubleSupplier y,
+    DoubleSupplier rot
+  ) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.base = base;
 
@@ -33,17 +38,43 @@ public class Drive extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    this.base.drive(ChassisSpeeds.fromFieldRelativeSpeeds(x.getAsDouble() *
-        Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
-        y.getAsDouble() * Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
-        rot.getAsDouble() * Constants.Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
-        base.getRotation()));
+    this.base.drive(
+        new ChassisSpeeds(
+          modifyAxis(y.getAsDouble()) *
+          Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
+          modifyAxis(x.getAsDouble()) *
+          Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
+          modifyAxis(rot.getAsDouble()) *
+          Constants.Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+        )
+      );
+  }
+
+  private static double deadband(double value, double deadband) {
+    if (Math.abs(value) > deadband) {
+      if (value > 0.0) {
+        return (value - deadband) / (1.0 - deadband);
+      } else {
+        return (value + deadband) / (1.0 - deadband);
+      }
+    } else {
+      return 0.0;
+    }
+  }
+
+  private static double modifyAxis(double value) {
+    // Deadband
+    value = deadband(value, 0.05);
+
+    // Square the axis
+    value = Math.copySign(value * value, value);
+
+    return value;
   }
 
   // Called once the command ends or is interrupted.

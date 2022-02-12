@@ -20,5 +20,6 @@ package frc.robot;
 import frc.robot.constants.Base;
 
 public final class Constants {
+
   public static Base Base = new Base();
 }
