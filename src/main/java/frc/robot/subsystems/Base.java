@@ -15,7 +15,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -29,9 +28,16 @@ public class Base extends SubsystemBase {
 
   private ShuffleboardTab tab;
 
+  /** 0 */
   private final SwerveModule frontLeftModule;
+
+  /** 1 */
   private final SwerveModule frontRightModule;
+
+  /** 2 */
   private final SwerveModule backLeftModule;
+
+  /** 3 */
   private final SwerveModule backRightModule;
 
   public SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
@@ -68,8 +74,6 @@ public class Base extends SubsystemBase {
   /** Creates a new Base. */
   public Base() {
     this.tab = Shuffleboard.getTab("debug");
-
-    this.configuration.setDriveCurrentLimit(10);
 
     this.backRightModule =
       Mk4SwerveModuleHelper.createFalcon500(
@@ -140,6 +144,8 @@ public class Base extends SubsystemBase {
 
   /**
    * Set the robot's states to the given states.
+   *
+   * @deprecated DO NOT USE THIS METHOD ITS NOT UPDATED.
    */
   @Deprecated
   public void setStates(SwerveModuleState[] states) {
@@ -244,15 +250,22 @@ public class Base extends SubsystemBase {
     return -1.0;
   }
 
+  public double processTargetAngle(double angle, double offset) {
+    return 0.0;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
 
-    // SwerveDriveKinematics.desaturateWheelSpeeds(
-    //   states,
-    //   Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
-    // );
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+      states,
+      Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
+    );
 
+    /**
+     * Inverting the requested angle when its in rotation position to allow to the robot to turn?
+     */
     this.frontLeftModule.set(
         (
           states[0].speedMetersPerSecond /

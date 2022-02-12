@@ -11,7 +11,7 @@ public class Base {
   public final double MAX_VOLTAGE = 12.0;
 
   public final double DRIVETRAIN_WHEELBASE_METERS = 24;
-  public final double DRIVETRAIN_TRACKWIDTH_METERS = 23.9;
+  public final double DRIVETRAIN_TRACKWIDTH_METERS = 24;
 
   public final double MAX_VELOCITY_METERS_PER_SECOND =
     6380.0 /
@@ -28,10 +28,17 @@ public class Base {
       DRIVETRAIN_WHEELBASE_METERS / 2.0
     );
 
+  // physical constants
   public double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(188.69);
   public double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(179.20);
   public double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(132.09);
   public double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(63.80); // 359.29
+
+  // Simulated constants
+  // public double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0);
+  // public double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0);
+  // public double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0);
+  // public double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0); // 359.29
 
   public int BACK_RIGHT_DRIVE_MOTOR_PORT = 27;
   public int BACK_LEFT_DRIVE_MOTOR_PORT = 25;
