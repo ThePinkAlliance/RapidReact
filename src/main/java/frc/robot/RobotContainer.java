@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Color;
 import frc.robot.commands.Drive;
 import frc.robot.subsystems.Base;
@@ -36,7 +37,7 @@ public class RobotContainer {
 
   private final Joystick gamepad_base = new Joystick(0);
   private final Base m_base = new Base();
-  private final TempTower tower = new TempTower();
+  // private final TempTower tower = new TempTower();
 
   private final SelectableTrajectory leaveBlueLeft = new SelectableTrajectory(
     "Leave Blue Left",
@@ -69,15 +70,15 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // this.m_base.setDefaultCommand(
-    //     new Drive(
-    //       m_base,
-    //       () -> gamepad_base.getRawAxis(0),
-    //       () -> gamepad_base.getRawAxis(1),
-    //       () -> gamepad_base.getRawAxis(2)
-    //     )
-    //   );
-    // this.tower.setDefaultCommand(new Color(tower));
+    this.m_base.setDefaultCommand(
+        new Drive(
+          m_base,
+          () -> gamepad_base.getRawAxis(0),
+          () -> gamepad_base.getRawAxis(1),
+          () -> gamepad_base.getRawAxis(2)
+        )
+      );
+    new JoystickButton(gamepad_base, 1).whenPressed(m_base::zeroGyro);
   }
 
   public void selectTrajectory(SelectableTrajectory selectableTrajectory) {

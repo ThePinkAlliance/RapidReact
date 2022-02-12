@@ -44,15 +44,37 @@ public class Drive extends CommandBase {
   @Override
   public void execute() {
     this.base.drive(
-        ChassisSpeeds.fromFieldRelativeSpeeds(
-          (x.getAsDouble() * Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) *
-          -1.0,
-          y.getAsDouble() * Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
-          rot.getAsDouble() *
-          Constants.Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
-          base.getRotation()
+        new ChassisSpeeds(
+          modifyAxis(y.getAsDouble()) *
+          Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
+          modifyAxis(x.getAsDouble()) *
+          Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
+          modifyAxis(rot.getAsDouble()) *
+          Constants.Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
         )
       );
+  }
+
+  private static double deadband(double value, double deadband) {
+    if (Math.abs(value) > deadband) {
+      if (value > 0.0) {
+        return (value - deadband) / (1.0 - deadband);
+      } else {
+        return (value + deadband) / (1.0 - deadband);
+      }
+    } else {
+      return 0.0;
+    }
+  }
+
+  private static double modifyAxis(double value) {
+    // Deadband
+    value = deadband(value, 0.05);
+
+    // Square the axis
+    value = Math.copySign(value * value, value);
+
+    return value;
   }
 
   // Called once the command ends or is interrupted.

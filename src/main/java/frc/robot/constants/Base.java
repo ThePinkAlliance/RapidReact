@@ -10,8 +10,8 @@ public class Base {
 
   public final double MAX_VOLTAGE = 12.0;
 
-  public final double DRIVETRAIN_WHEELBASE_METERS = 23.4;
-  public final double DRIVETRAIN_TRACKWIDTH_METERS = 23.5;
+  public final double DRIVETRAIN_WHEELBASE_METERS = 24;
+  public final double DRIVETRAIN_TRACKWIDTH_METERS = 23.9;
 
   public final double MAX_VELOCITY_METERS_PER_SECOND =
     6380.0 /
@@ -28,10 +28,10 @@ public class Base {
       DRIVETRAIN_WHEELBASE_METERS / 2.0
     );
 
-  public double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(8.08);
-  public double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(359.37);
-  public double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(311.47);
-  public double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(240); // 359.29
+  public double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(188.69);
+  public double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(179.20);
+  public double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(132.09);
+  public double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(63.80); // 359.29
 
   public int BACK_RIGHT_DRIVE_MOTOR_PORT = 27;
   public int BACK_LEFT_DRIVE_MOTOR_PORT = 25;
@@ -43,8 +43,8 @@ public class Base {
   public int FRONT_RIGHT_STEER_MOTOR_PORT = 20;
   public int FRONT_LEFT_STEER_MOTOR_PORT = 22;
 
-  public int BACK_LEFT_CANCODER_ID = 22;
-  public int BACK_RIGHT_CANCODER_ID = 23;
-  public int FRONT_LEFT_CANCODER_ID = 21;
-  public int FRONT_RIGHT_CANCODER_ID = 24;
+  public int BACK_LEFT_CANCODER_ID = 32;
+  public int BACK_RIGHT_CANCODER_ID = 33;
+  public int FRONT_LEFT_CANCODER_ID = 31;
+  public int FRONT_RIGHT_CANCODER_ID = 34;
 }

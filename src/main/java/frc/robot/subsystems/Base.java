@@ -15,6 +15,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -32,28 +34,28 @@ public class Base extends SubsystemBase {
   private final SwerveModule backLeftModule;
   private final SwerveModule backRightModule;
 
-  public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+  public SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
     new Translation2d(
-      Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-      Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
+      Units.inchesToMeters(Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
+      Units.inchesToMeters(Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0)
     ),
     new Translation2d(
-      Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-      -Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
+      Units.inchesToMeters(Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
+      -Units.inchesToMeters(Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0)
     ),
     new Translation2d(
-      -Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-      Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
+      -Units.inchesToMeters(Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
+      Units.inchesToMeters(Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0)
     ),
     new Translation2d(
-      -Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-      -Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
+      -Units.inchesToMeters(Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
+      -Units.inchesToMeters(Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0)
     )
   );
 
   private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(
     kinematics,
-    Rotation2d.fromDegrees(0)
+    Rotation2d.fromDegrees(gyro.getFusedHeading())
   );
 
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
@@ -66,6 +68,8 @@ public class Base extends SubsystemBase {
   /** Creates a new Base. */
   public Base() {
     this.tab = Shuffleboard.getTab("debug");
+
+    this.configuration.setDriveCurrentLimit(10);
 
     this.backRightModule =
       Mk4SwerveModuleHelper.createFalcon500(
@@ -86,7 +90,7 @@ public class Base extends SubsystemBase {
         tab
           .getLayout("Back Left Module", BuiltInLayouts.kList)
           .withSize(2, 4)
-          .withPosition(1, 0),
+          .withPosition(12, 0),
         configuration,
         Constants.Base.motorRatio,
         Constants.Base.BACK_LEFT_DRIVE_MOTOR_PORT,
@@ -100,7 +104,7 @@ public class Base extends SubsystemBase {
         tab
           .getLayout("Front Right Module", BuiltInLayouts.kList)
           .withSize(2, 4)
-          .withPosition(2, 0),
+          .withPosition(4, 0),
         configuration,
         Constants.Base.motorRatio,
         Constants.Base.FRONT_RIGHT_DRIVE_MOTOR_PORT,
@@ -114,7 +118,7 @@ public class Base extends SubsystemBase {
         tab
           .getLayout("Front Left Module", BuiltInLayouts.kList)
           .withSize(2, 4)
-          .withPosition(3, 0),
+          .withPosition(8, 0),
         configuration,
         Constants.Base.motorRatio,
         Constants.Base.FRONT_LEFT_DRIVE_MOTOR_PORT,
@@ -203,7 +207,11 @@ public class Base extends SubsystemBase {
    * @return the robot's current rotation.
    */
   public Rotation2d getRotation() {
-    return Rotation2d.fromDegrees(gyro.getFusedHeading());
+    if (gyro.isMagnetometerCalibrated()) {
+      return Rotation2d.fromDegrees(gyro.getFusedHeading());
+    }
+
+    return Rotation2d.fromDegrees(360.0 - gyro.getYaw());
   }
 
   /**
@@ -239,6 +247,12 @@ public class Base extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    // SwerveDriveKinematics.desaturateWheelSpeeds(
+    //   states,
+    //   Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
+    // );
+
     this.frontLeftModule.set(
         (
           states[0].speedMetersPerSecond /
