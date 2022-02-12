@@ -82,10 +82,10 @@ public class Base extends SubsystemBase {
                                                                 0),
                                 configuration,
                                 Constants.Base.motorRatio,
-                                Constants.Base.FRONT_LEFT_DRIVE_MOTOR_PORT,
-                                Constants.Base.FRONT_LEFT_STEER_MOTOR_PORT,
-                                Constants.Base.FRONT_LEFT_CANCODER_ID,
-                                Constants.Base.FRONT_LEFT_MODULE_STEER_OFFSET);
+                                Constants.Base.FRONT_RIGHT_DRIVE_MOTOR_PORT,
+                                Constants.Base.FRONT_RIGHT_STEER_MOTOR_PORT,
+                                Constants.Base.FRONT_RIGHT_CANCODER_ID,
+                                Constants.Base.FRONT_RIGHT_MODULE_STEER_OFFSET);
 
                 this.frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
                                 tab.getLayout("Front Left Module", BuiltInLayouts.kList).withSize(2,
@@ -93,65 +93,92 @@ public class Base extends SubsystemBase {
                                                                 0),
                                 configuration,
                                 Constants.Base.motorRatio,
-                                Constants.Base.BACK_RIGHT_DRIVE_MOTOR_PORT,
-                                Constants.Base.BACK_RIGHT_STEER_MOTOR_PORT,
-                                Constants.Base.BACK_RIGHT_CANCODER_ID,
-                                Constants.Base.BACK_RIGHT_MODULE_STEER_OFFSET);
+                                Constants.Base.FRONT_LEFT_DRIVE_MOTOR_PORT,
+                                Constants.Base.FRONT_LEFT_STEER_MOTOR_PORT,
+                                Constants.Base.FRONT_LEFT_CANCODER_ID,
+                                Constants.Base.FRONT_LEFT_MODULE_STEER_OFFSET);
         }
 
+        /**
+         * Sets the current chassis speeds of the robot to the given speeds and updates
+         * the swerve module states to the current robot speeds.
+         */
         public void drive(ChassisSpeeds speeds) {
                 this.chassisSpeeds = speeds;
+
+                this.states = kinematics.toSwerveModuleStates(chassisSpeeds);
         }
 
+        /**
+         * Set the robot's states to the given states.
+         */
         public void setStates(SwerveModuleState[] states) {
-                // This method will be called once per scheduler run
                 this.frontLeftModule.set(
                                 (states[0].speedMetersPerSecond / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) *
                                                 -1.0,
-                                states[0].angle.getDegrees());
+                                states[0].angle.getRadians());
                 this.frontRightModule.set((states[1].speedMetersPerSecond
                                 / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) * 1.0,
-                                states[1].angle.getDegrees());
+                                states[1].angle.getRadians());
                 this.backLeftModule.set((states[2].speedMetersPerSecond
                                 / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) * 1.0,
-                                states[2].angle.getDegrees());
+                                states[2].angle.getRadians());
                 this.backRightModule.set((states[3].speedMetersPerSecond
                                 / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) * -1.0,
-                                states[3].angle.getDegrees());
+                                states[3].angle.getRadians());
 
                 odometry.update(getRotation(), this.states);
         }
 
+        /**
+         * @return ChassisSpeeds of the robot
+         */
         public ChassisSpeeds getChassisSpeeds() {
                 return chassisSpeeds;
         }
 
-        public ChassisSpeeds getChassisSpeeds(double x, double y) {
-                return chassisSpeeds;
-        }
-
+        /**
+         * This resets the gyroscope's Yaw axis to zero.
+         */
         public void zeroGyro() {
                 gyro.reset();
         }
 
+        /**
+         * This resets the odometry to the given position and sets the rotation to the
+         * current one from the gyro.
+         */
         public void resetOdometry(Pose2d pose) {
                 this.odometry.resetPosition(pose, this.getRotation());
         }
 
+        /**
+         * Returns the robot's current rotation.
+         * 
+         * @return the robot's current rotation.
+         */
         public Rotation2d getRotation() {
                 return Rotation2d.fromDegrees(gyro.getFusedHeading());
-                // return Rotation2d.fromDegrees(0);
         }
 
+        /**
+         * Returns if the robot inverted.
+         */
         public boolean isInverted() {
                 return getRotation().getDegrees() <= 190 && getRotation().getDegrees() > 90
                                 || getRotation().getDegrees() >= 290 && getRotation().getDegrees() < 90;
         }
 
+        /**
+         * Returns the current odometry pose of the robot.
+         */
         public Pose2d getPose() {
                 return odometry.getPoseMeters();
         }
 
+        /**
+         * Returns the current direction of the robot.
+         */
         public double getDirection() {
                 if (isInverted()) {
                         return 1.0;
@@ -165,17 +192,21 @@ public class Base extends SubsystemBase {
                 // This method will be called once per scheduler run
                 this.frontLeftModule.set(
                                 (states[0].speedMetersPerSecond / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) *
-                                                -1.0,
-                                states[0].angle.getDegrees());
+                                                Constants.Base.MAX_VOLTAGE,
+                                states[0].angle.getRadians());
+
+                System.out.println((states[0].speedMetersPerSecond / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) *
+                                Constants.Base.MAX_VOLTAGE);
+
                 this.frontRightModule.set((states[1].speedMetersPerSecond
-                                / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) * 1.0,
-                                states[1].angle.getDegrees());
+                                / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) * Constants.Base.MAX_VOLTAGE,
+                                states[1].angle.getRadians());
                 this.backLeftModule.set((states[2].speedMetersPerSecond
-                                / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) * 1.0,
-                                states[2].angle.getDegrees());
+                                / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) * Constants.Base.MAX_VOLTAGE,
+                                states[2].angle.getRadians());
                 this.backRightModule.set((states[3].speedMetersPerSecond
-                                / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) * -1.0,
-                                states[3].angle.getDegrees());
+                                / Constants.Base.MAX_VELOCITY_METERS_PER_SECOND) * Constants.Base.MAX_VOLTAGE,
+                                states[3].angle.getRadians());
 
                 odometry.update(getRotation(), this.states);
         }
