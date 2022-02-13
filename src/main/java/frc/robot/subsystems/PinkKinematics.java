@@ -128,18 +128,17 @@ public class PinkKinematics extends SwerveDriveKinematics {
     for (int i = 0; i < m_numModules; i++) {
       double x = moduleStatesMatrix.get(i * 2, 0);
       double y = moduleStatesMatrix.get(i * 2 + 1, 0);
-      double omega = moduleStatesMatrix.get(i * 2 + 2, 0);
+      // double omega = chassisSpeeds.omegaRadiansPerSecond;
 
       double speed = Math.hypot(x, y);
       Rotation2d angle = new Rotation2d(x, y);
 
       SmartDashboard.putNumber("s", speed);
-
-      if (speed > 0 && omega > 0) {
+      if (speed > 0 && chassisSpeeds.omegaRadiansPerSecond > 0) {
         var state = new SwerveModuleState(speed, angle);
 
         moduleStates[i] = SwerveModuleState.optimize(state, angle);
-      } else if (speed < 0 && omega > 0) {
+      } else {
         var state = new SwerveModuleState(-speed, angle);
 
         moduleStates[i] = SwerveModuleState.optimize(state, angle);
