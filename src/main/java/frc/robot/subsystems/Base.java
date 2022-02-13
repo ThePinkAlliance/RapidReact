@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import java.util.Map;
 
 public class Base extends SubsystemBase {
 
@@ -41,7 +42,7 @@ public class Base extends SubsystemBase {
   /** 3 */
   private final SwerveModule backRightModule;
 
-  public PinkKinematics kinematics = new PinkKinematics(
+  public SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
     // Front Left Pod
     new Translation2d(
       Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
@@ -255,8 +256,18 @@ public class Base extends SubsystemBase {
     return -1.0;
   }
 
-  public double processTargetAngle(double angle, double offset) {
-    return 0.0;
+  public double targetAngleToPower(double angle, double power, double offset) {
+    double angleDeg = Math.toDegrees(angle);
+    double offsetDeg = Math.toDegrees(offset);
+
+    double diff = angleDeg - offsetDeg;
+    double omega = chassisSpeeds.omegaRadiansPerSecond;
+
+    if (Math.abs(diff) == 45) {
+      return power * omega;
+    }
+
+    return power;
   }
 
   @Override
@@ -270,41 +281,55 @@ public class Base extends SubsystemBase {
       Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
     );
 
+    double frontLeftPower = targetAngleToPower(
+      (
+        states[0].speedMetersPerSecond /
+        Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
+      ) *
+      Constants.Base.MAX_VOLTAGE,
+      states[0].angle.getRadians(),
+      Constants.Base.FRONT_LEFT_MODULE_STEER_OFFSET
+    );
+
     /**
      * Inverting the requested angle when its in rotation position to allow to the robot to turn?
      */
-    this.frontLeftModule.set(
-        (
-          states[0].speedMetersPerSecond /
-          Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
-        ) *
-        Constants.Base.MAX_VOLTAGE,
-        states[0].angle.getRadians()
-      );
+    this.frontLeftModule.set(frontLeftPower, states[0].angle.getRadians());
 
-    this.frontRightModule.set(
-        (
-          states[1].speedMetersPerSecond /
-          Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
-        ) *
-        Constants.Base.MAX_VOLTAGE,
-        states[1].angle.getRadians()
-      );
-    this.backLeftModule.set(
-        (
-          states[2].speedMetersPerSecond /
-          Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
-        ) *
-        Constants.Base.MAX_VOLTAGE,
-        states[2].angle.getRadians()
-      );
-    this.backRightModule.set(
-        (
-          states[3].speedMetersPerSecond /
-          Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
-        ) *
-        Constants.Base.MAX_VOLTAGE,
-        states[3].angle.getRadians()
-      );
+    double frontRightPower = targetAngleToPower(
+      (
+        states[1].speedMetersPerSecond /
+        Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
+      ) *
+      Constants.Base.MAX_VOLTAGE,
+      states[1].angle.getRadians(),
+      Constants.Base.FRONT_LEFT_MODULE_STEER_OFFSET
+    );
+
+    this.frontRightModule.set(frontRightPower, states[1].angle.getRadians());
+
+    double backLeftPower = targetAngleToPower(
+      (
+        states[2].speedMetersPerSecond /
+        Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
+      ) *
+      Constants.Base.MAX_VOLTAGE,
+      states[2].angle.getRadians(),
+      Constants.Base.FRONT_LEFT_MODULE_STEER_OFFSET
+    );
+
+    this.backLeftModule.set(backLeftPower, states[2].angle.getRadians());
+
+    double backRightPower = targetAngleToPower(
+      (
+        states[3].speedMetersPerSecond /
+        Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
+      ) *
+      Constants.Base.MAX_VOLTAGE,
+      states[3].angle.getRadians(),
+      Constants.Base.FRONT_LEFT_MODULE_STEER_OFFSET
+    );
+
+    this.backRightModule.set(backRightPower, states[3].angle.getRadians());
   }
 }
