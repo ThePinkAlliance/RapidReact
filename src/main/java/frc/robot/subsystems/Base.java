@@ -256,18 +256,29 @@ public class Base extends SubsystemBase {
     return -1.0;
   }
 
-  public double targetAngleToPower(double angle, double power, double offset) {
+  public double targetAngleToPower(
+    double angle,
+    double power,
+    double forwardAngle,
+    double strafeAngle
+  ) {
     double angleDeg = Math.toDegrees(angle);
-    double offsetDeg = Math.toDegrees(offset);
+    double forwardDeg = Math.toDegrees(forwardAngle);
+    double strafeDeg = Math.toDegrees(strafeAngle);
 
-    double diff = angleDeg - offsetDeg;
+    double rotHypot = Math.hypot(strafeDeg, forwardDeg);
     double omega = chassisSpeeds.omegaRadiansPerSecond;
 
-    if (Math.abs(diff) == 45) {
+    // TODO: replace this with the hypotenuse of the angle: done.
+    if (Math.abs(angleDeg) == Math.abs(rotHypot)) {
       return power * omega;
     }
 
     return power;
+  }
+
+  public double calulateStrafe(double offset) {
+    return (offset - 360) / 2;
   }
 
   @Override
@@ -281,6 +292,9 @@ public class Base extends SubsystemBase {
       Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
     );
 
+    /**
+     * Inverting the requested angle when its in rotation position to allow to the robot to turn?
+     */
     double frontLeftPower = targetAngleToPower(
       (
         states[0].speedMetersPerSecond /
@@ -288,12 +302,10 @@ public class Base extends SubsystemBase {
       ) *
       Constants.Base.MAX_VOLTAGE,
       states[0].angle.getRadians(),
-      Constants.Base.FRONT_LEFT_MODULE_STEER_OFFSET
+      Constants.Base.FRONT_LEFT_MODULE_STEER_OFFSET,
+      calulateStrafe(Constants.Base.FRONT_LEFT_MODULE_STEER_OFFSET)
     );
 
-    /**
-     * Inverting the requested angle when its in rotation position to allow to the robot to turn?
-     */
     this.frontLeftModule.set(frontLeftPower, states[0].angle.getRadians());
 
     double frontRightPower = targetAngleToPower(
@@ -303,7 +315,8 @@ public class Base extends SubsystemBase {
       ) *
       Constants.Base.MAX_VOLTAGE,
       states[1].angle.getRadians(),
-      Constants.Base.FRONT_LEFT_MODULE_STEER_OFFSET
+      Constants.Base.FRONT_RIGHT_MODULE_STEER_OFFSET,
+      calulateStrafe(Constants.Base.FRONT_RIGHT_MODULE_STEER_OFFSET)
     );
 
     this.frontRightModule.set(frontRightPower, states[1].angle.getRadians());
@@ -315,7 +328,8 @@ public class Base extends SubsystemBase {
       ) *
       Constants.Base.MAX_VOLTAGE,
       states[2].angle.getRadians(),
-      Constants.Base.FRONT_LEFT_MODULE_STEER_OFFSET
+      Constants.Base.BACK_LEFT_MODULE_STEER_OFFSET,
+      calulateStrafe(Constants.Base.BACK_LEFT_MODULE_STEER_OFFSET)
     );
 
     this.backLeftModule.set(backLeftPower, states[2].angle.getRadians());
@@ -327,7 +341,8 @@ public class Base extends SubsystemBase {
       ) *
       Constants.Base.MAX_VOLTAGE,
       states[3].angle.getRadians(),
-      Constants.Base.FRONT_LEFT_MODULE_STEER_OFFSET
+      Constants.Base.BACK_RIGHT_MODULE_STEER_OFFSET,
+      calulateStrafe(Constants.Base.BACK_RIGHT_MODULE_STEER_OFFSET)
     );
 
     this.backRightModule.set(backRightPower, states[3].angle.getRadians());
