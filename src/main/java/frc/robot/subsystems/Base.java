@@ -334,7 +334,7 @@ public class Base extends SubsystemBase {
 
     if (
       (
-        states[2].angle.getDegrees() >= 43 || states[2].angle.getDegrees() <= 47
+        states[2].angle.getDegrees() >= 43 && states[2].angle.getDegrees() <= 47
       ) &&
       states[2].speedMetersPerSecond > 0
     ) {
@@ -356,7 +356,7 @@ public class Base extends SubsystemBase {
 
     if (
       (
-        states[3].angle.getDegrees() >= 313 ||
+        states[3].angle.getDegrees() >= 313 &&
         states[3].angle.getDegrees() <= 317
       ) &&
       states[3].speedMetersPerSecond > 0

@@ -25,7 +25,10 @@ public class Shooter extends SubsystemBase {
   public void command(double power) {
     motor.set(ControlMode.PercentOutput, power);
 
-    SmartDashboard.putNumber("velocity", motor.getSelectedSensorVelocity());
+    SmartDashboard.putNumber(
+      "velocity",
+      (motor.getSelectedSensorVelocity() / 2048) * 60
+    );
   }
 
   @Override
