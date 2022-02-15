@@ -21,7 +21,9 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Color;
 import frc.robot.commands.Drive;
+import frc.robot.commands.Shoot;
 import frc.robot.subsystems.Base;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.TempTower;
 
 /**
@@ -37,6 +39,7 @@ public class RobotContainer {
 
   private final Joystick gamepad_base = new Joystick(0);
   private final Base m_base = new Base();
+  private final Shooter m_shooter = new Shooter();
   // private final TempTower tower = new TempTower();
 
   private final SelectableTrajectory leaveBlueLeft = new SelectableTrajectory(
@@ -75,8 +78,11 @@ public class RobotContainer {
           m_base,
           () -> gamepad_base.getRawAxis(0),
           () -> gamepad_base.getRawAxis(1),
-          () -> gamepad_base.getRawAxis(2)
+          () -> gamepad_base.getRawAxis(4)
         )
+      );
+    this.m_shooter.setDefaultCommand(
+        new Shoot(m_shooter, () -> gamepad_base.getRawAxis(2))
       );
     new JoystickButton(gamepad_base, 1).whenPressed(m_base::zeroGyro);
   }

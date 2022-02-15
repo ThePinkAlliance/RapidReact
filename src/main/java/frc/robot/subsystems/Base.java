@@ -15,12 +15,14 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import java.util.Map;
 
 public class Base extends SubsystemBase {
 
@@ -40,22 +42,26 @@ public class Base extends SubsystemBase {
   /** 3 */
   private final SwerveModule backRightModule;
 
-  public SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+  public PinkKinematics kinematics = new PinkKinematics(
+    // Front Left Pod
     new Translation2d(
-      Units.inchesToMeters(Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
-      Units.inchesToMeters(Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0)
+      Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+      Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
     ),
+    // Front Right
     new Translation2d(
-      Units.inchesToMeters(Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
-      -Units.inchesToMeters(Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0)
+      Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+      -Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
     ),
+    // Back Left
     new Translation2d(
-      -Units.inchesToMeters(Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
-      Units.inchesToMeters(Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0)
+      -Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+      Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
     ),
+    // Back Right
     new Translation2d(
-      -Units.inchesToMeters(Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
-      -Units.inchesToMeters(Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0)
+      -Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+      -Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
     )
   );
 
@@ -250,13 +256,51 @@ public class Base extends SubsystemBase {
     return -1.0;
   }
 
-  public double processTargetAngle(double angle, double offset) {
-    return 0.0;
+  /**
+   * NOTE: two of the swerve modules where in a 45 deg angle when the offset was set to zero.
+   * this might be semi related to the power being inverted on those modules.
+   */
+  public double targetAngleToPower(
+    double power,
+    double angle,
+    double forwardAngle,
+    double strafeAngle
+  ) {
+    double angleDeg = Math.toDegrees(angle);
+    double rotAngle1 = forwardAngle + 45;
+    double rotAngle2 = forwardAngle - 45;
+    double omega = chassisSpeeds.omegaRadiansPerSecond;
+
+    return power;
+  }
+
+  public boolean isWithinError(double target, double current) {
+    return (target - current) < 2;
+  }
+
+  public boolean isOppsite(double v1, double v2) {
+    return (v1 > -0 && v2 < 0) || (v1 > 0 && v2 > -0);
+  }
+
+  public double calulateStrafe(double offset) {
+    return (360 - offset) / 2;
+  }
+
+  public double invertPower(double invertAngle, double angle, double power) {
+    boolean in_range = angle <= (invertAngle + 2) && angle <= (invertAngle - 2);
+
+    if (in_range) {
+      return power * -1.0;
+    }
+
+    return power;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    odometry.update(getRotation(), this.states);
 
     SwerveDriveKinematics.desaturateWheelSpeeds(
       states,
@@ -264,6 +308,8 @@ public class Base extends SubsystemBase {
     );
 
     /**
+     * back right 316
+     * back left 45
      * Inverting the requested angle when its in rotation position to allow to the robot to turn?
      */
     this.frontLeftModule.set(
@@ -283,6 +329,20 @@ public class Base extends SubsystemBase {
         Constants.Base.MAX_VOLTAGE,
         states[1].angle.getRadians()
       );
+
+    if (
+      (
+        states[2].angle.getDegrees() >= 43 && states[2].angle.getDegrees() <= 47
+      ) &&
+      states[2].speedMetersPerSecond > 0
+    ) {
+      states[2] =
+        new SwerveModuleState(
+          states[2].speedMetersPerSecond * -1.0,
+          states[2].angle
+        );
+    }
+
     this.backLeftModule.set(
         (
           states[2].speedMetersPerSecond /
@@ -291,6 +351,21 @@ public class Base extends SubsystemBase {
         Constants.Base.MAX_VOLTAGE,
         states[2].angle.getRadians()
       );
+
+    if (
+      (
+        states[3].angle.getDegrees() >= 313 &&
+        states[3].angle.getDegrees() <= 317
+      ) &&
+      states[3].speedMetersPerSecond > 0
+    ) {
+      states[3] =
+        new SwerveModuleState(
+          states[3].speedMetersPerSecond * -1.0,
+          states[3].angle
+        );
+    }
+
     this.backRightModule.set(
         (
           states[3].speedMetersPerSecond /
@@ -299,7 +374,5 @@ public class Base extends SubsystemBase {
         Constants.Base.MAX_VOLTAGE,
         states[3].angle.getRadians()
       );
-
-    odometry.update(getRotation(), this.states);
   }
 }
