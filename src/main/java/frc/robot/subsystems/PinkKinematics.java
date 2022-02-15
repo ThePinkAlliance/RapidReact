@@ -128,45 +128,14 @@ public class PinkKinematics extends SwerveDriveKinematics {
     for (int i = 0; i < m_numModules; i++) {
       double x = moduleStatesMatrix.get(i * 2, 0);
       double y = moduleStatesMatrix.get(i * 2 + 1, 0);
-      // double omega = chassisSpeeds.omegaRadiansPerSecond;
 
       double speed = Math.hypot(x, y);
       Rotation2d angle = new Rotation2d(x, y);
 
-      SmartDashboard.putNumber("s", speed);
-      if (speed > 0 && chassisSpeeds.omegaRadiansPerSecond > 0) {
-        var state = new SwerveModuleState(speed, angle);
+      var state = new SwerveModuleState(speed, angle);
 
-        moduleStates[i] = SwerveModuleState.optimize(state, angle);
-      } else {
-        var state = new SwerveModuleState(-speed, angle);
-
-        moduleStates[i] = SwerveModuleState.optimize(state, angle);
-      }
+      moduleStates[i] = SwerveModuleState.optimize(state, angle);
     }
-
-    // for (int i = 0; i < inverted.size(); i++) {
-    //   if (inverted.get(i)) {
-    //     var oldState = moduleStates[i];
-    //     // var oldNeighborState = moduleStates[i + 2];
-
-    //     var newState = new SwerveModuleState(
-    //       oldState.speedMetersPerSecond,
-    //       oldState.angle
-    //     );
-    //     // var newNeighborState = new SwerveModuleState(
-    //     //   oldNeighborState.speedMetersPerSecond,
-    //     //   oldNeighborState.angle
-    //     // );
-
-    //     moduleStates[i] = SwerveModuleState.optimize(newState, newState.angle);
-    //     // moduleStates[i + 2] =
-    //     //   SwerveModuleState.optimize(
-    //     //     newNeighborState,
-    //     //     newNeighborState.angle
-    //     //   );
-    //   }
-    // }
 
     return moduleStates;
   }

@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class ClimberModule {
+
   private Solenoid lockerSolenoid;
   private TalonFX angleMotor;
   private PIDController angleController;
@@ -28,7 +29,10 @@ public class ClimberModule {
 
   // NOTE: move this to a command
   public void moveToPosition() {
-    double error = angleController.calculate(angleMotor.getSelectedSensorPosition(), targetPosition);
+    double error = angleController.calculate(
+      angleMotor.getSelectedSensorPosition(),
+      targetPosition
+    );
 
     angleMotor.set(ControlMode.PercentOutput, error / targetPosition * 1);
   }
