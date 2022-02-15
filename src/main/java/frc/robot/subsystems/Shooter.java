@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent;
 import edu.wpi.first.wpilibj.shuffleboard.SuppliedValueWidget;
@@ -23,7 +24,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void command(double power) {
-    motor.set(ControlMode.PercentOutput, power);
+    motor.set(ControlMode.MotionMagic, power);
 
     SmartDashboard.putNumber(
       "velocity",

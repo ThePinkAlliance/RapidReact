@@ -308,12 +308,10 @@ public class Base extends SubsystemBase {
     );
 
     /**
+     * back right 316
+     * back left 45
      * Inverting the requested angle when its in rotation position to allow to the robot to turn?
      */
-
-    // back right 316
-    // back left 45
-
     this.frontLeftModule.set(
         (
           states[0].speedMetersPerSecond /
