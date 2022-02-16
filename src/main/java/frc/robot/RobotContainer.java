@@ -78,7 +78,8 @@ public class RobotContainer {
           m_base,
           () -> gamepad_base.getRawAxis(0),
           () -> gamepad_base.getRawAxis(1),
-          () -> gamepad_base.getRawAxis(4)
+          () -> gamepad_base.getRawAxis(4),
+          this.gamepad_base
         )
       );
     this.m_shooter.setDefaultCommand(
