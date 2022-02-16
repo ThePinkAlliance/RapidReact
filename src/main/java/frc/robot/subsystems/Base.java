@@ -42,7 +42,7 @@ public class Base extends SubsystemBase {
   /** 3 */
   private final SwerveModule backRightModule;
 
-  public PinkKinematics kinematics = new PinkKinematics(
+  public SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
     // Front Left Pod
     new Translation2d(
       Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
@@ -150,41 +150,46 @@ public class Base extends SubsystemBase {
 
   /**
    * Set the robot's states to the given states.
-   *
-   * @deprecated DO NOT USE THIS METHOD ITS NOT UPDATED.
    */
-  @Deprecated
   public void setStates(SwerveModuleState[] states) {
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+      states,
+      Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
+    );
+
     this.frontLeftModule.set(
         (
           states[0].speedMetersPerSecond /
           Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
         ) *
-        1.0,
+        Constants.Base.MAX_VOLTAGE,
         states[0].angle.getRadians()
       );
+
     this.frontRightModule.set(
         (
           states[1].speedMetersPerSecond /
           Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
         ) *
-        -1.0,
+        Constants.Base.MAX_VOLTAGE,
         states[1].angle.getRadians()
       );
+
     this.backLeftModule.set(
         (
           states[2].speedMetersPerSecond /
           Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
         ) *
-        1.0,
+        Constants.Base.MAX_VOLTAGE,
         states[2].angle.getRadians()
       );
+
     this.backRightModule.set(
         (
           states[3].speedMetersPerSecond /
           Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
         ) *
-        -1.0,
+        Constants.Base.MAX_VOLTAGE,
         states[3].angle.getRadians()
       );
 
@@ -260,6 +265,7 @@ public class Base extends SubsystemBase {
    * NOTE: two of the swerve modules where in a 45 deg angle when the offset was set to zero.
    * this might be semi related to the power being inverted on those modules.
    */
+  @Deprecated
   public double targetAngleToPower(
     double power,
     double angle,
@@ -282,10 +288,12 @@ public class Base extends SubsystemBase {
     return (v1 > -0 && v2 < 0) || (v1 > 0 && v2 > -0);
   }
 
+  @Deprecated
   public double calulateStrafe(double offset) {
     return (360 - offset) / 2;
   }
 
+  @Deprecated
   public double invertPower(double invertAngle, double angle, double power) {
     boolean in_range = angle <= (invertAngle + 2) && angle <= (invertAngle - 2);
 
@@ -307,11 +315,6 @@ public class Base extends SubsystemBase {
       Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
     );
 
-    /**
-     * back right 316
-     * back left 45
-     * Inverting the requested angle when its in rotation position to allow to the robot to turn?
-     */
     this.frontLeftModule.set(
         (
           states[0].speedMetersPerSecond /
@@ -330,19 +333,6 @@ public class Base extends SubsystemBase {
         states[1].angle.getRadians()
       );
 
-    /*if (
-      (
-        states[2].angle.getDegrees() >= 43 && states[2].angle.getDegrees() <= 47
-      ) &&
-      states[2].speedMetersPerSecond > 0
-    ) {
-      states[2] =
-        new SwerveModuleState(
-          states[2].speedMetersPerSecond, // * -1.0,
-          states[2].angle
-        );
-    }*/
-
     this.backLeftModule.set(
         (
           states[2].speedMetersPerSecond /
@@ -351,20 +341,6 @@ public class Base extends SubsystemBase {
         Constants.Base.MAX_VOLTAGE,
         states[2].angle.getRadians()
       );
-
-    /*if (
-      (
-        states[3].angle.getDegrees() >= 313 &&
-        states[3].angle.getDegrees() <= 317
-      ) &&
-      states[3].speedMetersPerSecond > 0
-    ) {
-      states[3] =
-        new SwerveModuleState(
-          states[3].speedMetersPerSecond, // * -1.0,
-          states[3].angle
-        );
-    } */
 
     this.backRightModule.set(
         (

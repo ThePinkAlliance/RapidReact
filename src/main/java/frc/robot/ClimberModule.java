@@ -22,7 +22,6 @@ public class ClimberModule {
   }
 
   private SOLENOID_STATE solenoidState = SOLENOID_STATE.UNKNOWN;
-
   private double targetPosition = 0;
 
   public ClimberModule(int _pheumaticsId, int motorId) {
