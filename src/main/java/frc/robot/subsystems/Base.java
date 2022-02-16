@@ -330,7 +330,7 @@ public class Base extends SubsystemBase {
         states[1].angle.getRadians()
       );
 
-    if (
+    /*if (
       (
         states[2].angle.getDegrees() >= 43 && states[2].angle.getDegrees() <= 47
       ) &&
@@ -338,10 +338,10 @@ public class Base extends SubsystemBase {
     ) {
       states[2] =
         new SwerveModuleState(
-          states[2].speedMetersPerSecond * -1.0,
+          states[2].speedMetersPerSecond, // * -1.0,
           states[2].angle
         );
-    }
+    }*/
 
     this.backLeftModule.set(
         (
@@ -352,7 +352,7 @@ public class Base extends SubsystemBase {
         states[2].angle.getRadians()
       );
 
-    if (
+    /*if (
       (
         states[3].angle.getDegrees() >= 313 &&
         states[3].angle.getDegrees() <= 317
@@ -361,10 +361,10 @@ public class Base extends SubsystemBase {
     ) {
       states[3] =
         new SwerveModuleState(
-          states[3].speedMetersPerSecond * -1.0,
+          states[3].speedMetersPerSecond, // * -1.0,
           states[3].angle
         );
-    }
+    } */
 
     this.backRightModule.set(
         (

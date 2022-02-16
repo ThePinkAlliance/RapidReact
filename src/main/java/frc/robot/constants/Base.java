@@ -15,11 +15,9 @@ public class Base {
   public final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(24);
 
   public final double MAX_VELOCITY_METERS_PER_SECOND =
-    6380.0 /
-    60.0 *
-    SdsModuleConfigurations.MK4_L4.getDriveReduction() *
-    SdsModuleConfigurations.MK4_L4.getWheelDiameter() *
-    Math.PI; // 13.14528;
+    //6380 is the theoretical max rpm (e.g. NO LOAD RPM)
+    //TODO - select a realistic rpm.  
+    6380.0 /  60.0 *  SdsModuleConfigurations.MK4_L4.getDriveReduction() *  SdsModuleConfigurations.MK4_L4.getWheelDiameter() *  Math.PI; // 13.14528;
 
   public final double MAX_ACCELERATION_METERS_PER_SECOND = 6.346;
   public double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
@@ -43,8 +41,8 @@ public class Base {
 
   public int BACK_RIGHT_DRIVE_MOTOR_PORT = 27;
   public int BACK_LEFT_DRIVE_MOTOR_PORT = 25;
-  public int FRONT_RIGHT_DRIVE_MOTOR_PORT = 23;
-  public int FRONT_LEFT_DRIVE_MOTOR_PORT = 21;
+  public int FRONT_RIGHT_DRIVE_MOTOR_PORT = 21;
+  public int FRONT_LEFT_DRIVE_MOTOR_PORT = 23;
 
   public int BACK_RIGHT_STEER_MOTOR_PORT = 26;
   public int BACK_LEFT_STEER_MOTOR_PORT = 24;

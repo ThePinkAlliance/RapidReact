@@ -11,19 +11,26 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Base;
 import java.util.function.DoubleSupplier;
 
+import javax.print.attribute.standard.JobHoldUntil;
+
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+
 public class Drive extends CommandBase {
 
   private Base base;
   private DoubleSupplier x;
   private DoubleSupplier y;
   private DoubleSupplier rot;
+  private Joystick js;
 
   /** Creates a new Drive. */
   public Drive(
     Base base,
     DoubleSupplier x,
     DoubleSupplier y,
-    DoubleSupplier rot
+    DoubleSupplier rot,
+    Joystick js
   ) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.base = base;
@@ -33,6 +40,7 @@ public class Drive extends CommandBase {
     this.x = x;
     this.y = y;
     this.rot = rot;
+    this.js = js;
 
     addRequirements(base);
   }
@@ -44,17 +52,39 @@ public class Drive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    this.base.drive(
-        ChassisSpeeds.fromFieldRelativeSpeeds(
-          modifyAxis(y.getAsDouble()) *
-          Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
-          modifyAxis(x.getAsDouble()) *
-          Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
-          modifyAxis(rot.getAsDouble()) *
-          Constants.Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
-          base.getRotation()
-        )
-      );
+
+    double axis0x = js.getRawAxis(0);
+    double axis1y = js.getRawAxis(1);
+    double axis4rot = js.getRawAxis(4);
+
+    //invert right joystick axis input to match clockwise, counter clockwise robot behavior
+    axis4rot *= -1;
+    axis0x *= -1;
+    axis1y *= -1;
+
+    ChassisSpeeds speedObject = new ChassisSpeeds(
+      modifyAxis(axis1y)   *  Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
+      modifyAxis(axis0x)   *  Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
+      modifyAxis(axis4rot) *  Constants.Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+    );
+
+    /*ChassisSpeeds speedObject = ChassisSpeeds.fromFieldRelativeSpeeds(
+      modifyAxis(axis1y)   *  Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
+      modifyAxis(axis0x)   *  Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
+      modifyAxis(axis4rot) *  Constants.Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+      base.getRotation()
+    );*/
+    //ChassisSpeeds speedObject = ChassisSpeeds.fromFieldRelativeSpeeds(
+    //  modifyAxis(y.getAsDouble()) *
+    //  Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
+    //  modifyAxis(x.getAsDouble()) *
+    //  Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
+    //  modifyAxis(rot.getAsDouble()) *
+    //  Constants.Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+    //  base.getRotation()
+    //);
+  
+    this.base.drive(speedObject);
   }
 
   private static double deadband(double value, double deadband) {
@@ -73,8 +103,8 @@ public class Drive extends CommandBase {
     // Deadband
     value = deadband(value, 0.05);
 
-    // Square the axis
-    value = Math.copySign(value * value, value);
+    // Cubing due to raw power until robot reaches competition weight. 
+    value = Math.copySign(value * value * value, value);
 
     return value;
   }
