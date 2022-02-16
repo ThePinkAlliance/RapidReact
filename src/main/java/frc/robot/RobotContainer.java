@@ -47,6 +47,16 @@ public class RobotContainer {
     "output/LeaveBlueLeft.wpilib.json"
   );
 
+  private final SelectableTrajectory straight = new SelectableTrajectory(
+    "Straight",
+    "output/Straight.wpilib.json"
+  );
+
+  private final SelectableTrajectory[] trajectories = {
+    leaveBlueLeft,
+    straight,
+  };
+
   Trajectory trajectory = new Trajectory();
   ShuffleboardTab driverDashboard = Shuffleboard.getTab("dashboard");
   SendableChooser<SelectableTrajectory> selectedPath = new SendableChooser<SelectableTrajectory>();
@@ -58,7 +68,13 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
-    selectedPath.setDefaultOption(leaveBlueLeft.name, leaveBlueLeft);
+    for (SelectableTrajectory t : trajectories) {
+      if (t.location == leaveBlueLeft.location) {
+        selectedPath.setDefaultOption(t.name, t);
+      } else {
+        selectedPath.addOption(t.name, t);
+      }
+    }
 
     driverDashboard.add(selectedPath);
     // for now select leave blue 1 for testing
