@@ -8,15 +8,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.ClimberModule;
 
 public class Climbers extends SubsystemBase {
-  private ClimberModule leftModuleOne = new ClimberModule(0, 0);
-  private ClimberModule leftModuleTwo = new ClimberModule(0, 0);
-  private ClimberModule rightModuleOne = new ClimberModule(0, 0);
-  private ClimberModule rightModuleTwo = new ClimberModule(0, 0);
+
+  public ClimberModule leftModuleOne = new ClimberModule(0, 0);
+  public ClimberModule leftModuleTwo = new ClimberModule(0, 0);
+  public ClimberModule rightModuleOne = new ClimberModule(0, 0);
+  public ClimberModule rightModuleTwo = new ClimberModule(0, 0);
 
   /** Creates a new Climbers. */
-  public Climbers() {
-
-  }
+  public Climbers() {}
 
   @Override
   public void periodic() {
