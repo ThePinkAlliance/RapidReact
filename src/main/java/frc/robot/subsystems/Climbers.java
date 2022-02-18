@@ -8,15 +8,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.ClimberModule;
 
 public class Climbers extends SubsystemBase {
-  private ClimberModule leftModuleOne = new ClimberModule(0, 0);
-  private ClimberModule leftModuleTwo = new ClimberModule(0, 0);
-  private ClimberModule rightModuleOne = new ClimberModule(0, 0);
-  private ClimberModule rightModuleTwo = new ClimberModule(0, 0);
+
+  // The port range for the climbers is 40-49
+  public ClimberModule leftModuleOne = new ClimberModule(40, 41);
+  public ClimberModule leftModuleTwo = new ClimberModule(42, 43);
+  public ClimberModule rightModuleOne = new ClimberModule(44, 45);
+  public ClimberModule rightModuleTwo = new ClimberModule(46, 47);
 
   /** Creates a new Climbers. */
-  public Climbers() {
-
-  }
+  public Climbers() {}
 
   @Override
   public void periodic() {

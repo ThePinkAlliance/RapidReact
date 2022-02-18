@@ -15,7 +15,9 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -39,7 +41,7 @@ public class RobotContainer {
 
   private final Joystick gamepad_base = new Joystick(0);
   private final Base m_base = new Base();
-  private final Shooter m_shooter = new Shooter();
+  // private final Shooter m_shooter = new Shooter();
   // private final TempTower tower = new TempTower();
 
   private final SelectableTrajectory leaveBlueLeft = new SelectableTrajectory(
@@ -47,8 +49,27 @@ public class RobotContainer {
     "output/LeaveBlueLeft.wpilib.json"
   );
 
+  private final SelectableTrajectory straight = new SelectableTrajectory(
+    "Straight",
+    "output/Straight.wpilib.json"
+  );
+
+  /**
+   * This contains all the trajectories that can be selected from the dashboard.
+   */
+  private final SelectableTrajectory[] trajectories = {
+    leaveBlueLeft,
+    straight,
+  };
+
+  double kP_X = 2;
+  double kD_X = 0.4;
+
+  double kP_Y = 1;
+  double kD_Y = 0.2;
+
   Trajectory trajectory = new Trajectory();
-  ShuffleboardTab driverDashboard = Shuffleboard.getTab("dashboard");
+  ShuffleboardTab driverDashboard = Shuffleboard.getTab("Dashboard");
   SendableChooser<SelectableTrajectory> selectedPath = new SendableChooser<SelectableTrajectory>();
 
   /**
@@ -58,7 +79,19 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
-    selectedPath.setDefaultOption(leaveBlueLeft.name, leaveBlueLeft);
+    SmartDashboard.putNumber("kP-X", kP_X);
+    SmartDashboard.putNumber("kD-X", kD_X);
+
+    SmartDashboard.putNumber("kP-Y", kP_Y);
+    SmartDashboard.putNumber("kD-Y", kD_Y);
+
+    for (SelectableTrajectory t : trajectories) {
+      if (t.location == leaveBlueLeft.location) {
+        selectedPath.setDefaultOption(t.name, t);
+      } else {
+        selectedPath.addOption(t.name, t);
+      }
+    }
 
     driverDashboard.add(selectedPath);
     // for now select leave blue 1 for testing
@@ -82,9 +115,9 @@ public class RobotContainer {
           this.gamepad_base
         )
       );
-    this.m_shooter.setDefaultCommand(
-        new Shoot(m_shooter, () -> gamepad_base.getRawAxis(2))
-      );
+    // this.m_shooter.setDefaultCommand(
+    //     new Shoot(m_shooter, () -> gamepad_base.getRawAxis(2))
+    //   );
     new JoystickButton(gamepad_base, 1).whenPressed(m_base::zeroGyro);
   }
 
@@ -110,30 +143,28 @@ public class RobotContainer {
       m_base.kinematics,
       // these values are filler's
       // this is the x axis PID Controller
-      new PIDController(0.4, 0, 0),
+      new PIDController(
+        SmartDashboard.getNumber("kP", kP_X),
+        0,
+        SmartDashboard.getNumber("kD", kP_X)
+      ),
       // this is the y axis PID Contrller
-      new PIDController(0.4, 0, 0),
+      new PIDController(
+        SmartDashboard.getNumber("kP-Y", kP_Y),
+        0,
+        SmartDashboard.getNumber("kD-Y", kD_Y)
+      ),
       new ProfiledPIDController(
         1,
         0,
-        0,
+        0.2,
         new TrapezoidProfile.Constraints(
           Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
           Constants.Base.MAX_ACCELERATION_METERS_PER_SECOND
         )
       ),
       states -> {
-        SwerveModuleState frontLeft = states[0];
-        SwerveModuleState frontRight = states[1];
-        SwerveModuleState backLeft = states[2];
-        SwerveModuleState backRight = states[3];
-
         m_base.setStates(states);
-
-        driverDashboard.add("Front Left m/s", frontLeft.speedMetersPerSecond);
-        driverDashboard.add("Front Right m/s", frontRight.speedMetersPerSecond);
-        driverDashboard.add("Back Left m/s", backLeft.speedMetersPerSecond);
-        driverDashboard.add("Back Right m/s", backRight.speedMetersPerSecond);
       },
       m_base
     )
