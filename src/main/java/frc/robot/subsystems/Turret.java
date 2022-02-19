@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Turret extends SubsystemBase {
 
   public static int CAN_ID_TURRET = 37;
-  public static double TURRET_DEFAULT_POWER = 0.2;
+  public static double TURRET_DEFAULT_POWER = 1;
   public static String TURRET_NAME = "Turret";
 
   TalonFX motor = new TalonFX(CAN_ID_TURRET);
@@ -24,7 +24,6 @@ public class Turret extends SubsystemBase {
   }
 
   public void rotate(double power) {
-    
     motor.set(ControlMode.PercentOutput, power);
 
     SmartDashboard.putNumber(

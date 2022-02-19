@@ -64,6 +64,12 @@ public class Base extends SubsystemBase {
   public static double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(132.09);
   public static double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(63.80); // 359.29
 
+  public static double FULL_ROT_TICKS =
+    (
+      SdsModuleConfigurations.MK4_L4.getDriveReduction() *
+      Base.TALON_ROTATION_TICKS
+    );
+
   // Simulated constants
   // public static double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0);
   // public static double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0);
@@ -208,28 +214,51 @@ public class Base extends SubsystemBase {
     this.frontRightModule.resetDrive();
   }
 
+  /**
+   *
+   * @param targetPosition the desired unit of measurement is inches
+   * @return
+   */
   public boolean driveStraight(double targetPosition) {
-    double frontLeftPos = this.frontLeftModule.getDrivePosition();
-    double frontRightPos = this.frontRightModule.getDrivePosition();
-    double backLeftPos = this.backLeftModule.getDrivePosition();
-    double backRightPos = this.backRightModule.getDrivePosition();
+    double frontLeftPos = calulateWheelTicks(
+      this.frontLeftModule.getDrivePosition()
+    );
+    double frontRightPos = calulateWheelTicks(
+      this.frontRightModule.getDrivePosition()
+    );
+    double backLeftPos = calulateWheelTicks(
+      this.backLeftModule.getDrivePosition()
+    );
+    double backRightPos = calulateWheelTicks(
+      this.backRightModule.getDrivePosition()
+    );
 
     double circumference =
-      SdsModuleConfigurations.MK4_L4.getWheelDiameter() * Math.PI;
+      Units.metersToInches(SdsModuleConfigurations.MK4_L4.getWheelDiameter()) *
+      Math.PI;
 
-    double rot_ticks =
-      SdsModuleConfigurations.MK4_L4.getDriveReduction() *
-      Base.TALON_ROTATION_TICKS;
+    double TICKS_PER_INCH = circumference / FULL_ROT_TICKS;
+    double TARGET_POSITION_TICKS = targetPosition * TICKS_PER_INCH;
 
-    SmartDashboard.putNumber("rot_ticks", rot_ticks);
+    double avr_ticks = (frontLeftPos + frontRightPos) / 2.0;
+
+    driveController.setSetpoint(TARGET_POSITION_TICKS);
+
+    SmartDashboard.putNumber("rot_ticks", FULL_ROT_TICKS / circumference);
+    SmartDashboard.putNumber("TICKS PER INCH", TICKS_PER_INCH);
     SmartDashboard.putNumber("circumference", circumference);
+    SmartDashboard.putNumber("rot-ticks no circumference", FULL_ROT_TICKS);
 
     SmartDashboard.putNumber("frontLeftPos", frontLeftPos);
     SmartDashboard.putNumber("frontRightPos", frontRightPos);
     SmartDashboard.putNumber("backLeftPos", backLeftPos);
     SmartDashboard.putNumber("backRightPos", backRightPos);
 
-    return false;
+    return Math.abs(avr_ticks - TARGET_POSITION_TICKS) > 5.0;
+  }
+
+  public double calulateWheelTicks(double ticks) {
+    return (((ticks / 1.30) / 1.13) * 1.1) / FULL_ROT_TICKS;
   }
 
   /**

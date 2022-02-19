@@ -26,6 +26,7 @@ import frc.robot.commands.Color;
 import frc.robot.commands.Drive;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.StraightAuto;
 import frc.robot.commands.TurretRotate;
 import frc.robot.commands.TurretRotate;
 import frc.robot.subsystems.Base;
@@ -46,7 +47,7 @@ public class RobotContainer {
 
   private final Joystick gamepad_base = new Joystick(0);
   private final Base m_base = new Base();
-  private final Turret m_turret = new Turret();
+  // private final Turret m_turret = new Turret();
   // private final Shooter m_shooter = new Shooter();
   // private final TempTower tower = new TempTower();
 
@@ -129,7 +130,10 @@ public class RobotContainer {
     SmartDashboard.putNumber("kP-Y", kP_Y);
     SmartDashboard.putNumber("kD-Y", kD_Y);
 
-    SmartDashboard.putNumber("TurretSpeed", Turret.TURRET_DEFAULT_POWER);
+    SmartDashboard.putNumber(
+      Turret.TURRET_NAME + " power",
+      Turret.TURRET_DEFAULT_POWER
+    );
 
     for (SelectableTrajectory t : trajectories) {
       if (t.location == straight.location) {
@@ -165,17 +169,17 @@ public class RobotContainer {
     //   );
     new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_A)
     .whenPressed(m_base::zeroGyro);
-    new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_X)
-    .whenPressed(
-        new TurretRotate(
-          m_turret,
-          gamepad_base,
-          SmartDashboard.getNumber(
-            Turret.TURRET_NAME + " power",
-            Turret.TURRET_DEFAULT_POWER
-          )
-        )
-      );
+    // new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_X)
+    // .whenPressed(
+    //     new TurretRotate(
+    //       m_turret,
+    //       gamepad_base,
+    //       SmartDashboard.getNumber(
+    //         Turret.TURRET_NAME + " power",
+    //         Turret.TURRET_DEFAULT_POWER
+    //       )
+    //     )
+    //   );
   }
 
   public void selectTrajectory(SelectableTrajectory selectableTrajectory) {
@@ -188,12 +192,14 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // set the current trajectory to execute
-    selectTrajectory(selectedPath.getSelected());
+    // // set the current trajectory to execute
+    // selectTrajectory(selectedPath.getSelected());
 
-    // set the initial pose of the robot to the starting pose of the trajectory
-    m_base.resetOdometry(trajectory.getInitialPose());
+    // // set the initial pose of the robot to the starting pose of the trajectory
+    // m_base.resetOdometry(trajectory.getInitialPose());
 
-    return selectedPath.getSelected().getDefualtCommand();
+    // return selectedPath.getSelected().getDefualtCommand();
+
+    return new StraightAuto(m_base);
   }
 }

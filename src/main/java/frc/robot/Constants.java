@@ -19,8 +19,8 @@ package frc.robot;
 
 public final class Constants {
 
-  public static int JOYSTICK_BUTTON_X = 1;
-  public static int JOYSTICK_BUTTON_A = 2;
-  public static int JOYSTICK_BUTTON_B = 3;
+  public static int JOYSTICK_BUTTON_X = 3;
+  public static int JOYSTICK_BUTTON_A = 1;
+  public static int JOYSTICK_BUTTON_B = 2;
   public static int JOYSTICK_BUTTON_Y = 4;
 }
