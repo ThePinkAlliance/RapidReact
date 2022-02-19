@@ -21,7 +21,12 @@ import frc.robot.constants.Base;
 
 public final class Constants {
 
-  public static double talonFullRotationTicks = 2048;
+  public static int JOYSTICK_BUTTON_X = 1;
+  public static int JOYSTICK_BUTTON_A = 2;
+  public static int JOYSTICK_BUTTON_B = 3;
+  public static int JOYSTICK_BUTTON_Y = 4;
+
+  public static double TALON_ROTATION_TICKS = 2048;
 
   public static Base Base = new Base();
 }

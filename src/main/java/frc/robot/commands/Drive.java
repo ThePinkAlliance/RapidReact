@@ -57,10 +57,9 @@ public class Drive extends CommandBase {
     axis1y *= -1;
 
     ChassisSpeeds speedObject = new ChassisSpeeds(
-      modifyAxis(axis1y) * Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
-      modifyAxis(axis0x) * Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
-      modifyAxis(axis4rot) *
-      Constants.Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+      modifyAxis(axis1y) * Base.MAX_VELOCITY_METERS_PER_SECOND,
+      modifyAxis(axis0x) * Base.MAX_VELOCITY_METERS_PER_SECOND,
+      modifyAxis(axis4rot) * Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     );
 
     this.base.drive(speedObject);

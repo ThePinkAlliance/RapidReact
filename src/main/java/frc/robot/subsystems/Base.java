@@ -17,6 +17,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -24,6 +25,62 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Base extends SubsystemBase {
+
+  public static final Mk4SwerveModuleHelper.GearRatio motorRatio =
+    Mk4SwerveModuleHelper.GearRatio.L4;
+
+  public static final double MAX_VOLTAGE = 12.0;
+
+  public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(
+    24
+  );
+  public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(
+    24
+  );
+
+  public static final double MAX_VELOCITY_METERS_PER_SECOND =
+    //6380 is the theoretical max rpm (e.g. NO LOAD RPM)
+    //TODO - select a realistic rpm.
+    5000.0 /
+    60.0 *
+    SdsModuleConfigurations.MK4_L4.getDriveReduction() *
+    SdsModuleConfigurations.MK4_L4.getWheelDiameter() *
+    Math.PI; // 13.14528;
+
+  public static final double MAX_ACCELERATION_METERS_PER_SECOND = 6.346;
+  public static double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
+    MAX_VELOCITY_METERS_PER_SECOND /
+    Math.hypot(
+      DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+      DRIVETRAIN_WHEELBASE_METERS / 2.0
+    );
+
+  // physical constants
+  public static double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(188.69);
+  public static double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(179.20);
+  public static double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(132.09);
+  public static double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(63.80); // 359.29
+
+  // Simulated constants
+  // public static double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0);
+  // public static double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0);
+  // public static double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0);
+  // public static double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0); // 359.29
+
+  public static int BACK_RIGHT_DRIVE_MOTOR_PORT = 27;
+  public static int BACK_LEFT_DRIVE_MOTOR_PORT = 25;
+  public static int FRONT_RIGHT_DRIVE_MOTOR_PORT = 21;
+  public static int FRONT_LEFT_DRIVE_MOTOR_PORT = 23;
+
+  public static int BACK_RIGHT_STEER_MOTOR_PORT = 26;
+  public static int BACK_LEFT_STEER_MOTOR_PORT = 24;
+  public static int FRONT_RIGHT_STEER_MOTOR_PORT = 20;
+  public static int FRONT_LEFT_STEER_MOTOR_PORT = 22;
+
+  public static int BACK_LEFT_CANCODER_ID = 32;
+  public static int BACK_RIGHT_CANCODER_ID = 33;
+  public static int FRONT_LEFT_CANCODER_ID = 31;
+  public static int FRONT_RIGHT_CANCODER_ID = 34;
 
   private AHRS gyro = new AHRS();
 
@@ -44,23 +101,23 @@ public class Base extends SubsystemBase {
   public SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
     // Front Left Pod
     new Translation2d(
-      Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-      Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
+      Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+      Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
     ),
     // Front Right
     new Translation2d(
-      Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-      -Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
+      Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+      -Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
     ),
     // Back Left
     new Translation2d(
-      -Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-      Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
+      -Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+      Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
     ),
     // Back Right
     new Translation2d(
-      -Constants.Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-      -Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
+      -Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+      -Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
     )
   );
 
@@ -89,11 +146,11 @@ public class Base extends SubsystemBase {
           .withSize(2, 4)
           .withPosition(0, 0),
         configuration,
-        Constants.Base.motorRatio,
-        Constants.Base.BACK_RIGHT_DRIVE_MOTOR_PORT,
-        Constants.Base.BACK_RIGHT_STEER_MOTOR_PORT,
-        Constants.Base.BACK_RIGHT_CANCODER_ID,
-        Constants.Base.BACK_RIGHT_MODULE_STEER_OFFSET
+        Base.motorRatio,
+        Base.BACK_RIGHT_DRIVE_MOTOR_PORT,
+        Base.BACK_RIGHT_STEER_MOTOR_PORT,
+        Base.BACK_RIGHT_CANCODER_ID,
+        Base.BACK_RIGHT_MODULE_STEER_OFFSET
       );
 
     this.backLeftModule =
@@ -103,11 +160,11 @@ public class Base extends SubsystemBase {
           .withSize(2, 4)
           .withPosition(12, 0),
         configuration,
-        Constants.Base.motorRatio,
-        Constants.Base.BACK_LEFT_DRIVE_MOTOR_PORT,
-        Constants.Base.BACK_LEFT_STEER_MOTOR_PORT,
-        Constants.Base.BACK_LEFT_CANCODER_ID,
-        Constants.Base.BACK_LEFT_MODULE_STEER_OFFSET
+        Base.motorRatio,
+        Base.BACK_LEFT_DRIVE_MOTOR_PORT,
+        Base.BACK_LEFT_STEER_MOTOR_PORT,
+        Base.BACK_LEFT_CANCODER_ID,
+        Base.BACK_LEFT_MODULE_STEER_OFFSET
       );
 
     this.frontRightModule =
@@ -117,11 +174,11 @@ public class Base extends SubsystemBase {
           .withSize(2, 4)
           .withPosition(4, 0),
         configuration,
-        Constants.Base.motorRatio,
-        Constants.Base.FRONT_RIGHT_DRIVE_MOTOR_PORT,
-        Constants.Base.FRONT_RIGHT_STEER_MOTOR_PORT,
-        Constants.Base.FRONT_RIGHT_CANCODER_ID,
-        Constants.Base.FRONT_RIGHT_MODULE_STEER_OFFSET
+        Base.motorRatio,
+        Base.FRONT_RIGHT_DRIVE_MOTOR_PORT,
+        Base.FRONT_RIGHT_STEER_MOTOR_PORT,
+        Base.FRONT_RIGHT_CANCODER_ID,
+        Base.FRONT_RIGHT_MODULE_STEER_OFFSET
       );
 
     this.frontLeftModule =
@@ -131,11 +188,11 @@ public class Base extends SubsystemBase {
           .withSize(2, 4)
           .withPosition(8, 0),
         configuration,
-        Constants.Base.motorRatio,
-        Constants.Base.FRONT_LEFT_DRIVE_MOTOR_PORT,
-        Constants.Base.FRONT_LEFT_STEER_MOTOR_PORT,
-        Constants.Base.FRONT_LEFT_CANCODER_ID,
-        Constants.Base.FRONT_LEFT_MODULE_STEER_OFFSET
+        Base.motorRatio,
+        Base.FRONT_LEFT_DRIVE_MOTOR_PORT,
+        Base.FRONT_LEFT_STEER_MOTOR_PORT,
+        Base.FRONT_LEFT_CANCODER_ID,
+        Base.FRONT_LEFT_MODULE_STEER_OFFSET
       );
 
     configuration.setDriveCurrentLimit(50);
@@ -157,9 +214,9 @@ public class Base extends SubsystemBase {
     double circumference =
       SdsModuleConfigurations.MK4_L4.getWheelDiameter() * Math.PI;
 
-    double 
-
-    // targetPosition = targetPosition *
+    double rot_ticks =
+      SdsModuleConfigurations.MK4_L4.getDriveReduction() *
+      Constants.TALON_ROTATION_TICKS;
 
     return false;
   }
@@ -178,48 +235,36 @@ public class Base extends SubsystemBase {
    * Set the robot's states to the given states.
    */
   public void setStates(SwerveModuleState[] states) {
+    odometry.update(getRotation(), this.states);
+
     SwerveDriveKinematics.desaturateWheelSpeeds(
       states,
-      Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
+      Base.MAX_VELOCITY_METERS_PER_SECOND
     );
 
     this.frontLeftModule.set(
-        (
-          states[0].speedMetersPerSecond /
-          Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
-        ) *
-        Constants.Base.MAX_VOLTAGE,
+        (states[0].speedMetersPerSecond / Base.MAX_VELOCITY_METERS_PER_SECOND) *
+        Base.MAX_VOLTAGE,
         states[0].angle.getRadians()
       );
 
     this.frontRightModule.set(
-        (
-          states[1].speedMetersPerSecond /
-          Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
-        ) *
-        Constants.Base.MAX_VOLTAGE,
+        (states[1].speedMetersPerSecond / Base.MAX_VELOCITY_METERS_PER_SECOND) *
+        Base.MAX_VOLTAGE,
         states[1].angle.getRadians()
       );
 
     this.backLeftModule.set(
-        (
-          states[2].speedMetersPerSecond /
-          Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
-        ) *
-        Constants.Base.MAX_VOLTAGE,
+        (states[2].speedMetersPerSecond / Base.MAX_VELOCITY_METERS_PER_SECOND) *
+        Base.MAX_VOLTAGE,
         states[2].angle.getRadians()
       );
 
     this.backRightModule.set(
-        (
-          states[3].speedMetersPerSecond /
-          Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
-        ) *
-        Constants.Base.MAX_VOLTAGE,
+        (states[3].speedMetersPerSecond / Base.MAX_VELOCITY_METERS_PER_SECOND) *
+        Base.MAX_VOLTAGE,
         states[3].angle.getRadians()
       );
-
-    odometry.update(getRotation(), this.states);
   }
 
   /**
@@ -315,93 +360,11 @@ public class Base extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    odometry.update(getRotation(), this.states);
-
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-      states,
-      Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
-    );
-
-    this.frontLeftModule.set(
-        (
-          states[0].speedMetersPerSecond /
-          Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
-        ) *
-        Constants.Base.MAX_VOLTAGE,
-        states[0].angle.getRadians()
-      );
-
-    this.frontRightModule.set(
-        (
-          states[1].speedMetersPerSecond /
-          Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
-        ) *
-        Constants.Base.MAX_VOLTAGE,
-        states[1].angle.getRadians()
-      );
-
-    this.backLeftModule.set(
-        (
-          states[2].speedMetersPerSecond /
-          Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
-        ) *
-        Constants.Base.MAX_VOLTAGE,
-        states[2].angle.getRadians()
-      );
-
-    this.backRightModule.set(
-        (
-          states[3].speedMetersPerSecond /
-          Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
-        ) *
-        Constants.Base.MAX_VOLTAGE,
-        states[3].angle.getRadians()
-      );
+    setStates(this.states);
   }
 
   @Override
   public void simulationPeriodic() {
-    odometry.update(getRotation(), this.states);
-
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-      states,
-      Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
-    );
-
-    this.frontLeftModule.set(
-        (
-          states[0].speedMetersPerSecond /
-          Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
-        ) *
-        Constants.Base.MAX_VOLTAGE,
-        states[0].angle.getRadians()
-      );
-
-    this.frontRightModule.set(
-        (
-          states[1].speedMetersPerSecond /
-          Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
-        ) *
-        Constants.Base.MAX_VOLTAGE,
-        states[1].angle.getRadians()
-      );
-
-    this.backLeftModule.set(
-        (
-          states[2].speedMetersPerSecond /
-          Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
-        ) *
-        Constants.Base.MAX_VOLTAGE,
-        states[2].angle.getRadians()
-      );
-
-    this.backRightModule.set(
-        (
-          states[3].speedMetersPerSecond /
-          Constants.Base.MAX_VELOCITY_METERS_PER_SECOND
-        ) *
-        Constants.Base.MAX_VOLTAGE,
-        states[3].angle.getRadians()
-      );
+    setStates(this.states);
   }
 }
