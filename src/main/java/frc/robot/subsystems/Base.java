@@ -7,7 +7,9 @@ package frc.robot.subsystems;
 import com.kauailabs.navx.frc.AHRS;
 import com.swervedrivespecialties.swervelib.Mk4ModuleConfiguration;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
+import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -61,6 +63,8 @@ public class Base extends SubsystemBase {
       -Constants.Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
     )
   );
+
+  private PIDController driveController = new PIDController(1, 0, 0);
 
   private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(
     kinematics,
@@ -135,6 +139,29 @@ public class Base extends SubsystemBase {
       );
 
     configuration.setDriveCurrentLimit(50);
+  }
+
+  public void resetDriveMotors() {
+    this.backLeftModule.resetDrive();
+    this.backRightModule.resetDrive();
+    this.frontLeftModule.resetDrive();
+    this.frontRightModule.resetDrive();
+  }
+
+  public boolean driveStraight(double targetPosition) {
+    double frontLeftPos = this.frontLeftModule.getDrivePosition();
+    double frontRightPos = this.frontRightModule.getDrivePosition();
+    double backLeftPos = this.backLeftModule.getDrivePosition();
+    double backRightPos = this.backRightModule.getDrivePosition();
+
+    double circumference =
+      SdsModuleConfigurations.MK4_L4.getWheelDiameter() * Math.PI;
+
+    double 
+
+    // targetPosition = targetPosition *
+
+    return false;
   }
 
   /**

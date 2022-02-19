@@ -85,6 +85,13 @@ public class Drive extends CommandBase {
     // Cubing due to raw power until robot reaches competition weight.
     value = Math.copySign(value * value * value, value);
 
+    // Limit the speed to 60%
+    if (value >= 0.6) {
+      value = 0.6;
+    } else if (value <= -0.6) {
+      value = -0.6;
+    }
+
     return value;
   }
 

@@ -1,12 +1,16 @@
 package frc.robot;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import frc.robot.commands.DoNothing;
+import frc.robot.subsystems.Base;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -15,22 +19,24 @@ public class SelectableTrajectory {
   String name;
   String location;
   Trajectory trajectory;
-  Command defualtCommand;
-  ParallelCommandGroup CommandGroup;
+  Command defualtCommand = new DoNothing();
   SwerveControllerCommand SwerveControllerCommand;
 
   public SelectableTrajectory(
     String name,
     String location,
     SwerveControllerCommand SwerveControllerCommand,
-    ParallelCommandGroup Command
+    SequentialCommandGroup Command,
+    Base m_base
   ) {
     this.location = location;
     this.name = name;
-    this.CommandGroup = Command;
 
     this.SwerveControllerCommand = SwerveControllerCommand;
-    this.defualtCommand = SwerveControllerCommand.alongWith(Command);
+    this.defualtCommand =
+      SwerveControllerCommand
+        .beforeStarting(Command)
+        .andThen(() -> m_base.drive(new ChassisSpeeds(0, 0, 0)));
 
     try {
       Path trajectoryPath = Filesystem
@@ -51,9 +57,21 @@ public class SelectableTrajectory {
     }
   }
 
-  public SelectableTrajectory(String name, String location, Command command) {
+  public SelectableTrajectory(
+    String name,
+    String location,
+    SwerveControllerCommand SwerveControllerCommand,
+    ParallelCommandGroup Command,
+    Base m_base
+  ) {
     this.location = location;
     this.name = name;
+
+    this.SwerveControllerCommand = SwerveControllerCommand;
+    this.defualtCommand =
+      SwerveControllerCommand
+        .alongWith(Command)
+        .andThen(() -> m_base.drive(new ChassisSpeeds(0, 0, 0)));
 
     try {
       Path trajectoryPath = Filesystem

@@ -96,8 +96,7 @@ public class RobotContainer {
 
   private final SelectableTrajectory leaveBlueLeft = new SelectableTrajectory(
     "Leave Blue Left",
-    "output/LeaveBlueLeft.wpilib.json",
-    swerveController.alongWith(new ExampleCommand(m_base))
+    "output/LeaveBlueLeft.wpilib.json"
   );
 
   private final SelectableTrajectory straight = new SelectableTrajectory(
@@ -133,7 +132,6 @@ public class RobotContainer {
         selectedPath.addOption(t.name, t);
       }
     }
-
     driverDashboard.add(selectedPath);
     // for now select leave blue 1 for testing
   }
