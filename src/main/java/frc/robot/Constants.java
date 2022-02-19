@@ -21,5 +21,7 @@ import frc.robot.constants.Base;
 
 public final class Constants {
 
+  public static double talonFullRotationTicks = 2048;
+
   public static Base Base = new Base();
 }

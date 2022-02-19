@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
@@ -21,11 +20,11 @@ public class Shooter extends SubsystemBase {
 
   public void command(double power) {
     motor.set(ControlMode.PercentOutput, power);
-
-    SmartDashboard.putNumber(
-      "velocity",
-      ((motor.getSelectedSensorVelocity() / 2048) * 10) * 60
-    );
+    // SmartDashboard.putNumber(
+    //   "velocity",
+    //   ((motor.getSelectedSensorVelocity() / Constants.talonFullRotationTicks)) *
+    //   60
+    // );
   }
 
   @Override

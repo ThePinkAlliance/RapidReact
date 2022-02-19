@@ -18,6 +18,18 @@ public class Climbers extends SubsystemBase {
   /** Creates a new Climbers. */
   public Climbers() {}
 
+  public void commandAll(
+    double leftOne,
+    double leftTwo,
+    double rightOne,
+    double rightTwo
+  ) {
+    leftModuleOne.setPosition(leftOne);
+    leftModuleTwo.setPosition(leftTwo);
+    rightModuleOne.setPosition(rightOne);
+    rightModuleTwo.setPosition(rightTwo);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

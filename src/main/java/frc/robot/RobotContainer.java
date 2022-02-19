@@ -19,10 +19,12 @@ import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Color;
 import frc.robot.commands.Drive;
+import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.Shoot;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Shooter;
@@ -44,9 +46,58 @@ public class RobotContainer {
   // private final Shooter m_shooter = new Shooter();
   // private final TempTower tower = new TempTower();
 
+  double kP_X = 0;
+  double kD_X = 0;
+  double kI_X = 0;
+
+  double kP_Y = 0;
+  double kD_Y = 0;
+  double kI_Y = 0;
+
+  double kP_T = 0;
+  double kI_T = 0;
+  double kD_T = 0;
+
+  Trajectory trajectory = new Trajectory();
+  ShuffleboardTab driverDashboard = Shuffleboard.getTab("Dashboard");
+  SendableChooser<SelectableTrajectory> selectedPath = new SendableChooser<SelectableTrajectory>();
+
+  public SwerveControllerCommand swerveController = new SwerveControllerCommand(
+    trajectory,
+    m_base::getPose,
+    m_base.kinematics,
+    // these values are filler's
+    // this is the x axis PID Controller
+    new PIDController(
+      SmartDashboard.getNumber("kP-X", kP_X),
+      SmartDashboard.getNumber("kI-X", kI_X),
+      SmartDashboard.getNumber("kD-X", kP_X)
+    ),
+    // this is the y axis PID Contrller
+    new PIDController(
+      SmartDashboard.getNumber("kP-Y", kP_Y),
+      SmartDashboard.getNumber("kI-Y", kI_Y),
+      SmartDashboard.getNumber("kD-Y", kD_Y)
+    ),
+    new ProfiledPIDController(
+      SmartDashboard.getNumber("theta-P", kP_T),
+      SmartDashboard.getNumber("theta-I", kI_T),
+      SmartDashboard.getNumber("theta-D", kD_T),
+      new TrapezoidProfile.Constraints(
+        Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
+        Constants.Base.MAX_ACCELERATION_METERS_PER_SECOND
+      )
+    ),
+    states -> {
+      m_base.setStates(states);
+    },
+    m_base
+  );
+
   private final SelectableTrajectory leaveBlueLeft = new SelectableTrajectory(
     "Leave Blue Left",
-    "output/LeaveBlueLeft.wpilib.json"
+    "output/LeaveBlueLeft.wpilib.json",
+    swerveController.alongWith(new ExampleCommand(m_base))
   );
 
   private final SelectableTrajectory straight = new SelectableTrajectory(
@@ -62,16 +113,6 @@ public class RobotContainer {
     straight,
   };
 
-  double kP_X = 2;
-  double kD_X = 0.4;
-
-  double kP_Y = 1;
-  double kD_Y = 0.2;
-
-  Trajectory trajectory = new Trajectory();
-  ShuffleboardTab driverDashboard = Shuffleboard.getTab("Dashboard");
-  SendableChooser<SelectableTrajectory> selectedPath = new SendableChooser<SelectableTrajectory>();
-
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -86,7 +127,7 @@ public class RobotContainer {
     SmartDashboard.putNumber("kD-Y", kD_Y);
 
     for (SelectableTrajectory t : trajectories) {
-      if (t.location == leaveBlueLeft.location) {
+      if (t.location == straight.location) {
         selectedPath.setDefaultOption(t.name, t);
       } else {
         selectedPath.addOption(t.name, t);
@@ -137,42 +178,6 @@ public class RobotContainer {
     // set the initial pose of the robot to the starting pose of the trajectory
     m_base.resetOdometry(trajectory.getInitialPose());
 
-    return new SwerveControllerCommand(
-      trajectory,
-      m_base::getPose,
-      m_base.kinematics,
-      // these values are filler's
-      // this is the x axis PID Controller
-      new PIDController(
-        SmartDashboard.getNumber("kP", kP_X),
-        0,
-        SmartDashboard.getNumber("kD", kP_X)
-      ),
-      // this is the y axis PID Contrller
-      new PIDController(
-        SmartDashboard.getNumber("kP-Y", kP_Y),
-        0,
-        SmartDashboard.getNumber("kD-Y", kD_Y)
-      ),
-      new ProfiledPIDController(
-        1,
-        0,
-        0.2,
-        new TrapezoidProfile.Constraints(
-          Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
-          Constants.Base.MAX_ACCELERATION_METERS_PER_SECOND
-        )
-      ),
-      states -> {
-        m_base.setStates(states);
-      },
-      m_base
-    )
-    .andThen(
-        () -> {
-          // set the target speed to 0 to stop the robot
-          m_base.drive(new ChassisSpeeds(0, 0, 0));
-        }
-      );
+    return selectedPath.getSelected().getDefualtCommand();
   }
 }

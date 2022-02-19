@@ -16,8 +16,12 @@ public class Base {
 
   public final double MAX_VELOCITY_METERS_PER_SECOND =
     //6380 is the theoretical max rpm (e.g. NO LOAD RPM)
-    //TODO - select a realistic rpm.  
-    6380.0 /  60.0 *  SdsModuleConfigurations.MK4_L4.getDriveReduction() *  SdsModuleConfigurations.MK4_L4.getWheelDiameter() *  Math.PI; // 13.14528;
+    //TODO - select a realistic rpm.
+    5000.0 /
+    60.0 *
+    SdsModuleConfigurations.MK4_L4.getDriveReduction() *
+    SdsModuleConfigurations.MK4_L4.getWheelDiameter() *
+    Math.PI; // 13.14528;
 
   public final double MAX_ACCELERATION_METERS_PER_SECOND = 6.346;
   public double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =

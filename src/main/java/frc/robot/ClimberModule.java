@@ -57,7 +57,7 @@ public class ClimberModule {
   }
 
   public void setPosition(double pos) {
-    angleMotor.set(ControlMode.Position, 0);
+    angleMotor.set(ControlMode.Position, pos);
   }
 
   // NOTE: move this to a command
