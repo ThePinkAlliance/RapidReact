@@ -24,9 +24,12 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Color;
 import frc.robot.commands.Drive;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.TurretRotate;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.TempTower;
+import frc.robot.subsystems.Turret;
+import frc.robot.commands.TurretRotate;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -41,6 +44,7 @@ public class RobotContainer {
 
   private final Joystick gamepad_base = new Joystick(0);
   private final Base m_base = new Base();
+  private final Turret m_turret = new Turret();
   // private final Shooter m_shooter = new Shooter();
   // private final TempTower tower = new TempTower();
 
@@ -85,6 +89,8 @@ public class RobotContainer {
     SmartDashboard.putNumber("kP-Y", kP_Y);
     SmartDashboard.putNumber("kD-Y", kD_Y);
 
+    SmartDashboard.putNumber("TurretSpeed", Turret.TURRET_DEFAULT_POWER);
+
     for (SelectableTrajectory t : trajectories) {
       if (t.location == leaveBlueLeft.location) {
         selectedPath.setDefaultOption(t.name, t);
@@ -118,7 +124,8 @@ public class RobotContainer {
     // this.m_shooter.setDefaultCommand(
     //     new Shoot(m_shooter, () -> gamepad_base.getRawAxis(2))
     //   );
-    new JoystickButton(gamepad_base, 1).whenPressed(m_base::zeroGyro);
+    new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_A).whenPressed(m_base::zeroGyro);
+    new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_X).whenPressed(new TurretRotate(m_turret, gamepad_base, SmartDashboard.getNumber(Turret.TURRET_NAME + " power", Turret.TURRET_DEFAULT_POWER)));
   }
 
   public void selectTrajectory(SelectableTrajectory selectableTrajectory) {
