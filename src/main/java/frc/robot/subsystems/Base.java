@@ -21,10 +21,13 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Base extends SubsystemBase {
+
+  public static double TALON_ROTATION_TICKS = 2048;
 
   public static final Mk4SwerveModuleHelper.GearRatio motorRatio =
     Mk4SwerveModuleHelper.GearRatio.L4;
@@ -216,7 +219,15 @@ public class Base extends SubsystemBase {
 
     double rot_ticks =
       SdsModuleConfigurations.MK4_L4.getDriveReduction() *
-      Constants.TALON_ROTATION_TICKS;
+      Base.TALON_ROTATION_TICKS;
+
+    SmartDashboard.putNumber("rot_ticks", rot_ticks);
+    SmartDashboard.putNumber("circumference", circumference);
+
+    SmartDashboard.putNumber("frontLeftPos", frontLeftPos);
+    SmartDashboard.putNumber("frontRightPos", frontRightPos);
+    SmartDashboard.putNumber("backLeftPos", backLeftPos);
+    SmartDashboard.putNumber("backRightPos", backRightPos);
 
     return false;
   }
