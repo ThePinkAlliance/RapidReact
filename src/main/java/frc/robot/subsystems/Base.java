@@ -4,11 +4,11 @@
 
 package frc.robot.subsystems;
 
+import com.ThePinkAlliance.swervelib.Mk4ModuleConfiguration;
+import com.ThePinkAlliance.swervelib.Mk4SwerveModuleHelper;
+import com.ThePinkAlliance.swervelib.SdsModuleConfigurations;
+import com.ThePinkAlliance.swervelib.SwerveModule;
 import com.kauailabs.navx.frc.AHRS;
-import com.swervedrivespecialties.swervelib.Mk4ModuleConfiguration;
-import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
-import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
-import com.swervedrivespecialties.swervelib.SwerveModule;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -70,11 +70,11 @@ public class Base extends SubsystemBase {
       Base.TALON_ROTATION_TICKS
     );
 
-  // Simulated constants
-  // public static double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0);
-  // public static double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0);
-  // public static double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(0);
-  // public static double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(0); // 359.29
+  public static double circumference =
+    Units.metersToInches(SdsModuleConfigurations.MK4_L4.getWheelDiameter()) *
+    Math.PI;
+
+  public static double TICKS_PER_INCH = FULL_ROT_TICKS / circumference;
 
   public static int BACK_RIGHT_DRIVE_MOTOR_PORT = 27;
   public static int BACK_LEFT_DRIVE_MOTOR_PORT = 25;
@@ -143,6 +143,8 @@ public class Base extends SubsystemBase {
   );
 
   private Mk4ModuleConfiguration configuration = new Mk4ModuleConfiguration();
+
+  private double driveVoltage = 0;
 
   /** Creates a new Base. */
   public Base() {
@@ -220,43 +222,66 @@ public class Base extends SubsystemBase {
    * @return
    */
   public boolean driveStraight(double targetPosition) {
-    double frontLeftPos = calulateWheelTicks(
+    double front_left_pos = calulateWheelTicks(
       this.frontLeftModule.getDrivePosition()
     );
-    double frontRightPos = calulateWheelTicks(
+    double front_right_pos = calulateWheelTicks(
       this.frontRightModule.getDrivePosition()
     );
-    double backLeftPos = calulateWheelTicks(
+    double back_left_pos = calulateWheelTicks(
       this.backLeftModule.getDrivePosition()
     );
-    double backRightPos = calulateWheelTicks(
+    double back_right_pos = calulateWheelTicks(
       this.backRightModule.getDrivePosition()
     );
 
-    double circumference =
-      Units.metersToInches(SdsModuleConfigurations.MK4_L4.getWheelDiameter()) *
-      Math.PI;
+    double target_position_ticks = targetPosition * TICKS_PER_INCH;
+    double target_rotations = targetPosition / FULL_ROT_TICKS;
 
-    double TICKS_PER_INCH = circumference / FULL_ROT_TICKS;
-    double TARGET_POSITION_TICKS = targetPosition * TICKS_PER_INCH;
+    double avr_ticks = (front_left_pos + front_right_pos) / 2.0;
+    double avr_rotations =
+      ((front_left_pos / FULL_ROT_TICKS) + (front_right_pos / FULL_ROT_TICKS)) /
+      2.0;
 
-    double avr_ticks = (frontLeftPos + frontRightPos) / 2.0;
+    driveController.setSetpoint(target_position_ticks);
 
-    driveController.setSetpoint(TARGET_POSITION_TICKS);
+    double power = driveController.calculate(avr_ticks);
+    double angle = 0;
 
-    SmartDashboard.putNumber("rot_ticks", FULL_ROT_TICKS / circumference);
-    SmartDashboard.putNumber("TICKS PER INCH", TICKS_PER_INCH);
-    SmartDashboard.putNumber("circumference", circumference);
-    SmartDashboard.putNumber("rot-ticks no circumference", FULL_ROT_TICKS);
+    if ((target_rotations - avr_rotations) > 2) {
+      driveVoltage = 12;
+    } else if (
+      (target_rotations - avr_rotations) < 2 &&
+      (target_rotations - avr_rotations) > 0.2
+    ) {
+      driveVoltage = (target_rotations - avr_rotations) / Math.PI;
+    } else {
+      driveVoltage = 0;
+    }
 
-    SmartDashboard.putNumber("frontLeftPos", frontLeftPos);
-    SmartDashboard.putNumber("frontRightPos", frontRightPos);
-    SmartDashboard.putNumber("backLeftPos", backLeftPos);
-    SmartDashboard.putNumber("backRightPos", backRightPos);
+    frontLeftModule.set(driveVoltage, angle);
+    frontRightModule.set(driveVoltage, angle);
+    frontLeftModule.set(driveVoltage, angle);
+    backRightModule.set(driveVoltage, angle);
 
-    return Math.abs(avr_ticks - TARGET_POSITION_TICKS) > 5.0;
+    SmartDashboard.putNumber("PID power", power);
+
+    SmartDashboard.putNumber("ticks per inch", TICKS_PER_INCH);
+    SmartDashboard.putNumber("full rotation ticks", FULL_ROT_TICKS);
+
+    SmartDashboard.putNumber("frontLeftPos", front_left_pos);
+    SmartDashboard.putNumber("frontRightPos", front_right_pos);
+    SmartDashboard.putNumber("backLeftPos", back_left_pos);
+    SmartDashboard.putNumber("backRightPos", back_right_pos);
+
+    // Make sure that the error is within the error range of 5
+    return Math.abs(avr_ticks - target_position_ticks) < 5.0;
   }
 
+  /**
+   * This will calulate the gear reduction for the encoder.
+   * @param ticks This will be the ticks from the motor (Raw encoder units)
+   */
   public double calulateWheelTicks(double ticks) {
     return (((ticks / 1.30) / 1.13) * 1.1) / FULL_ROT_TICKS;
   }
