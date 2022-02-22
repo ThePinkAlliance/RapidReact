@@ -64,17 +64,9 @@ public class Base extends SubsystemBase {
   public static double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(132.09);
   public static double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(63.80); // 359.29
 
-  public static double FULL_ROT_TICKS =
-    (
-      SdsModuleConfigurations.MK4_L4.getDriveReduction() *
-      Base.TALON_ROTATION_TICKS
-    );
-
   public static double circumference =
     Units.metersToInches(SdsModuleConfigurations.MK4_L4.getWheelDiameter()) *
     Math.PI;
-
-  public static double TICKS_PER_INCH = FULL_ROT_TICKS / circumference;
 
   public static int BACK_RIGHT_DRIVE_MOTOR_PORT = 27;
   public static int BACK_LEFT_DRIVE_MOTOR_PORT = 25;
@@ -90,6 +82,9 @@ public class Base extends SubsystemBase {
   public static int BACK_RIGHT_CANCODER_ID = 33;
   public static int FRONT_LEFT_CANCODER_ID = 31;
   public static int FRONT_RIGHT_CANCODER_ID = 34;
+
+  private double LAST_LOCATION_TICKS_X = 0;
+  private double LAST_LOCATION_TICKS_Y = 0;
 
   private AHRS gyro = new AHRS();
 
@@ -143,6 +138,8 @@ public class Base extends SubsystemBase {
   );
 
   private Mk4ModuleConfiguration configuration = new Mk4ModuleConfiguration();
+
+  private ChassisSpeeds autoSpeeds = new ChassisSpeeds();
 
   private double driveVoltage = 0;
 
@@ -222,69 +219,50 @@ public class Base extends SubsystemBase {
    * @return
    */
   public boolean driveStraight(double targetPosition) {
-    double front_left_pos = calulateWheelTicks(
-      this.frontLeftModule.getDrivePosition()
-    );
-    double front_right_pos = calulateWheelTicks(
-      this.frontRightModule.getDrivePosition()
-    );
-    double back_left_pos = calulateWheelTicks(
-      this.backLeftModule.getDrivePosition()
-    );
-    double back_right_pos = calulateWheelTicks(
-      this.backRightModule.getDrivePosition()
-    );
+    double front_left_pos = Math.abs(this.frontLeftModule.getDrivePosition());
+    double front_right_pos = Math.abs(this.frontRightModule.getDrivePosition());
 
-    double target_position_ticks = targetPosition * TICKS_PER_INCH;
-    double target_rotations = targetPosition / FULL_ROT_TICKS;
+    double front_left_rot =
+      SdsModuleConfigurations.MK4_L4.getDriveReduction() *
+      (front_left_pos / 2048);
 
-    double avr_ticks = (front_left_pos + front_right_pos) / 2.0;
-    double avr_rotations =
-      ((front_left_pos / FULL_ROT_TICKS) + (front_right_pos / FULL_ROT_TICKS)) /
-      2.0;
+    double front_right_rot =
+      SdsModuleConfigurations.MK4_L4.getDriveReduction() *
+      (front_right_pos / 2048);
 
-    driveController.setSetpoint(target_position_ticks);
+    double front_left_inches = front_left_rot * circumference;
+    double front_right_inches = front_right_rot * circumference;
 
-    double power = driveController.calculate(avr_ticks);
-    double angle = 0;
+    double distance_traveled_inches =
+      (front_left_inches + front_right_inches) / 2.0;
 
-    if ((target_rotations - avr_rotations) > 2) {
-      driveVoltage = 12;
-    } else if (
-      (target_rotations - avr_rotations) < 2 &&
-      (target_rotations - avr_rotations) > 0.2
-    ) {
-      driveVoltage = (target_rotations - avr_rotations) / Math.PI;
+    if (distance_traveled_inches >= targetPosition) {
+      autoSpeeds = new ChassisSpeeds(0, 0, 0);
     } else {
-      driveVoltage = 0;
+      autoSpeeds = new ChassisSpeeds(1, 0, 0);
     }
 
-    frontLeftModule.set(driveVoltage, angle);
-    frontRightModule.set(driveVoltage, angle);
-    frontLeftModule.set(driveVoltage, angle);
-    backRightModule.set(driveVoltage, angle);
+    SmartDashboard.putNumber("front_left_inches", front_left_inches);
+    SmartDashboard.putNumber("front_right_inches", front_right_inches);
+    SmartDashboard.putNumber(
+      "distance_traveled_inches",
+      distance_traveled_inches
+    );
+    SmartDashboard.putNumber("front_left_rot", front_left_rot);
+    SmartDashboard.putNumber("front_right_rot", front_right_rot);
 
-    SmartDashboard.putNumber("PID power", power);
+    setStates(kinematics.toSwerveModuleStates(autoSpeeds));
 
-    SmartDashboard.putNumber("ticks per inch", TICKS_PER_INCH);
-    SmartDashboard.putNumber("full rotation ticks", FULL_ROT_TICKS);
-
-    SmartDashboard.putNumber("frontLeftPos", front_left_pos);
-    SmartDashboard.putNumber("frontRightPos", front_right_pos);
-    SmartDashboard.putNumber("backLeftPos", back_left_pos);
-    SmartDashboard.putNumber("backRightPos", back_right_pos);
-
-    // Make sure that the error is within the error range of 5
-    return Math.abs(avr_ticks - target_position_ticks) < 5.0;
+    return distance_traveled_inches >= targetPosition;
   }
 
   /**
    * This will calulate the gear reduction for the encoder.
    * @param ticks This will be the ticks from the motor (Raw encoder units)
    */
-  public double calulateWheelTicks(double ticks) {
-    return (((ticks / 1.30) / 1.13) * 1.1) / FULL_ROT_TICKS;
-  }
+  // public double calulateWheelTicks(double ticks) {
+  //   return (((ticks / 1.30) / 1.13) * 1.1) / FULL_ROT_TICKS;
+  // }
 
   /**
    * Sets the current chassis speeds of the robot to the given speeds and updates

@@ -31,7 +31,7 @@ public class StraightAuto extends CommandBase {
   @Override
   public void execute() {
     // this will drive straight forward 12 inches
-    finish = this.base.driveStraight(12);
+    finish = this.base.driveStraight(24);
   }
 
   // Called once the command ends or is interrupted.
