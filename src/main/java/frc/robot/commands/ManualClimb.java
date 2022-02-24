@@ -59,7 +59,8 @@ public class ManualClimb extends CommandBase {
           0,
           power.getAsDouble(),
           0,
-          power.getAsDouble()
+          power.getAsDouble(),
+          0.4 // power limit
         );
         break;
       case OUT:
@@ -67,7 +68,8 @@ public class ManualClimb extends CommandBase {
           power.getAsDouble(),
           0,
           power.getAsDouble(),
-          0
+          0,
+          0.4 // power limit
         );
     }
   }

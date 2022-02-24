@@ -43,6 +43,38 @@ public class Climbers extends SubsystemBase {
     rightInModule.setPower(rightIn);
   }
 
+  public void commandAllPower(
+    double leftOut,
+    double leftIn,
+    double rightOut,
+    double rightIn,
+    double limit
+  ) {
+    // This massive if statement is to cap the power values if they exceed the set limit.
+    if (leftOut > limit) {
+      leftOut = limit;
+    } else if (leftIn > limit) {
+      leftIn = limit;
+    } else if (leftOut < -limit) {
+      leftOut = -limit;
+    } else if (leftIn < -limit) {
+      leftIn = -limit;
+    } else if (rightOut > limit) {
+      rightOut = limit;
+    } else if (rightIn > limit) {
+      rightIn = limit;
+    } else if (rightOut < -limit) {
+      rightOut = -limit;
+    } else if (rightIn < -limit) {
+      rightIn = -limit;
+    }
+
+    leftOutModule.setPower(leftOut);
+    leftInModule.setPower(leftIn);
+    rightOutModule.setPower(rightOut);
+    rightInModule.setPower(rightIn);
+  }
+
   public void setAllSolenoid(SOLENOID_STATE state) {
     leftOutModule.setSolenoidState(state);
     leftInModule.setSolenoidState(state);
