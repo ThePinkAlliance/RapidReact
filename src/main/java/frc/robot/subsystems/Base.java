@@ -18,6 +18,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -30,15 +32,15 @@ public class Base extends SubsystemBase {
   public static double TALON_ROTATION_TICKS = 2048;
 
   public static final Mk4SwerveModuleHelper.GearRatio motorRatio =
-    Mk4SwerveModuleHelper.GearRatio.L4;
+    Mk4SwerveModuleHelper.GearRatio.L1;
 
   public static final double MAX_VOLTAGE = 12.0;
 
   public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(
-    24
+    23.4
   );
   public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(
-    24
+    23.1
   );
 
   public static final double MAX_VELOCITY_METERS_PER_SECOND =
@@ -46,11 +48,11 @@ public class Base extends SubsystemBase {
     //TODO - select a realistic rpm.
     5000.0 /
     60.0 *
-    SdsModuleConfigurations.MK4_L4.getDriveReduction() *
-    SdsModuleConfigurations.MK4_L4.getWheelDiameter() *
-    Math.PI; // 13.14528;
+    SdsModuleConfigurations.MK4_L1.getDriveReduction() *
+    SdsModuleConfigurations.MK4_L1.getWheelDiameter() *
+    Math.PI; // 5.107;
 
-  public static final double MAX_ACCELERATION_METERS_PER_SECOND = 6.346;
+  public static final double MAX_ACCELERATION_METERS_PER_SECOND = 4.346;
   public static double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
     MAX_VELOCITY_METERS_PER_SECOND /
     Math.hypot(
@@ -65,7 +67,7 @@ public class Base extends SubsystemBase {
   public static double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(63.80); // 359.29
 
   public static double circumference =
-    Units.metersToInches(SdsModuleConfigurations.MK4_L4.getWheelDiameter()) *
+    Units.metersToInches(SdsModuleConfigurations.MK4_L1.getWheelDiameter()) *
     Math.PI;
 
   public static int BACK_RIGHT_DRIVE_MOTOR_PORT = 27;
@@ -125,7 +127,20 @@ public class Base extends SubsystemBase {
     )
   );
 
-  private PIDController driveController = new PIDController(1, 0, 0);
+  NetworkTableEntry m_xEntry = NetworkTableInstance
+    .getDefault()
+    .getTable("troubleshooting")
+    .getEntry("X");
+
+  NetworkTableEntry m_yEntry = NetworkTableInstance
+    .getDefault()
+    .getTable("troubleshooting")
+    .getEntry("Y");
+
+  NetworkTableEntry m_rotEntry = NetworkTableInstance
+    .getDefault()
+    .getTable("troubleshooting")
+    .getEntry("rot");
 
   private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(
     kinematics,
@@ -140,8 +155,6 @@ public class Base extends SubsystemBase {
   private Mk4ModuleConfiguration configuration = new Mk4ModuleConfiguration();
 
   private ChassisSpeeds autoSpeeds = new ChassisSpeeds();
-
-  private double driveVoltage = 0;
 
   /** Creates a new Base. */
   public Base() {
@@ -202,8 +215,6 @@ public class Base extends SubsystemBase {
         Base.FRONT_LEFT_CANCODER_ID,
         Base.FRONT_LEFT_MODULE_STEER_OFFSET
       );
-
-    configuration.setDriveCurrentLimit(50);
   }
 
   public void resetDriveMotors() {
@@ -223,11 +234,11 @@ public class Base extends SubsystemBase {
     double front_right_pos = Math.abs(this.frontRightModule.getDrivePosition());
 
     double front_left_rot =
-      SdsModuleConfigurations.MK4_L4.getDriveReduction() *
+      SdsModuleConfigurations.MK4_L1.getDriveReduction() *
       (front_left_pos / 2048);
 
     double front_right_rot =
-      SdsModuleConfigurations.MK4_L4.getDriveReduction() *
+      SdsModuleConfigurations.MK4_L1.getDriveReduction() *
       (front_right_pos / 2048);
 
     double front_left_inches = front_left_rot * circumference;
@@ -238,7 +249,7 @@ public class Base extends SubsystemBase {
 
     if (distance_traveled_inches >= targetPosition) {
       autoSpeeds = new ChassisSpeeds(0, 0, 0);
-    } else {
+    } else if (distance_traveled_inches < targetPosition) {
       autoSpeeds = new ChassisSpeeds(1, 0, 0);
     }
 
@@ -254,6 +265,39 @@ public class Base extends SubsystemBase {
     setStates(kinematics.toSwerveModuleStates(autoSpeeds));
 
     return distance_traveled_inches >= targetPosition;
+  }
+
+  public boolean rotate(double angle) {
+    double heading = gyro.getFusedHeading();
+    double error = 1;
+
+    double power = getPower(heading, angle);
+
+    m_rotEntry.setNumber(heading);
+
+    if (heading >= (angle - error) && heading <= (angle + error)) {
+      setStates(
+        kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, power))
+      );
+      return true;
+    } else {
+      setStates(
+        kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, power))
+      );
+      return false;
+    }
+  }
+
+  private double getPower(double angle, double target) {
+    double error = angle - target;
+
+    if (target < 180) {
+      return -1.4;
+    } else if (target > 180) {
+      return 1.4;
+    }
+
+    return 0;
   }
 
   /**
@@ -278,12 +322,16 @@ public class Base extends SubsystemBase {
    * Set the robot's states to the given states.
    */
   public void setStates(SwerveModuleState[] states) {
-    odometry.update(getRotation(), this.states);
+    odometry.update(getRotation(), states);
 
     SwerveDriveKinematics.desaturateWheelSpeeds(
       states,
       Base.MAX_VELOCITY_METERS_PER_SECOND
     );
+
+    var translation = odometry.getPoseMeters().getTranslation();
+    m_xEntry.setNumber(translation.getX());
+    m_yEntry.setNumber(translation.getY());
 
     this.frontLeftModule.set(
         (states[0].speedMetersPerSecond / Base.MAX_VELOCITY_METERS_PER_SECOND) *
@@ -330,6 +378,14 @@ public class Base extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     this.odometry.resetPosition(pose, this.getRotation());
+  }
+
+  /**
+   * This resets the odometry to the given position and sets the rotation to the
+   * current one from the gyro.
+   */
+  public void resetOdometry(Pose2d pose, Rotation2d rot) {
+    this.odometry.resetPosition(pose, rot);
   }
 
   /**

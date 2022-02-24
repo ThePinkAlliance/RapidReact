@@ -30,7 +30,11 @@ public class ClimberModule {
     this.angleController = new PIDController(0, 0, 0);
 
     this.angleMotor.config_kP(PRIMARY_PID_SLOT, 0.02, TIMEOUT_MS);
-    this.angleMotor.config_kD(PRIMARY_PID_SLOT, 0.002, TIMEOUT_MS);
+    this.angleMotor.config_kI(PRIMARY_PID_SLOT, 0.002, TIMEOUT_MS);
+  }
+
+  public void setPower(double power) {
+    this.angleMotor.set(ControlMode.PercentOutput, power);
   }
 
   public void setSolenoidState(SOLENOID_STATE state) {
@@ -61,6 +65,7 @@ public class ClimberModule {
   }
 
   // NOTE: move this to a command
+  @Deprecated
   public void moveToPosition() {
     double error = angleController.calculate(
       angleMotor.getSelectedSensorPosition(),

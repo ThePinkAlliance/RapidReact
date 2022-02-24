@@ -6,28 +6,48 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.ClimberModule;
+import frc.robot.ClimberModule.SOLENOID_STATE;
 
 public class Climbers extends SubsystemBase {
 
   // The port range for the climbers is 40-49
-  public ClimberModule leftModuleOne = new ClimberModule(40, 41);
-  public ClimberModule leftModuleTwo = new ClimberModule(42, 43);
-  public ClimberModule rightModuleOne = new ClimberModule(44, 45);
-  public ClimberModule rightModuleTwo = new ClimberModule(46, 47);
+  public ClimberModule leftOutModule = new ClimberModule(40, 41);
+  public ClimberModule leftInModule = new ClimberModule(42, 43);
+  public ClimberModule rightOutModule = new ClimberModule(44, 45);
+  public ClimberModule rightInModule = new ClimberModule(46, 47);
 
   /** Creates a new Climbers. */
   public Climbers() {}
 
-  public void commandAll(
+  public void commandAllPos(
     double leftOne,
     double leftTwo,
     double rightOne,
     double rightTwo
   ) {
-    leftModuleOne.setPosition(leftOne);
-    leftModuleTwo.setPosition(leftTwo);
-    rightModuleOne.setPosition(rightOne);
-    rightModuleTwo.setPosition(rightTwo);
+    leftOutModule.setPosition(leftOne);
+    leftInModule.setPosition(leftTwo);
+    rightOutModule.setPosition(rightOne);
+    rightInModule.setPosition(rightTwo);
+  }
+
+  public void commandAllPower(
+    double leftOut,
+    double leftIn,
+    double rightOut,
+    double rightIn
+  ) {
+    leftOutModule.setPower(leftOut);
+    leftInModule.setPower(leftIn);
+    rightOutModule.setPower(rightOut);
+    rightInModule.setPower(rightIn);
+  }
+
+  public void setAllSolenoid(SOLENOID_STATE state) {
+    leftOutModule.setSolenoidState(state);
+    leftInModule.setSolenoidState(state);
+    rightOutModule.setSolenoidState(state);
+    rightInModule.setSolenoidState(state);
   }
 
   @Override
