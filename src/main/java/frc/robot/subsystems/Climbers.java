@@ -11,10 +11,10 @@ import frc.robot.ClimberModule.SOLENOID_STATE;
 public class Climbers extends SubsystemBase {
 
   // The port range for the climbers is 40-49
-  public ClimberModule leftOutModule = new ClimberModule(40, 41);
-  public ClimberModule leftInModule = new ClimberModule(42, 43);
-  public ClimberModule rightOutModule = new ClimberModule(44, 45);
-  public ClimberModule rightInModule = new ClimberModule(46, 47);
+  public ClimberModule leftOutModule = new ClimberModule(40, 41, 0);
+  public ClimberModule leftInModule = new ClimberModule(42, 43, 0);
+  public ClimberModule rightOutModule = new ClimberModule(44, 45, 0);
+  public ClimberModule rightInModule = new ClimberModule(46, 47, 0);
 
   /** Creates a new Climbers. */
   public Climbers() {}

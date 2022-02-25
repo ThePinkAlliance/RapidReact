@@ -1,5 +1,5 @@
 {
-  "lengthUnit": "Meter",
+  "lengthUnit": "Inch",
   "exportUnit": "Same as Project",
   "maxVelocity": 3.225,
   "maxAcceleration": 2.0,

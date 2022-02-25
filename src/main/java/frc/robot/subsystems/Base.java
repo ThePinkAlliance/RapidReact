@@ -62,7 +62,7 @@ public class Base extends SubsystemBase {
 
   // physical constants
   public static double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(188.69);
-  public static double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(179.20);
+  public static double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(182.97); // 179.20
   public static double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(132.09);
   public static double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(63.80); // 359.29
 
@@ -225,6 +225,7 @@ public class Base extends SubsystemBase {
   }
 
   /**
+   * NOTE: This needs to use the gyro to keep it from drifting from the desired heading
    *
    * @param targetPosition the desired unit of measurement is inches
    * @return
@@ -288,9 +289,13 @@ public class Base extends SubsystemBase {
     }
   }
 
+  /**
+   * NOTE: This needs a better implementation of finding the shortest direction to travel
+   * @param angle
+   * @param target
+   * @return a positive or negiative power in meters per second.
+   */
   private double getPower(double angle, double target) {
-    double error = angle - target;
-
     if (target < 180) {
       return -1.4;
     } else if (target > 180) {

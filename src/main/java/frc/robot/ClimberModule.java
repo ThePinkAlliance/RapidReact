@@ -3,6 +3,7 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 
@@ -21,16 +22,20 @@ public class ClimberModule {
     UNKNOWN,
   }
 
+  private DigitalInput limitSwitch;
+
   private SOLENOID_STATE solenoidState = SOLENOID_STATE.UNKNOWN;
   private double targetPosition = 0;
 
-  public ClimberModule(int _pheumaticsId, int motorId) {
+  public ClimberModule(int _pheumaticsId, int motorId, int limitSwitchChannel) {
     this.lockerSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
     this.angleMotor = new TalonFX(motorId);
     this.angleController = new PIDController(0, 0, 0);
 
     this.angleMotor.config_kP(PRIMARY_PID_SLOT, 0.02, TIMEOUT_MS);
     this.angleMotor.config_kI(PRIMARY_PID_SLOT, 0.002, TIMEOUT_MS);
+
+    this.limitSwitch = new DigitalInput(limitSwitchChannel);
   }
 
   public void setPower(double power) {
@@ -50,6 +55,10 @@ public class ClimberModule {
       case UNKNOWN:
         break;
     }
+  }
+
+  public boolean contactedPole() {
+    return limitSwitch.get();
   }
 
   public SOLENOID_STATE getSolenoidState() {

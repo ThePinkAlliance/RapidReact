@@ -33,10 +33,9 @@ public class BasicAuto extends CommandBase {
     if (!forwardFinished) {
       forwardFinished = m_base.driveStraight(36);
     }
-
-    if (forwardFinished) {
-      rotateFinished = m_base.rotate(75);
-    }
+    // if (forwardFinished) {
+    //   rotateFinished = m_base.rotate(75);
+    // }
   }
 
   // Called once the command ends or is interrupted.
@@ -46,6 +45,6 @@ public class BasicAuto extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return forwardFinished && rotateFinished;
+    return forwardFinished;
   }
 }
