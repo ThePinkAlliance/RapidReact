@@ -164,12 +164,37 @@ public class Base extends SubsystemBase {
 
   private Mk4ModuleConfiguration configuration = new Mk4ModuleConfiguration();
 
-  private PIDController alignController = new PIDController(1, 0, 0);
+  private final double align_P_defualt = 20;
+  private final double align_I_defualt = 0;
+  private final double align_D_defualt = 0;
+
+  NetworkTableEntry align_P = NetworkTableInstance
+    .getDefault()
+    .getTable("debug")
+    .getEntry("align-p");
+  NetworkTableEntry align_I = NetworkTableInstance
+    .getDefault()
+    .getTable("debug")
+    .getEntry("align-i");
+  NetworkTableEntry align_D = NetworkTableInstance
+    .getDefault()
+    .getTable("debug")
+    .getEntry("align-d");
+
+  private PIDController alignController = new PIDController(
+    align_P.getDouble(align_P_defualt),
+    align_I.getDouble(align_I_defualt),
+    align_D.getDouble(align_D_defualt)
+  );
   private ChassisSpeeds autoSpeeds = new ChassisSpeeds();
 
   /** Creates a new Base. */
   public Base() {
     this.tab = Shuffleboard.getTab("debug");
+
+    this.align_P.setNumber(align_P_defualt);
+    this.align_I.setNumber(align_I_defualt);
+    this.align_D.setNumber(align_D_defualt);
 
     this.backRightModule =
       Mk4SwerveModuleHelper.createFalcon500(
@@ -249,7 +274,7 @@ public class Base extends SubsystemBase {
     double front_left_pos = Math.abs(this.frontLeftModule.getDrivePosition());
     double front_right_pos = Math.abs(this.frontRightModule.getDrivePosition());
     Rotation2d angle_diff = getRotation()
-      .minus(Rotation2d.fromDegrees(targetAngle));
+      .minus(Rotation2d.fromDegrees(targetAngle + 180));
 
     if (angle_diff.getDegrees() < -0) {
       angle_diff = Rotation2d.fromDegrees((360 + targetAngle));
@@ -271,6 +296,8 @@ public class Base extends SubsystemBase {
 
     if (distance_traveled_inches >= targetPosition) {
       autoSpeeds = new ChassisSpeeds(0, 0, 0);
+
+      resetDriveMotors();
       // previous_x = distance_traveled_inches;
     } else if (distance_traveled_inches < targetPosition) {
       autoSpeeds = new ChassisSpeeds(1, 0, 0);
@@ -333,22 +360,22 @@ public class Base extends SubsystemBase {
   }
 
   public boolean rotate(double target) {
-    double heading = getRotation().getDegrees();
-    double error = 5;
+    alignController.setP(align_P.getDouble(align_P_defualt));
+    alignController.setI(align_I.getDouble(align_I_defualt));
+    alignController.setD(align_D.getDouble(align_D_defualt));
 
-    double power = getPower(target);
+    double currentAngle = getRotation().getDegrees();
+    double power = (alignController.calculate(currentAngle, target) / 180);
 
-    m_rotEntry.setNumber(heading);
+    NetworkTableInstance
+      .getDefault()
+      .getTable("debug")
+      .getEntry("rotate-power")
+      .setNumber(power);
 
-    if (heading >= (target - error) && heading <= (target + error)) {
-      setStates(kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, 0)));
-      return true;
-    } else {
-      setStates(
-        kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, power))
-      );
-      return false;
-    }
+    setStates(kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, power)));
+
+    return Math.abs(target - currentAngle) < 1.2;
   }
 
   /**

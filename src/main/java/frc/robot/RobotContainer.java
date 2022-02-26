@@ -181,10 +181,14 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // // set the current trajectory to execute
-    selectTrajectory(selectedPath.getSelected());
+    // selectTrajectory(selectedPath.getSelected());
 
     // set the initial pose of the robot to the starting pose of the trajectory
     // m_base.resetOdometry(trajectory.getInitialPose());
+
+    if (selectedPath.getSelected().getDefualtCommand() == null) {
+      selectedPath.setDefaultOption("Leave Blue Left", leaveBlueLeft);
+    }
 
     return selectedPath.getSelected().getDefualtCommand();
   }

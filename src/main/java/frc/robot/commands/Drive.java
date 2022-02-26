@@ -53,11 +53,9 @@ public class Drive extends CommandBase {
    */
   @Override
   public void execute() {
-    SlewRateLimiter rateLimiter = new SlewRateLimiter(0.4);
-
-    double axis0x = rateLimiter.calculate(js.getRawAxis(0));
-    double axis1y = rateLimiter.calculate(js.getRawAxis(1));
-    double axis4rot = rateLimiter.calculate(js.getRawAxis(4));
+    double axis0x = js.getRawAxis(0);
+    double axis1y = js.getRawAxis(1);
+    double axis4rot = js.getRawAxis(4);
 
     //invert right joystick axis input to match clockwise, counter clockwise robot behavior
     axis4rot *= -1;
