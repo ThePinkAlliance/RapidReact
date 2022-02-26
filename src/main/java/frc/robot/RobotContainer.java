@@ -30,11 +30,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.AutoBallOne;
 import frc.robot.commands.BasicAuto;
-import frc.robot.commands.Color;
 import frc.robot.commands.Drive;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.LeaveBlueLeft;
 import frc.robot.commands.RotateLeft;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.StraightAuto;
@@ -104,22 +103,13 @@ public class RobotContainer {
 
   private final SelectableTrajectory leaveBlueLeft = new SelectableTrajectory(
     "Leave Blue Left",
-    "output/LeaveBlueLeft.wpilib.json"
-  );
-
-  private final SelectableTrajectory straight = new SelectableTrajectory(
-    "Straight",
-    goStraight,
-    m_base
+    new LeaveBlueLeft(m_base)
   );
 
   /**
    * This contains all the trajectories that can be selected from the dashboard.
    */
-  private final SelectableTrajectory[] trajectories = {
-    leaveBlueLeft,
-    straight,
-  };
+  private final SelectableTrajectory[] trajectories = { leaveBlueLeft };
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -134,7 +124,7 @@ public class RobotContainer {
     );
 
     for (SelectableTrajectory t : trajectories) {
-      if (t.location == straight.name) {
+      if (t.location == leaveBlueLeft.name) {
         selectedPath.setDefaultOption(t.name, t);
       } else {
         selectedPath.addOption(t.name, t);
@@ -191,12 +181,11 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // // set the current trajectory to execute
-    // selectTrajectory(selectedPath.getSelected());
+    selectTrajectory(selectedPath.getSelected());
 
-    // // set the initial pose of the robot to the starting pose of the trajectory
+    // set the initial pose of the robot to the starting pose of the trajectory
     // m_base.resetOdometry(trajectory.getInitialPose());
 
-    // return selectedPath.getSelected().getDefualtCommand();
-    return new AutoBallOne(m_base);
+    return selectedPath.getSelected().getDefualtCommand();
   }
 }

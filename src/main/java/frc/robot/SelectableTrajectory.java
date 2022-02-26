@@ -250,6 +250,12 @@ public class SelectableTrajectory {
       );
   }
 
+  public SelectableTrajectory(String name, Command command) {
+    this.name = name;
+
+    this.defualtCommand = command;
+  }
+
   public SelectableTrajectory(String name, String location) {
     this.location = location;
     this.name = name;

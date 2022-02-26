@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Base;
 
-public class AutoBallOne extends CommandBase {
+public class LeaveBlueLeft extends CommandBase {
 
   Base base;
 
@@ -27,7 +27,7 @@ public class AutoBallOne extends CommandBase {
   private double LEAVE_AND_GRAB_BALL_ANGLE = 0;
 
   /** Creates a new AutoGrabBallShoot. */
-  public AutoBallOne(Base base) {
+  public LeaveBlueLeft(Base base) {
     // Use addRequirements() here to declare subsystem dependencies
 
     this.base = base;
