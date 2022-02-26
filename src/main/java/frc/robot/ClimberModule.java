@@ -52,8 +52,6 @@ public class ClimberModule {
       case UNLOCKED:
         this.lockerSolenoid.set(false);
         break;
-      case UNKNOWN:
-        break;
     }
   }
 

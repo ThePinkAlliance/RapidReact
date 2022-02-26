@@ -4,7 +4,9 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Base;
 
 public class AutoBallOne extends CommandBase {
@@ -12,13 +14,14 @@ public class AutoBallOne extends CommandBase {
   Base base;
 
   enum states {
+    INIT,
     LEAVE_AND_GRAB_BALL,
     FACE_GOAL,
     SHOOT,
     STOP,
   }
 
-  states currentState = states.LEAVE_AND_GRAB_BALL;
+  states currentState = states.INIT;
 
   private double LEAVE_AND_GRAB_BALL_POSITION = 50;
   private double LEAVE_AND_GRAB_BALL_ANGLE = 0;
@@ -42,6 +45,11 @@ public class AutoBallOne extends CommandBase {
   @Override
   public void execute() {
     switch (currentState) {
+      case INIT:
+        base.zeroGyro();
+        base.resetDriveMotors();
+        currentState = states.LEAVE_AND_GRAB_BALL;
+        break;
       case LEAVE_AND_GRAB_BALL:
         if (
           base.driveStraight(
@@ -49,10 +57,13 @@ public class AutoBallOne extends CommandBase {
             LEAVE_AND_GRAB_BALL_ANGLE
           )
         ) {
-          currentState = states.STOP;
+          currentState = states.FACE_GOAL;
         }
         break;
       case FACE_GOAL:
+        if (base.rotate(180)) {
+          currentState = states.STOP;
+        }
         break;
       case SHOOT:
         break;

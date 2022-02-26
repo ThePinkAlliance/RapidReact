@@ -12,6 +12,9 @@ import java.util.function.DoubleSupplier;
 
 public class TempTower extends SubsystemBase {
 
+  /**
+   * NOTE: sometimes i2c devices won't be constructed until a little while after the robot starts.
+   */
   private final I2C.Port port = I2C.Port.kOnboard;
   private final ColorSensorV3 colorSensor = new ColorSensorV3(port);
 

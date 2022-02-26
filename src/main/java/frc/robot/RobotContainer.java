@@ -128,12 +128,6 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
-    SmartDashboard.putNumber("kP-X", kP_X);
-    SmartDashboard.putNumber("kD-X", kD_X);
-
-    SmartDashboard.putNumber("kP-Y", kP_Y);
-    SmartDashboard.putNumber("kD-Y", kD_Y);
-
     SmartDashboard.putNumber(
       Turret.TURRET_NAME + " power",
       Turret.TURRET_DEFAULT_POWER

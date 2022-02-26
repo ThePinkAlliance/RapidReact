@@ -73,6 +73,22 @@ public class Climbers extends SubsystemBase {
     leftInModule.setPower(leftIn);
     rightOutModule.setPower(rightOut);
     rightInModule.setPower(rightIn);
+
+    if (leftInModule.contactedPole() && leftIn > 0) {
+      leftInModule.setSolenoidState(SOLENOID_STATE.LOCKED);
+    }
+
+    if (leftOutModule.contactedPole() && leftOut > 0) {
+      leftInModule.setSolenoidState(SOLENOID_STATE.LOCKED);
+    }
+
+    if (rightInModule.contactedPole() && rightIn < -0) {
+      leftInModule.setSolenoidState(SOLENOID_STATE.LOCKED);
+    }
+
+    if (rightOutModule.contactedPole() && rightOut < -0) {
+      leftInModule.setSolenoidState(SOLENOID_STATE.LOCKED);
+    }
   }
 
   public void setAllSolenoid(SOLENOID_STATE state) {
