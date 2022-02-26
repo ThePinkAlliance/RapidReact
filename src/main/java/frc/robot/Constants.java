@@ -17,8 +17,10 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 
-import frc.robot.constants.Base;
-
 public final class Constants {
-  public static Base Base = new Base();
+
+  public static int JOYSTICK_BUTTON_X = 3;
+  public static int JOYSTICK_BUTTON_A = 1;
+  public static int JOYSTICK_BUTTON_B = 2;
+  public static int JOYSTICK_BUTTON_Y = 4;
 }

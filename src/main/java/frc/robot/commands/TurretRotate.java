@@ -5,37 +5,52 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Base;
+import frc.robot.Constants;
+import frc.robot.subsystems.Turret;
+import java.util.function.DoubleSupplier;
+import edu.wpi.first.wpilibj.Joystick;
 
-public class AutoBallOne extends CommandBase {
-  Base base;
+public class TurretRotate extends CommandBase {
 
-  /** Creates a new AutoGrabBallShoot. */
-  public AutoBallOne(Base base) {
-    // Use addRequirements() here to declare subsystem dependencies
+  private Turret turret;
+  private double power;
+  private Joystick js;
 
-    this.base = base;
-    addRequirements(base);
+  /** Creates a new Shoot. */
+  public TurretRotate(Turret turret, Joystick joystick, double power) {
+    // Use addRequirements() here to declare subsystem dependencies.
+
+    this.turret = turret;
+    this.power = power;
+    this.js = joystick;
+
+    addRequirements(turret);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    turret.rotate(power);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    turret.rotate(0.0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if (js.getRawButton(Constants.JOYSTICK_BUTTON_X))
+       return false;
+    else
+       return true;
   }
 }

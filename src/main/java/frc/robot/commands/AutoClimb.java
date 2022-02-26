@@ -5,24 +5,27 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Base;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Climbers;
 
-/** An example command that uses an example subsystem. */
-public class ExampleCommand extends CommandBase {
+public class AutoClimb extends CommandBase {
 
-  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
-  private final Base m_subsystem;
+  Climbers m_climbers;
 
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
-  public ExampleCommand(Base subsystem) {
-    m_subsystem = subsystem;
+  enum states {
+    STEP_1,
+    STEP_2,
+    STEP_3,
+    STEP_4,
+  }
+
+  states currentClimbState = states.STEP_1;
+
+  /** Creates a new AutoClimb. */
+  public AutoClimb(Climbers m_climbers) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    this.m_climbers = m_climbers;
+
+    addRequirements(m_climbers);
   }
 
   // Called when the command is initially scheduled.
@@ -31,7 +34,13 @@ public class ExampleCommand extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    switch (currentClimbState) {
+      case STEP_1:
+        m_climbers.leftOutModule.setPosition(7028);
+        break;
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override

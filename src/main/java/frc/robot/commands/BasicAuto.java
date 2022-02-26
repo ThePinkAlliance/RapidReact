@@ -6,32 +6,37 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Base;
-import frc.robot.subsystems.ExampleSubsystem;
 
-/** An example command that uses an example subsystem. */
-public class ExampleCommand extends CommandBase {
+public class BasicAuto extends CommandBase {
 
-  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
-  private final Base m_subsystem;
+  private boolean forwardFinished = false;
+  private boolean rotateFinished = false;
+  private Base m_base;
 
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
-  public ExampleCommand(Base subsystem) {
-    m_subsystem = subsystem;
+  /** Creates a new BasicAuto. */
+  public BasicAuto(Base m_base) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    this.m_base = m_base;
+
+    addRequirements(m_base);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_base.resetDriveMotors();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if (!forwardFinished) {
+      forwardFinished = m_base.driveStraight(36, 0);
+    }
+    // if (forwardFinished) {
+    //   rotateFinished = m_base.rotate(75);
+    // }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -40,6 +45,6 @@ public class ExampleCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return forwardFinished;
   }
 }

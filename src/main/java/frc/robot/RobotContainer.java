@@ -4,23 +4,46 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.TrajectoryParameterizer;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.constraint.TrajectoryConstraint;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import frc.robot.commands.Drive;
-import frc.robot.subsystems.Base;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.BasicAuto;
+import frc.robot.commands.Drive;
+import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.LeaveBlueLeft;
+import frc.robot.commands.RotateLeft;
+import frc.robot.commands.Shoot;
+import frc.robot.commands.StraightAuto;
+import frc.robot.commands.TurretRotate;
+import frc.robot.commands.TurretRotate;
+import frc.robot.subsystems.Base;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.TempTower;
+import frc.robot.subsystems.Turret;
+import java.util.List;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -32,28 +55,82 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
   private final Joystick gamepad_base = new Joystick(0);
   private final Base m_base = new Base();
+  // private final Turret m_turret = new Turret();
+  // private final Shooter m_shooter = new Shooter();
+  // private final TempTower tower = new TempTower();
 
-  private final SelectableTrajectory leaveBlueLeft = new SelectableTrajectory("Leave Blue Left",
-      "output/LeaveBlueLeft.wpilib.json");
+  // these values are filler's
+  double kP_X = 0;
+  double kD_X = 0;
+  double kI_X = 0;
+
+  double kP_Y = 0;
+  double kD_Y = 0;
+  double kI_Y = 0;
+
+  double kP_T = 0;
+  double kI_T = 0;
+  double kD_T = 0;
 
   Trajectory trajectory = new Trajectory();
-  ShuffleboardTab driverDashboard = Shuffleboard.getTab("dashboard");
+  ShuffleboardTab driverDashboard = Shuffleboard.getTab("Dashboard");
   SendableChooser<SelectableTrajectory> selectedPath = new SendableChooser<SelectableTrajectory>();
+
+  TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
+    Base.MAX_VELOCITY_METERS_PER_SECOND,
+    Base.MAX_ACCELERATION_METERS_PER_SECOND
+  )
+  .setKinematics(m_base.kinematics);
+
+  // this trajectory will drive 9.10 feet
+  // private Trajectory goStraight = TrajectoryGenerator.generateTrajectory(
+  //   new Pose2d(0, 0, new Rotation2d(0)),
+  //   List,
+  //   new Pose2d(3, 0, new Rotation2d(0)),
+  //   trajectoryConfig
+  // );
+
+  private Trajectory goStraight = TrajectoryGenerator.generateTrajectory(
+    List.of(
+      new Pose2d(0, 0, new Rotation2d(0)),
+      new Pose2d(3, 0, new Rotation2d(0))
+    ),
+    trajectoryConfig
+  );
+
+  private final SelectableTrajectory leaveBlueLeft = new SelectableTrajectory(
+    "Leave Blue Left",
+    new LeaveBlueLeft(m_base)
+  );
+
+  /**
+   * This contains all the trajectories that can be selected from the dashboard.
+   */
+  private final SelectableTrajectory[] trajectories = { leaveBlueLeft };
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-
     // Configure the button bindings
     configureButtonBindings();
 
-    selectedPath.setDefaultOption(leaveBlueLeft.name, leaveBlueLeft);
+    SmartDashboard.putNumber(
+      Turret.TURRET_NAME + " power",
+      Turret.TURRET_DEFAULT_POWER
+    );
 
+    for (SelectableTrajectory t : trajectories) {
+      if (t.location == leaveBlueLeft.name) {
+        selectedPath.setDefaultOption(t.name, t);
+      } else {
+        selectedPath.addOption(t.name, t);
+      }
+    }
     driverDashboard.add(selectedPath);
-
     // for now select leave blue 1 for testing
   }
 
@@ -67,8 +144,30 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     this.m_base.setDefaultCommand(
-        new Drive(m_base, () -> gamepad_base.getRawAxis(0),
-            () -> gamepad_base.getRawAxis(1), () -> gamepad_base.getRawAxis(2)));
+        new Drive(
+          m_base,
+          () -> gamepad_base.getRawAxis(0),
+          () -> gamepad_base.getRawAxis(1),
+          () -> gamepad_base.getRawAxis(4),
+          this.gamepad_base
+        )
+      );
+    // this.m_shooter.setDefaultCommand(
+    //     new Shoot(m_shooter, () -> gamepad_base.getRawAxis(2))
+    //   );
+    new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_A)
+    .whenPressed(m_base::zeroGyro);
+    // new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_X)
+    // .whenPressed(
+    //     new TurretRotate(
+    //       m_turret,
+    //       gamepad_base,
+    //       SmartDashboard.getNumber(
+    //         Turret.TURRET_NAME + " power",
+    //         Turret.TURRET_DEFAULT_POWER
+    //       )
+    //     )
+    //   );
   }
 
   public void selectTrajectory(SelectableTrajectory selectableTrajectory) {
@@ -81,40 +180,12 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // set the current trajectory to execute
+    // // set the current trajectory to execute
     selectTrajectory(selectedPath.getSelected());
 
     // set the initial pose of the robot to the starting pose of the trajectory
-    m_base.resetOdometry(trajectory.getInitialPose());
+    // m_base.resetOdometry(trajectory.getInitialPose());
 
-    return new SwerveControllerCommand(
-        trajectory,
-        m_base::getPose,
-        m_base.kinematics,
-        // these values are filler's
-        // this is the x axis PID Controller
-        new PIDController(0.4, 0, 0),
-        // this is the y axis PID Contrller
-        new PIDController(0.4, 0, 0),
-        new ProfiledPIDController(1, 0, 0,
-            new TrapezoidProfile.Constraints(Constants.Base.MAX_VELOCITY_METERS_PER_SECOND,
-                Constants.Base.MAX_ACCELERATION_METERS_PER_SECOND)),
-        (states) -> {
-          SwerveModuleState frontLeft = states[0];
-          SwerveModuleState frontRight = states[1];
-          SwerveModuleState backLeft = states[2];
-          SwerveModuleState backRight = states[3];
-
-          m_base.setStates(states);
-
-          driverDashboard.add("Front Left m/s", frontLeft.speedMetersPerSecond);
-          driverDashboard.add("Front Right m/s", frontRight.speedMetersPerSecond);
-          driverDashboard.add("Back Left m/s", backLeft.speedMetersPerSecond);
-          driverDashboard.add("Back Right m/s", backRight.speedMetersPerSecond);
-        },
-        m_base).andThen(() -> {
-          // set the target speed to 0 to stop the robot
-          m_base.drive(new ChassisSpeeds(0, 0, 0));
-        });
+    return selectedPath.getSelected().getDefualtCommand();
   }
 }

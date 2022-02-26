@@ -6,32 +6,33 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Base;
-import frc.robot.subsystems.ExampleSubsystem;
 
-/** An example command that uses an example subsystem. */
-public class ExampleCommand extends CommandBase {
+public class StraightAuto extends CommandBase {
 
-  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
-  private final Base m_subsystem;
+  private Base base;
+  private boolean finish = false;
 
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
-  public ExampleCommand(Base subsystem) {
-    m_subsystem = subsystem;
+  /** Creates a new StraightAuto. */
+  public StraightAuto(Base base) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+
+    this.base = base;
+
+    addRequirements(base);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    base.resetDriveMotors();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    // this will drive straight forward 24 inches
+    finish = this.base.driveStraight(24, 0);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -40,6 +41,6 @@ public class ExampleCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return finish;
   }
 }
