@@ -39,14 +39,14 @@ import frc.robot.commands.Shoot;
 import frc.robot.commands.StraightAuto;
 import frc.robot.commands.TurretRotate;
 import frc.robot.commands.TurretRotate;
+import frc.robot.commands.turnTest;
 import frc.robot.subsystems.Base;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.LimelightLedMode;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.TempTower;
 import frc.robot.subsystems.Turret;
-import frc.robot.subsystems.Limelight;
-
 import java.security.Principal;
 import java.util.List;
 
@@ -112,10 +112,18 @@ public class RobotContainer {
     new LeaveBlueLeft(m_base)
   );
 
+  private final SelectableTrajectory turnTest = new SelectableTrajectory(
+    "Turn test",
+    new turnTest(m_base)
+  );
+
   /**
    * This contains all the trajectories that can be selected from the dashboard.
    */
-  private final SelectableTrajectory[] trajectories = { leaveBlueLeft };
+  private final SelectableTrajectory[] trajectories = {
+    leaveBlueLeft,
+    turnTest,
+  };
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
