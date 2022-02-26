@@ -40,9 +40,14 @@ import frc.robot.commands.StraightAuto;
 import frc.robot.commands.TurretRotate;
 import frc.robot.commands.TurretRotate;
 import frc.robot.subsystems.Base;
+import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.LimelightLedMode;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.TempTower;
 import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.Limelight;
+
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -58,6 +63,7 @@ public class RobotContainer {
 
   private final Joystick gamepad_base = new Joystick(0);
   private final Base m_base = new Base();
+  private final Limelight m_limelight = new Limelight();
   // private final Turret m_turret = new Turret();
   // private final Shooter m_shooter = new Shooter();
   // private final TempTower tower = new TempTower();
@@ -187,5 +193,17 @@ public class RobotContainer {
     // m_base.resetOdometry(trajectory.getInitialPose());
 
     return selectedPath.getSelected().getDefualtCommand();
+  }
+
+  public void enableLimelight() {
+    if (m_limelight != null) {
+      m_limelight.setLedState(LimelightLedMode.FORCE_ON);
+    }
+  }
+
+  public void disableLimelight() {
+    if (m_limelight != null) {
+      m_limelight.setLedState(LimelightLedMode.FORCE_OFF);
+    }
   }
 }

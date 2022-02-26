@@ -9,18 +9,31 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import frc.robot.subsystems.LimelightLedMode;
+
+
 
 public class Limelight extends SubsystemBase {
+
+  private boolean limelightLedOn = false;
+
   /** Creates a new Limelight. */
   public Limelight() {
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(0);
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
-
+    initLimelight(LimelightLedMode.FORCE_OFF);
 
   }
 
-  public static void getDistance() {
+  public void initLimelight(LimelightLedMode mode) {
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(mode.get());
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
+  }
+
+  public void setLedState(LimelightLedMode mode) {
+    initLimelight(mode); //Off or On
+  }
+
+  public void getDistance() {
     //from documentation, the distance can be found using a fixed camera angle
     //distance = (height2 - height1) / tan(angle1 + angle2)
     //height1 is limelight elevation, height2 is target height
@@ -40,7 +53,7 @@ public class Limelight extends SubsystemBase {
     double objectArea = ta.getDouble(0.0);
     double robotSkew = ts.getDouble(0.0);
 
-    double limelightAngle = 45; //Angle the limelight is positioned at
+    double limelightAngle = 44; //Angle the limelight is positioned at
     double limelightElevation = 23.25; //How far the limelight is above the ground
     double targetHeight = 104; //How tall is the target from above the ground
 
@@ -72,25 +85,26 @@ public class Limelight extends SubsystemBase {
   @Override
   public void periodic() {
 
-    // NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    // NetworkTableEntry tx = table.getEntry("tx");
-    // NetworkTableEntry ty = table.getEntry("ty");
-    // NetworkTableEntry ta = table.getEntry("ta");
-    // NetworkTableEntry ts = table.getEntry("ts");
-    // //NetworkTableEntry tv = table.getEntry("tv");
+    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    NetworkTableEntry tx = table.getEntry("tx");
+    NetworkTableEntry ty = table.getEntry("ty");
+    NetworkTableEntry ta = table.getEntry("ta");
+    NetworkTableEntry ts = table.getEntry("ts");
+    //NetworkTableEntry tv = table.getEntry("tv");
 
-    // double offsetX = tx.getDouble(0.0);
-    // double offsetY = ty.getDouble(0.0);
-    // double objectArea = ta.getDouble(0.0);
-    // double robotSkew = ts.getDouble(0.0);
-    // //double availableTargets = tv.getDouble(0.0); //I would revisit this so the robot does not 
-    //                                              //run crazy if there are no available targets
+    double offsetX = tx.getDouble(0.0);
+    double offsetY = ty.getDouble(0.0);
+    double objectArea = ta.getDouble(0.0);
+    double robotSkew = ts.getDouble(0.0);
+    //double availableTargets = tv.getDouble(0.0); //I would revisit this so the robot does not 
+                                                 //run crazy if there are no available targets
     
-    // SmartDashboard.putNumber("Object Offset X: ", offsetX);
-    // SmartDashboard.putNumber("Object Offset Y: ", offsetY);
-    // SmartDashboard.putNumber("Limelight Area: ", objectArea);
-    // SmartDashboard.putNumber("Limelight Skew: ", robotSkew);
-
-    getDistance();
+    SmartDashboard.putNumber("Object Offset X: ", offsetX);
+    SmartDashboard.putNumber("Object Offset Y: ", offsetY);
+    SmartDashboard.putNumber("Limelight Area: ", objectArea);
+    SmartDashboard.putNumber("Limelight Skew: ", robotSkew);
+    if (limelightLedOn == true) {
+      getDistance();
+    }
   }
 }

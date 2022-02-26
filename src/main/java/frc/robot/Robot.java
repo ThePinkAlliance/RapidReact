@@ -61,7 +61,11 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    if (m_robotContainer != null) {
+      m_robotContainer.disableLimelight();
+    }
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -72,6 +76,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    if (m_robotContainer != null) {
+      m_robotContainer.enableLimelight();
+    }
+
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -90,6 +98,10 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    if (m_robotContainer != null) {
+      m_robotContainer.enableLimelight();
+    }
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
@@ -102,6 +114,9 @@ public class Robot extends TimedRobot {
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
+    if (m_robotContainer != null) {
+      m_robotContainer.enableLimelight();
+    }
     CommandScheduler.getInstance().cancelAll();
   }
 
@@ -111,6 +126,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void simulationInit() {
+    if (m_robotContainer != null) {
+      m_robotContainer.disableLimelight();
+    }
     CommandScheduler.getInstance().cancelAll();
   }
 
