@@ -36,16 +36,18 @@ public class AutoBallOne extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    base.zeroGyro();
-    base.resetDriveMotors();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     switch (currentState) {
       case INIT:
+        /**
+         * the reason why the gyro and drive encoders are not reset is
+         * because initialize does not always run before execute starts,
+         * causing the robot to skip steps because it was moved after initializion ran.
+         */
         base.zeroGyro();
         base.resetDriveMotors();
         currentState = states.LEAVE_AND_GRAB_BALL;
