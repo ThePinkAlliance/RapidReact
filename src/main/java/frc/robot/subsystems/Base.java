@@ -164,6 +164,7 @@ public class Base extends SubsystemBase {
 
   private Mk4ModuleConfiguration configuration = new Mk4ModuleConfiguration();
 
+  private PIDController alignController = new PIDController(1, 0, 0);
   private ChassisSpeeds autoSpeeds = new ChassisSpeeds();
 
   /** Creates a new Base. */
@@ -251,7 +252,7 @@ public class Base extends SubsystemBase {
       .minus(Rotation2d.fromDegrees(targetAngle));
 
     if (angle_diff.getDegrees() < -0) {
-      angle_diff = Rotation2d.fromDegrees((360 - targetAngle));
+      angle_diff = Rotation2d.fromDegrees((360 + targetAngle));
     }
 
     double front_left_rot =
@@ -290,6 +291,25 @@ public class Base extends SubsystemBase {
     setStates(kinematics.toSwerveModuleStates(autoSpeeds));
 
     return distance_traveled_inches >= targetPosition;
+  }
+
+  /**
+   * Align with goal will take our current angle offset from the goal and command the pods to the calculated angle.
+   * @param angleOffset
+   */
+  public void alignWithGoal(double angleOffset) {
+    double angleDiff = getRotation()
+      .minus(Rotation2d.fromDegrees(angleOffset))
+      .getDegrees();
+    double currentAngle = getRotation().getDegrees();
+
+    if (angleDiff < -0) {
+      angleDiff = 360 + angleDiff;
+    }
+
+    double power = (alignController.calculate(currentAngle, angleDiff) / 360);
+
+    setStates(kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, power)));
   }
 
   public void setPodAngles(double angle) {
