@@ -11,7 +11,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.subsystems.LimelightLedMode;
 
-
+// ADDRESS FOR THE LIMELIGHT FEED: http://limelight.local:5801/
 
 public class Limelight extends SubsystemBase {
 
@@ -30,6 +30,11 @@ public class Limelight extends SubsystemBase {
   }
 
   public void setLedState(LimelightLedMode mode) {
+    if (mode == LimelightLedMode.FORCE_ON) {
+      limelightLedOn = true;
+    } else {
+      limelightLedOn = false;
+    }
     initLimelight(mode); //Off or On
   }
 
@@ -53,8 +58,8 @@ public class Limelight extends SubsystemBase {
     double objectArea = ta.getDouble(0.0);
     double robotSkew = ts.getDouble(0.0);
 
-    double limelightAngle = 44; //Angle the limelight is positioned at
-    double limelightElevation = 23.25; //How far the limelight is above the ground
+    double limelightAngle = 48; //Angle the limelight is positioned at
+    double limelightElevation = 23.5; //How far the limelight is above the ground
     double targetHeight = 104; //How tall is the target from above the ground
 
     //This code gives distance relative from the ground to target, not hypotenuse length
@@ -103,6 +108,7 @@ public class Limelight extends SubsystemBase {
     SmartDashboard.putNumber("Object Offset Y: ", offsetY);
     SmartDashboard.putNumber("Limelight Area: ", objectArea);
     SmartDashboard.putNumber("Limelight Skew: ", robotSkew);
+    SmartDashboard.putBoolean("Limelight On: ", limelightLedOn);
     if (limelightLedOn == true) {
       getDistance();
     }
