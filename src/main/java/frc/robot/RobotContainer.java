@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.AutoBallOne;
 import frc.robot.commands.BasicAuto;
 import frc.robot.commands.Color;
 import frc.robot.commands.Drive;
@@ -202,6 +203,6 @@ public class RobotContainer {
     // m_base.resetOdometry(trajectory.getInitialPose());
 
     // return selectedPath.getSelected().getDefualtCommand();
-    return new BasicAuto(m_base);
+    return new AutoBallOne(m_base);
   }
 }

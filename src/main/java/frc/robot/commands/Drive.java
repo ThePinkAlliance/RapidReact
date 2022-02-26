@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -52,9 +53,11 @@ public class Drive extends CommandBase {
    */
   @Override
   public void execute() {
-    double axis0x = js.getRawAxis(0);
-    double axis1y = js.getRawAxis(1);
-    double axis4rot = js.getRawAxis(4);
+    SlewRateLimiter rateLimiter = new SlewRateLimiter(0.4);
+
+    double axis0x = rateLimiter.calculate(js.getRawAxis(0));
+    double axis1y = rateLimiter.calculate(js.getRawAxis(1));
+    double axis4rot = rateLimiter.calculate(js.getRawAxis(4));
 
     //invert right joystick axis input to match clockwise, counter clockwise robot behavior
     axis4rot *= -1;
@@ -90,11 +93,7 @@ public class Drive extends CommandBase {
     value = Math.copySign(value * value * value, value);
 
     // Limit the speed to 60%
-    if (value >= 0.6) {
-      value = 0.6;
-    } else if (value <= -0.6) {
-      value = -0.6;
-    }
+    value = value / 1.5;
 
     return value;
   }

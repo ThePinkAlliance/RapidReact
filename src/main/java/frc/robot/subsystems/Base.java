@@ -85,9 +85,6 @@ public class Base extends SubsystemBase {
   public static int FRONT_LEFT_CANCODER_ID = 31;
   public static int FRONT_RIGHT_CANCODER_ID = 34;
 
-  private double LAST_LOCATION_TICKS_X = 0;
-  private double LAST_LOCATION_TICKS_Y = 0;
-
   private AHRS gyro = new AHRS();
 
   private ShuffleboardTab tab;
@@ -103,6 +100,9 @@ public class Base extends SubsystemBase {
 
   /** 3 */
   private final SwerveModule backRightModule;
+
+  private double previous_x = 0;
+  private double previous_y = 0;
 
   public SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
     // Front Left Pod
@@ -141,6 +141,16 @@ public class Base extends SubsystemBase {
     .getDefault()
     .getTable("troubleshooting")
     .getEntry("rot");
+
+  NetworkTableEntry m_yaw = NetworkTableInstance
+    .getDefault()
+    .getTable("debug")
+    .getEntry("yaw");
+
+  NetworkTableEntry m_yaw_diff = NetworkTableInstance
+    .getDefault()
+    .getTable("debug")
+    .getEntry("yaw_diff");
 
   private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(
     kinematics,
@@ -230,9 +240,19 @@ public class Base extends SubsystemBase {
    * @param targetPosition the desired unit of measurement is inches
    * @return
    */
-  public boolean driveStraight(double targetPosition) {
+  public boolean driveStraight(double targetPosition, double targetAngle) {
+    if (targetAngle == 0) {
+      targetAngle = 360;
+    }
+
     double front_left_pos = Math.abs(this.frontLeftModule.getDrivePosition());
     double front_right_pos = Math.abs(this.frontRightModule.getDrivePosition());
+    Rotation2d angle_diff = getRotation()
+      .minus(Rotation2d.fromDegrees(targetAngle));
+
+    if (angle_diff.getDegrees() < -0) {
+      angle_diff = Rotation2d.fromDegrees((360 - targetAngle));
+    }
 
     double front_left_rot =
       SdsModuleConfigurations.MK4_L1.getDriveReduction() *
@@ -250,9 +270,13 @@ public class Base extends SubsystemBase {
 
     if (distance_traveled_inches >= targetPosition) {
       autoSpeeds = new ChassisSpeeds(0, 0, 0);
+      // previous_x = distance_traveled_inches;
     } else if (distance_traveled_inches < targetPosition) {
       autoSpeeds = new ChassisSpeeds(1, 0, 0);
+      setPodAngles(angle_diff);
     }
+
+    m_yaw_diff.setNumber(angle_diff.getDegrees());
 
     SmartDashboard.putNumber("front_left_inches", front_left_inches);
     SmartDashboard.putNumber("front_right_inches", front_right_inches);
@@ -268,18 +292,36 @@ public class Base extends SubsystemBase {
     return distance_traveled_inches >= targetPosition;
   }
 
-  public boolean rotate(double angle) {
-    double heading = gyro.getFusedHeading();
-    double error = 1;
+  public void setPodAngles(double angle) {
+    for (int i = 0; i < states.length; i++) {
+      SwerveModuleState state = states[i];
 
-    double power = getPower(heading, angle);
+      state.angle = new Rotation2d(angle);
+
+      states[i] = state;
+    }
+  }
+
+  public void setPodAngles(Rotation2d angle) {
+    for (int i = 0; i < states.length; i++) {
+      SwerveModuleState state = states[i];
+
+      state.angle = angle;
+
+      states[i] = state;
+    }
+  }
+
+  public boolean rotate(double target) {
+    double heading = getRotation().getDegrees();
+    double error = 5;
+
+    double power = getPower(target);
 
     m_rotEntry.setNumber(heading);
 
-    if (heading >= (angle - error) && heading <= (angle + error)) {
-      setStates(
-        kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, power))
-      );
+    if (heading >= (target - error) && heading <= (target + error)) {
+      setStates(kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, 0)));
       return true;
     } else {
       setStates(
@@ -295,14 +337,17 @@ public class Base extends SubsystemBase {
    * @param target
    * @return a positive or negiative power in meters per second.
    */
-  private double getPower(double angle, double target) {
-    if (target < 180) {
-      return -1.4;
-    } else if (target > 180) {
-      return 1.4;
+  private double getPower(double target) {
+    double sign = 1;
+    double heading = getRotation().getDegrees();
+
+    if (target > heading) {
+      sign = 1;
+    } else if (target < heading) {
+      sign = -1;
     }
 
-    return 0;
+    return Math.copySign(1.4, sign);
   }
 
   /**
@@ -463,6 +508,8 @@ public class Base extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    m_yaw.setNumber(gyro.getFusedHeading());
 
     setStates(this.states);
   }

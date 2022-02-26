@@ -30,8 +30,8 @@ public class StraightAuto extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // this will drive straight forward 12 inches
-    finish = this.base.driveStraight(24);
+    // this will drive straight forward 24 inches
+    finish = this.base.driveStraight(24, 0);
   }
 
   // Called once the command ends or is interrupted.

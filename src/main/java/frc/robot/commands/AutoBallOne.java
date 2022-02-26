@@ -8,7 +8,20 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Base;
 
 public class AutoBallOne extends CommandBase {
+
   Base base;
+
+  enum states {
+    LEAVE_AND_GRAB_BALL,
+    FACE_GOAL,
+    SHOOT,
+    STOP,
+  }
+
+  states currentState = states.LEAVE_AND_GRAB_BALL;
+
+  private double LEAVE_AND_GRAB_BALL_POSITION = 50;
+  private double LEAVE_AND_GRAB_BALL_ANGLE = 0;
 
   /** Creates a new AutoGrabBallShoot. */
   public AutoBallOne(Base base) {
@@ -21,21 +34,38 @@ public class AutoBallOne extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    base.zeroGyro();
+    base.resetDriveMotors();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    switch (currentState) {
+      case LEAVE_AND_GRAB_BALL:
+        if (
+          base.driveStraight(
+            LEAVE_AND_GRAB_BALL_POSITION,
+            LEAVE_AND_GRAB_BALL_ANGLE
+          )
+        ) {
+          currentState = states.STOP;
+        }
+        break;
+      case FACE_GOAL:
+        break;
+      case SHOOT:
+        break;
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return currentState == states.STOP;
   }
 }

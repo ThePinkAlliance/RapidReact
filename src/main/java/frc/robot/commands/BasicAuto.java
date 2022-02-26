@@ -31,7 +31,7 @@ public class BasicAuto extends CommandBase {
   @Override
   public void execute() {
     if (!forwardFinished) {
-      forwardFinished = m_base.driveStraight(36);
+      forwardFinished = m_base.driveStraight(36, 0);
     }
     // if (forwardFinished) {
     //   rotateFinished = m_base.rotate(75);
