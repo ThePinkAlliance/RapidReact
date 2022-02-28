@@ -91,16 +91,16 @@ public class Base extends SubsystemBase {
   private ShuffleboardTab tab;
 
   /** 0 */
-  private final SwerveModule frontLeftModule;
+  public final SwerveModule frontLeftModule;
 
   /** 1 */
-  private final SwerveModule frontRightModule;
+  public final SwerveModule frontRightModule;
 
   /** 2 */
-  private final SwerveModule backLeftModule;
+  public final SwerveModule backLeftModule;
 
   /** 3 */
-  private final SwerveModule backRightModule;
+  public final SwerveModule backRightModule;
 
   private double previous_x = 0;
   private double previous_y = 0;
@@ -263,12 +263,17 @@ public class Base extends SubsystemBase {
     this.frontRightModule.resetDrive();
   }
 
+  public SwerveModuleState[] getStates() {
+    return this.states;
+  }
+
   /**
    * NOTE: This needs to use the gyro to keep it from drifting from the desired heading
    *
    * @param targetPosition the desired unit of measurement is inches
    * @return
    */
+  @Deprecated
   public boolean driveStraight(double targetPosition, double targetAngle) {
     if (targetAngle == 0) {
       targetAngle = 360;
@@ -327,6 +332,7 @@ public class Base extends SubsystemBase {
    * Align with goal will take our current angle offset from the goal and command the pods to the calculated angle.
    * @param angleOffset
    */
+  @Deprecated
   public void alignWithGoal(double angleOffset) {
     double angleDiff = getRotation()
       .minus(Rotation2d.fromDegrees(angleOffset))
@@ -362,6 +368,7 @@ public class Base extends SubsystemBase {
     }
   }
 
+  @Deprecated
   public boolean rotate(double target) {
     alignController.setP(align_P.getDouble(align_P_defualt));
     alignController.setI(align_I.getDouble(align_I_defualt));

@@ -4,51 +4,24 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.TrajectoryParameterizer;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.constraint.TrajectoryConstraint;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.BasicAuto;
 import frc.robot.commands.Drive;
-import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.LeaveBlueLeft;
-import frc.robot.commands.RotateLeft;
-import frc.robot.commands.Shoot;
-import frc.robot.commands.StraightAuto;
-import frc.robot.commands.TurretRotate;
-import frc.robot.commands.TurretRotate;
+import frc.robot.commands.LeaveBlueLeft_;
 import frc.robot.commands.turnTest;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.LimelightLedMode;
-import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.TempTower;
 import frc.robot.subsystems.Turret;
-import java.security.Principal;
-import java.util.List;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -84,28 +57,6 @@ public class RobotContainer {
   Trajectory trajectory = new Trajectory();
   ShuffleboardTab driverDashboard = Shuffleboard.getTab("Dashboard");
   SendableChooser<SelectableTrajectory> selectedPath = new SendableChooser<SelectableTrajectory>();
-
-  TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
-    Base.MAX_VELOCITY_METERS_PER_SECOND,
-    Base.MAX_ACCELERATION_METERS_PER_SECOND
-  )
-  .setKinematics(m_base.kinematics);
-
-  // this trajectory will drive 9.10 feet
-  // private Trajectory goStraight = TrajectoryGenerator.generateTrajectory(
-  //   new Pose2d(0, 0, new Rotation2d(0)),
-  //   List,
-  //   new Pose2d(3, 0, new Rotation2d(0)),
-  //   trajectoryConfig
-  // );
-
-  private Trajectory goStraight = TrajectoryGenerator.generateTrajectory(
-    List.of(
-      new Pose2d(0, 0, new Rotation2d(0)),
-      new Pose2d(3, 0, new Rotation2d(0))
-    ),
-    trajectoryConfig
-  );
 
   private final SelectableTrajectory leaveBlueLeft = new SelectableTrajectory(
     "Leave Blue Left",
