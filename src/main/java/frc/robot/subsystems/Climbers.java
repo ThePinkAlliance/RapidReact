@@ -37,7 +37,7 @@ public class Climbers extends SubsystemBase {
     double rightOut,
     double rightIn
   ) {
-    // dividing the joystick values by 2.5 will max then power at 40% while keeping the joystick scaling smooth.
+    // dividing the joystick values by 2.5 will max power at 40% while keeping the joystick scaling smooth.
     leftOut = leftOut / 2.5;
     leftIn = leftIn / 2.5;
     rightOut = rightOut / 2.5;

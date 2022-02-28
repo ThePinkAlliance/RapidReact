@@ -151,7 +151,7 @@ public class RobotContainer {
     // set the initial pose of the robot to the starting pose of the trajectory
     // m_base.resetOdometry(trajectory.getInitialPose());
 
-    if (selectedPath.getSelected().getDefualtCommand() == null) {
+    if (selectedPath.getSelected() == null) {
       selectedPath.setDefaultOption("Leave Blue Left", leaveBlueLeft);
     }
 

@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
@@ -16,15 +17,21 @@ public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
   public Shooter() {
     motor.setNeutralMode(NeutralMode.Coast);
+    motor.config_kP(0, 1);
+    motor.config_kI(0, 0);
+    motor.config_kD(0, 0);
+    motor.configVelocityMeasurementPeriod(
+      SensorVelocityMeasPeriod.Period_2Ms,
+      100
+    );
+  }
+
+  public void revUp(double velocity) {
+    motor.set(ControlMode.Velocity, velocity);
   }
 
   public void command(double power) {
     motor.set(ControlMode.PercentOutput, power);
-    // SmartDashboard.putNumber(
-    //   "velocity",
-    //   ((motor.getSelectedSensorVelocity() / Constants.talonFullRotationTicks)) *
-    //   60
-    // );
   }
 
   @Override

@@ -4,13 +4,16 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import java.util.function.DoubleSupplier;
 
-public class TempTower extends SubsystemBase {
+public class Tower extends SubsystemBase {
 
   /**
    * NOTE: sometimes i2c devices won't be constructed until a little while after the robot starts.
@@ -18,11 +21,16 @@ public class TempTower extends SubsystemBase {
   private final I2C.Port port = I2C.Port.kOnboard;
   private final ColorSensorV3 colorSensor = new ColorSensorV3(port);
 
+  private TalonFX frontMotor = new TalonFX(50);
+  private TalonFX backMotor = new TalonFX(51);
+
   private DoubleSupplier red = () -> 0.0;
   private DoubleSupplier blue = () -> 0.0;
 
+  // private BooleanSupplier
+
   /** Creates a new TempBase. */
-  public TempTower() {}
+  public Tower() {}
 
   public ColorSensorV3 getColorSensor() {
     return this.colorSensor;
@@ -42,6 +50,19 @@ public class TempTower extends SubsystemBase {
 
   public DoubleSupplier getBlueSupplier() {
     return this.blue;
+  }
+
+  public void commandMotors(double front, double back) {
+    this.frontMotor.set(ControlMode.PercentOutput, front);
+    this.backMotor.set(ControlMode.PercentOutput, back);
+  }
+
+  public void commandFrontMotor(double front) {
+    this.frontMotor.set(ControlMode.PercentOutput, front);
+  }
+
+  public void commandBackMotor(double back) {
+    this.backMotor.set(ControlMode.PercentOutput, back);
   }
 
   @Override
