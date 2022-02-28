@@ -108,6 +108,8 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    //base controller
+    //left joystick
     this.m_base.setDefaultCommand(
         new Drive(
           m_base,
