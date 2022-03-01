@@ -16,6 +16,6 @@ public class LeaveBlueLeft extends SequentialCommandGroup {
   public LeaveBlueLeft(Base base) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new DriveStraight(base, 50, 0), new Rotate(base, 180));
+    addCommands(new DriveStraight(base, 50, 0));
   }
 }

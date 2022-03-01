@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.Collector;
 
 public class Collect extends CommandBase {
@@ -24,7 +23,7 @@ public class Collect extends CommandBase {
   @Override
   public void initialize() {
     //set motor to speed set in constants so we can change
-    this.m_collector.SetSpeed(Constants.Collector.collectorSpeed);
+    this.m_collector.SetSpeed(Collector.COLLECTOR_MOTOR_SPEED);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

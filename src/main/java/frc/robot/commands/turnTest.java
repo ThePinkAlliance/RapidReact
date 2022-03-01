@@ -17,7 +17,7 @@ import java.net.NetworkInterface;
 
 public class turnTest extends CommandBase {
 
-  PIDController alignController = new PIDController(3, 0.2, 0.002);
+  PIDController alignController = new PIDController(0.009, 0, 0);
   Base base;
 
   double setpoint = -90;
@@ -37,7 +37,7 @@ public class turnTest extends CommandBase {
     base.zeroGyro();
     alignController.enableContinuousInput(-180.0, 180.0);
 
-    alignController.setTolerance(2);
+    alignController.setTolerance(3, 10);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -59,6 +59,12 @@ public class turnTest extends CommandBase {
     NetworkTableInstance
       .getDefault()
       .getTable("debug")
+      .getEntry("currentAngle")
+      .setNumber(currentAngle);
+
+    NetworkTableInstance
+      .getDefault()
+      .getTable("debug")
       .getEntry("angle error")
       .setNumber(alignController.calculate(currentAngle, setpoint));
 
@@ -68,7 +74,9 @@ public class turnTest extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    base.drive(new ChassisSpeeds(0, 0, 0));
+  }
 
   // Returns true when the command should end.
   @Override

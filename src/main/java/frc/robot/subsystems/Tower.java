@@ -21,6 +21,8 @@ public class Tower extends SubsystemBase {
   private final I2C.Port port = I2C.Port.kOnboard;
   private final ColorSensorV3 colorSensor = new ColorSensorV3(port);
 
+  public static final double RGB_THRESHOLD = 12000;
+
   private TalonFX frontMotor = new TalonFX(50);
   private TalonFX backMotor = new TalonFX(51);
 

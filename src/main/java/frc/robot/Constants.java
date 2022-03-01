@@ -33,8 +33,8 @@ public final class Constants {
   public static int JOYSTICK_LEFT_TRIGGER = 0;
   public static int JOYSTICK_RIGHT_TRIGGER = 0;
 
-  public static int JOYSTICK_RIGHT_BUMPER = 0;
+  // Turbo
+  public static int JOYSTICK_LEFT_BUMPER = 5;
 
-  // Turbo?
-  public static int JOYSTICK_LEFT_BUMPER = 0;
+  public static int JOYSTICK_RIGHT_BUMPER = 0;
 }

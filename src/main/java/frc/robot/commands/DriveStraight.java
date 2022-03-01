@@ -7,16 +7,17 @@ package frc.robot.commands;
 import com.ThePinkAlliance.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Base;
 
 public class DriveStraight extends CommandBase {
 
   Base base;
-  PIDController straightController = new PIDController(2, 0.4, 0.004);
-  PIDController alignController = new PIDController(3, 0.2, 0.002);
+  PIDController straightController = new PIDController(0.3, 0.3, 0.002);
+  PIDController alignController = new PIDController(0, 0, 0);
+  // PIDController alignController = new PIDController(3, 0.2, 0.002);
 
   double targetAngle;
   double targetInches;
@@ -38,6 +39,7 @@ public class DriveStraight extends CommandBase {
     straightController.reset();
 
     base.zeroGyro();
+    base.resetDriveMotors();
 
     alignController.enableContinuousInput(-180, 180);
 
@@ -80,6 +82,50 @@ public class DriveStraight extends CommandBase {
       -0.7,
       0.7
     );
+
+    NetworkTableInstance
+      .getDefault()
+      .getTable("debug")
+      .getEntry("x")
+      .setNumber(x_power);
+
+    NetworkTableInstance
+      .getDefault()
+      .getTable("debug")
+      .getEntry("theta")
+      .setNumber(x_power);
+
+    NetworkTableInstance
+      .getDefault()
+      .getTable("debug")
+      .getEntry("front_right_inches")
+      .setNumber(front_right_inches);
+
+    NetworkTableInstance
+      .getDefault()
+      .getTable("debug")
+      .getEntry("front_left_inches")
+      .setNumber(front_left_inches);
+
+    NetworkTableInstance
+      .getDefault()
+      .getTable("debug")
+      .getEntry("front right rot")
+      .setNumber(front_right_rot);
+
+    NetworkTableInstance
+      .getDefault()
+      .getTable("debug")
+      .getEntry("front left rot")
+      .setNumber(front_left_rot);
+
+    NetworkTableInstance
+      .getDefault()
+      .getTable("debug")
+      .getEntry("error")
+      .setNumber(
+        straightController.calculate(distance_traveled_inches, targetInches)
+      );
 
     ChassisSpeeds speeds = new ChassisSpeeds(x_power, 0, theta_power);
 

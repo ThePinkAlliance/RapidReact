@@ -3,32 +3,34 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
-import frc.robot.Constants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.Constants;
 import frc.robot.Constants;
 
 public class Collector extends SubsystemBase {
+
+  public static int COLLECTOR_MOTOR_PORT = 52;
+  public static double COLLECTOR_MOTOR_SPEED = 1;
+
   TalonFX collectorMotor;
-  
+
   /** Creates a new Collector. */
   public Collector() {
-    collectorMotor = new TalonFX(Constants.Collector.COLLECTOR_MOTOR_PORT);
+    collectorMotor = new TalonFX(Collector.COLLECTOR_MOTOR_PORT);
   }
 
-  public void SetSpeed(double speed){
+  public void SetSpeed(double speed) {
     collectorMotor.set(ControlMode.PercentOutput, speed);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    
+
   }
 }
