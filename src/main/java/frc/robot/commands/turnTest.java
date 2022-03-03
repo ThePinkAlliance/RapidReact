@@ -7,16 +7,24 @@ package frc.robot.commands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Base;
+import java.util.function.DoubleSupplier;
 
 public class turnTest extends CommandBase {
 
-  PIDController alignController = new PIDController(0.009, 0, 0);
+  double p = 1.0; // ocolation 0.009
+  double i = 0.01;
+  double d = 0.0;
+  double setpoint = -90;
+
+  PIDController alignController = new PIDController(p, i, d);
   Base base;
 
-  double setpoint = -90;
+  NetworkTable debug = NetworkTableInstance.getDefault().getTable("debug");
 
   /** Creates a new LeaveBlueLeft_test. */
   public turnTest(Base base) {
@@ -33,17 +41,23 @@ public class turnTest extends CommandBase {
     base.zeroGyro();
     alignController.enableContinuousInput(-180.0, 180.0);
 
-    alignController.setTolerance(3, 10);
+    alignController.setTolerance(3);
+
+    SmartDashboard.putNumber("VEL", Base.MAX_VELOCITY_METERS_PER_SECOND);
+    SmartDashboard.putNumber("setpoint", setpoint);
+
+    debug.getEntry("turn-target").getDouble(setpoint);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     double currentAngle = base.getSensorYaw();
-    double power = MathUtil.clamp(
-      alignController.calculate(currentAngle, setpoint),
-      -0.7,
-      0.7
+    double error = alignController.calculate(currentAngle, setpoint);
+    double power = (error / -180) * Base.MAX_VELOCITY_METERS_PER_SECOND;
+
+    System.out.println(
+      power + ", " + error + ", " + currentAngle + ", " + setpoint
     );
 
     NetworkTableInstance
@@ -62,7 +76,7 @@ public class turnTest extends CommandBase {
       .getDefault()
       .getTable("debug")
       .getEntry("angle error")
-      .setNumber(alignController.calculate(currentAngle, setpoint));
+      .setNumber(error);
 
     ChassisSpeeds speeds = new ChassisSpeeds(0, 0, power);
     base.drive(speeds);
@@ -71,14 +85,15 @@ public class turnTest extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    // alignController.disableContinuousInput();
+    //alignController.reset();
+
     base.drive(new ChassisSpeeds(0, 0, 0));
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println(base.getRotation().getDegrees());
-
     return alignController.atSetpoint();
   }
 }

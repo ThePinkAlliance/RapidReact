@@ -12,10 +12,10 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Base;
 
-public class DriveStraight extends CommandBase {
+public class DriveByGyro extends CommandBase {
 
   Base base;
-  PIDController straightController = new PIDController(0.3, 0.3, 0.002);
+  PIDController straightController = new PIDController(0.27, 0.3, 0.002);
   PIDController alignController = new PIDController(0, 0, 0);
   // PIDController alignController = new PIDController(3, 0.2, 0.002);
 
@@ -23,7 +23,7 @@ public class DriveStraight extends CommandBase {
   double targetInches;
 
   /** Creates a new DriveStraight. */
-  public DriveStraight(Base base, double targetInches, double targetAngle) {
+  public DriveByGyro(Base base, double targetInches, double targetAngle) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.base = base;
     this.targetInches = targetInches;
@@ -72,16 +72,23 @@ public class DriveStraight extends CommandBase {
     double distance_traveled_inches =
       (front_left_inches + front_right_inches) / 2.0;
 
+    double x_error = straightController.calculate(
+      distance_traveled_inches,
+      targetInches
+    );
+
     double x_power = MathUtil.clamp(
       straightController.calculate(distance_traveled_inches, targetInches),
       -0.8,
       0.8
     );
-    double theta_power = MathUtil.clamp(
-      alignController.calculate(currentAngle, targetAngle),
-      -0.7,
-      0.7
-    );
+
+    // set the distance power using a similar method as the turn test
+    x_power = (x_error / -targetInches) * Base.MAX_VELOCITY_METERS_PER_SECOND;
+
+    double angle_error = alignController.calculate(currentAngle, targetAngle);
+    double theta_power =
+      (angle_error / -180) * Base.MAX_VELOCITY_METERS_PER_SECOND;
 
     NetworkTableInstance
       .getDefault()
@@ -122,10 +129,8 @@ public class DriveStraight extends CommandBase {
     NetworkTableInstance
       .getDefault()
       .getTable("debug")
-      .getEntry("error")
-      .setNumber(
-        straightController.calculate(distance_traveled_inches, targetInches)
-      );
+      .getEntry("yaw")
+      .setNumber(base.getSensorYaw());
 
     ChassisSpeeds speeds = new ChassisSpeeds(x_power, 0, theta_power);
 
