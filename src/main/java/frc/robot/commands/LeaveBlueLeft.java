@@ -16,6 +16,6 @@ public class LeaveBlueLeft extends SequentialCommandGroup {
   public LeaveBlueLeft(Base base) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new DriveStraightByTime(base, 46.5, 0));
+    addCommands(new DriveByGyro(base, 46.5, 0));
   }
 }

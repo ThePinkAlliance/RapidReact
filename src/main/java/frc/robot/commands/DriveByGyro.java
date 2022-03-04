@@ -15,7 +15,14 @@ import frc.robot.subsystems.Base;
 public class DriveByGyro extends CommandBase {
 
   Base base;
-  PIDController straightController = new PIDController(0.27, 0.3, 0.002);
+
+  /**
+   * kP:
+   * kI:
+   * kD: keep kD low otherwise your system could become unstable
+   */
+
+  PIDController straightController = new PIDController(1, 0.5, 0); // kP 0.27 kI 0.3 kD 0.002
   PIDController alignController = new PIDController(0, 0, 0);
   // PIDController alignController = new PIDController(3, 0.2, 0.002);
 
@@ -77,14 +84,17 @@ public class DriveByGyro extends CommandBase {
       targetInches
     );
 
-    double x_power = MathUtil.clamp(
-      straightController.calculate(distance_traveled_inches, targetInches),
-      -0.8,
-      0.8
-    );
+    // double x_power = MathUtil.clamp(
+    //   straightController.calculate(distance_traveled_inches, targetInches),
+    //   -0.8,
+    //   0.8
+    // );
 
     // set the distance power using a similar method as the turn test
-    x_power = (x_error / -targetInches) * Base.MAX_VELOCITY_METERS_PER_SECOND;
+    double x_power =
+      (x_error / targetInches) * Base.MAX_VELOCITY_METERS_PER_SECOND;
+
+    System.out.println(x_power + ", " + x_error);
 
     double angle_error = alignController.calculate(currentAngle, targetAngle);
     double theta_power =
@@ -139,7 +149,9 @@ public class DriveByGyro extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    base.resetDriveMotors();
+  }
 
   // Returns true when the command should end.
   @Override
