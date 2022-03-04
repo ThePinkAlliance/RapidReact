@@ -4,22 +4,19 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Base;
-import java.util.function.DoubleSupplier;
 
 public class turnTest extends CommandBase {
 
-  double p = 2.3; // 0.009
-  double i = 0.4;
-  double d = 0.0;
+  double p = 3.8; // 0.009, 3.7 works
+  double i = 0.01; // 0.6
+  double d = 0.002;
   double setpoint = -90;
 
   PIDController alignController = new PIDController(p, i, d);
@@ -42,7 +39,7 @@ public class turnTest extends CommandBase {
     base.zeroGyro();
     alignController.enableContinuousInput(-180.0, 180.0);
 
-    alignController.setTolerance(3);
+    alignController.setTolerance(0.5, 1.0);
 
     SmartDashboard.putNumber("VEL", Base.MAX_VELOCITY_METERS_PER_SECOND);
     SmartDashboard.putNumber("setpoint", setpoint);
