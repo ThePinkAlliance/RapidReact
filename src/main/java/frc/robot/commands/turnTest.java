@@ -9,6 +9,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Base;
@@ -16,8 +17,8 @@ import java.util.function.DoubleSupplier;
 
 public class turnTest extends CommandBase {
 
-  double p = 1.0; // ocolation 0.009
-  double i = 0.01;
+  double p = 2.3; // 0.009
+  double i = 0.4;
   double d = 0.0;
   double setpoint = -90;
 

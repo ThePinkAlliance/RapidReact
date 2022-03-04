@@ -22,8 +22,8 @@ public class DriveByGyro extends CommandBase {
    * kD: keep kD low otherwise your system could become unstable
    */
 
-  PIDController straightController = new PIDController(1, 0.5, 0); // kP 0.27 kI 0.3 kD 0.002
-  PIDController alignController = new PIDController(0, 0, 0);
+  PIDController straightController = new PIDController(1, 0.5, 0.002); // kP 0.27 kI 0.3 kD 0.002
+  PIDController alignController = new PIDController(0.9, 0.2, 0.001);
   // PIDController alignController = new PIDController(3, 0.2, 0.002);
 
   double targetAngle;
