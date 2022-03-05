@@ -4,38 +4,22 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Base;
-import java.util.function.DoubleSupplier;
 
 public class Drive extends CommandBase {
 
   private Base base;
-  private DoubleSupplier x;
-  private DoubleSupplier y;
-  private DoubleSupplier rot;
   private Joystick js;
 
   /** Creates a new Drive. */
-  public Drive(
-    Base base,
-    DoubleSupplier x,
-    DoubleSupplier y,
-    DoubleSupplier rot,
-    Joystick js
-  ) {
+  public Drive(Base base, Joystick js) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.base = base;
 
-    // Gamepad input to the drivetrain ->
-    // realtime using DoubleSuppliers which values update
-    this.x = x;
-    this.y = y;
-    this.rot = rot;
     this.js = js;
 
     addRequirements(base);

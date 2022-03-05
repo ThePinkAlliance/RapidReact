@@ -11,10 +11,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-import frc.robot.commands.DoNothing;
 import frc.robot.subsystems.Base;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -24,7 +24,7 @@ public class SelectableTrajectory {
   String name;
   String location;
   Trajectory trajectory;
-  Command defualtCommand = new DoNothing();
+  Command defualtCommand = new EmptyCommand();
   SwerveControllerCommand SwerveControllerCommand;
 
   public SelectableTrajectory(
@@ -282,3 +282,5 @@ public class SelectableTrajectory {
     return defualtCommand;
   }
 }
+
+class EmptyCommand extends CommandBase {}

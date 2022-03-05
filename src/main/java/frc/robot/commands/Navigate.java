@@ -13,9 +13,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Base;
 
-public class DriveByGyro extends CommandBase {
+public class Navigate extends CommandBase {
 
   Base base;
+
+  double drive_kP = 1;
+  double drive_kI = 0.5;
+  double drive_kD = 0.002;
+
+  double align_kP = 3.7;
+  double align_kI = 0.5;
+  double align_kD = 0.003;
 
   /**
    * kP:
@@ -23,23 +31,38 @@ public class DriveByGyro extends CommandBase {
    * kD: keep kD low otherwise your system could become unstable
    */
 
-  PIDController straightController = new PIDController(1, 0.5, 0.002); // kP 0.27 kI 0.3 kD 0.002
-  PIDController alignController = new PIDController(3.7, 0.5, 0.003);
+  PIDController straightController = new PIDController(
+    drive_kP,
+    drive_kI,
+    drive_kD
+  ); // kP 0.27 kI 0.3 kD 0.002
+
+  PIDController alignController = new PIDController(
+    align_kP,
+    align_kI,
+    align_kD
+  );
 
   // 0.122807
   double reduction = SdsModuleConfigurations.MK4_L1.getDriveReduction();
 
-  // PIDController alignController = new PIDController(3, 0.2, 0.002);
-
-  double targetAngle;
-  double targetInches;
+  double targetAngle = 0;
+  double targetInches = 0;
 
   /** Creates a new DriveStraight. */
-  public DriveByGyro(Base base, double targetInches, double targetAngle) {
+  public Navigate(Base base, double targetInches, double targetAngle) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.base = base;
     this.targetInches = targetInches;
     this.targetAngle = targetAngle;
+
+    addRequirements(base);
+  }
+
+  public Navigate(Base base, double targetInches) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    this.base = base;
+    this.targetInches = targetInches;
 
     addRequirements(base);
   }
@@ -65,6 +88,7 @@ public class DriveByGyro extends CommandBase {
   @Override
   public void execute() {
     double currentAngle = base.getSensorYaw();
+
     double front_left_pos = Math.abs(
       this.base.frontLeftModule.getDrivePosition()
     );
@@ -72,18 +96,18 @@ public class DriveByGyro extends CommandBase {
       this.base.frontRightModule.getDrivePosition()
     );
 
-    double front_left_rot = reduction * (front_left_pos / 2048);
+    double front_left_rot =
+      reduction * (front_left_pos / Base.FULL_TALON_ROTATION_TICKS);
 
-    double front_right_rot = reduction * (front_right_pos / 2048);
+    double front_right_rot =
+      reduction * (front_right_pos / Base.FULL_TALON_ROTATION_TICKS);
 
     double front_left_inches = front_left_rot * Base.circumference;
     double front_right_inches = front_right_rot * Base.circumference;
 
-    // double distance_traveled_inches =
-    //   (front_left_inches + front_right_inches) / 2.0;
-
     double distance_traveled_inches =
-      ((0.123825) * (front_right_pos / 2048)) * 12.875;
+      ((0.123825) * (front_right_pos / Base.FULL_TALON_ROTATION_TICKS)) *
+      12.875;
 
     SmartDashboard.putNumber("left", front_left_pos);
     SmartDashboard.putNumber("right", front_right_pos);
@@ -92,12 +116,6 @@ public class DriveByGyro extends CommandBase {
       distance_traveled_inches,
       targetInches
     );
-
-    // double x_power = MathUtil.clamp(
-    //   straightController.calculate(distance_traveled_inches, targetInches),
-    //   -0.8,
-    //   0.8
-    // );
 
     // set the distance power using a similar method as the turn test
     double x_power = 0;
@@ -172,7 +190,10 @@ public class DriveByGyro extends CommandBase {
       ", " +
       (
         (SdsModuleConfigurations.MK4_L1.getDriveReduction()) *
-        (this.base.frontRightModule.getDrivePosition() / 2048) *
+        (
+          this.base.frontRightModule.getDrivePosition() /
+          Base.FULL_TALON_ROTATION_TICKS
+        ) *
         Base.circumference
       ) +
       ", " +
@@ -184,6 +205,6 @@ public class DriveByGyro extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return straightController.atSetpoint()/* && alignController.atSetpoint()*/;
+    return straightController.atSetpoint() && alignController.atSetpoint();
   }
 }

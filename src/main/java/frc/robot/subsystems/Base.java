@@ -9,7 +9,6 @@ import com.ThePinkAlliance.swervelib.Mk4SwerveModuleHelper;
 import com.ThePinkAlliance.swervelib.SdsModuleConfigurations;
 import com.ThePinkAlliance.swervelib.SwerveModule;
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -24,13 +23,12 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Base extends SubsystemBase {
 
-  public static double TALON_ROTATION_TICKS = 2048;
+  public static final double FULL_TALON_ROTATION_TICKS = 2048;
 
   public static final Mk4SwerveModuleHelper.GearRatio motorRatio =
     Mk4SwerveModuleHelper.GearRatio.L1;
@@ -84,6 +82,8 @@ public class Base extends SubsystemBase {
   public static int FRONT_LEFT_CANCODER_ID = 31;
   public static int FRONT_RIGHT_CANCODER_ID = 34;
 
+  private final double DRIVE_MOTOR_RAMP_RATE = .5;
+
   private AHRS gyro = new AHRS(SerialPort.Port.kUSB1);
 
   private ShuffleboardTab tab;
@@ -99,11 +99,6 @@ public class Base extends SubsystemBase {
 
   /** 3 */
   public final SwerveModule backRightModule;
-
-  private final double DRIVE_MOTOR_RAMP_RATE = .75;
-
-  private double previous_x = 0;
-  private double previous_y = 0;
 
   public SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
     // Front Left Pod
@@ -165,11 +160,6 @@ public class Base extends SubsystemBase {
 
   private Mk4ModuleConfiguration configuration = new Mk4ModuleConfiguration();
 
-  // this pid is for auto rotate pid controller
-  private final double align_P_defualt = 20;
-  private final double align_I_defualt = 0;
-  private final double align_D_defualt = 0;
-
   NetworkTableEntry align_P = NetworkTableInstance
     .getDefault()
     .getTable("debug")
@@ -183,21 +173,9 @@ public class Base extends SubsystemBase {
     .getTable("debug")
     .getEntry("align-d");
 
-  // PID Controller for auto rotate
-  private PIDController alignController = new PIDController(
-    align_P.getDouble(align_P_defualt),
-    align_I.getDouble(align_I_defualt),
-    align_D.getDouble(align_D_defualt)
-  );
-  private ChassisSpeeds autoSpeeds = new ChassisSpeeds();
-
   /** Creates a new Base. */
   public Base() {
     this.tab = Shuffleboard.getTab("debug");
-
-    this.align_P.setNumber(align_P_defualt);
-    this.align_I.setNumber(align_I_defualt);
-    this.align_D.setNumber(align_D_defualt);
 
     this.backRightModule =
       Mk4SwerveModuleHelper.createFalcon500(
@@ -273,87 +251,6 @@ public class Base extends SubsystemBase {
     return this.states;
   }
 
-  /**
-   * NOTE: This needs to use the gyro to keep it from drifting from the desired heading
-   *
-   * @param targetPosition the desired unit of measurement is inches
-   * @return
-   */
-  @Deprecated
-  public boolean driveStraight(double targetPosition, double targetAngle) {
-    if (targetAngle == 0) {
-      targetAngle = 360;
-    }
-
-    double front_left_pos = Math.abs(this.frontLeftModule.getDrivePosition());
-    double front_right_pos = Math.abs(this.frontRightModule.getDrivePosition());
-    Rotation2d angle_diff = getRotation()
-      .minus(Rotation2d.fromDegrees(targetAngle));
-
-    if (angle_diff.getDegrees() < -0) {
-      angle_diff = Rotation2d.fromDegrees((360 + targetAngle));
-    }
-
-    double front_left_rot =
-      SdsModuleConfigurations.MK4_L1.getDriveReduction() *
-      (front_left_pos / 2048);
-
-    double front_right_rot =
-      SdsModuleConfigurations.MK4_L1.getDriveReduction() *
-      (front_right_pos / 2048);
-
-    double front_left_inches = front_left_rot * circumference;
-    double front_right_inches = front_right_rot * circumference;
-
-    double distance_traveled_inches =
-      (front_left_inches + front_right_inches) / 2.0;
-
-    if (distance_traveled_inches >= targetPosition) {
-      autoSpeeds = new ChassisSpeeds(0, 0, 0);
-
-      resetDriveMotors();
-      // previous_x = distance_traveled_inches;
-    } else if (distance_traveled_inches < targetPosition) {
-      autoSpeeds = new ChassisSpeeds(1, 0, 0);
-      setPodAngles(angle_diff);
-    }
-
-    m_yaw_diff.setNumber(angle_diff.getDegrees());
-
-    SmartDashboard.putNumber("front_left_inches", front_left_inches);
-    SmartDashboard.putNumber("front_right_inches", front_right_inches);
-    SmartDashboard.putNumber(
-      "distance_traveled_inches",
-      distance_traveled_inches
-    );
-    SmartDashboard.putNumber("front_left_rot", front_left_rot);
-    SmartDashboard.putNumber("front_right_rot", front_right_rot);
-
-    setStates(kinematics.toSwerveModuleStates(autoSpeeds));
-
-    return distance_traveled_inches >= targetPosition;
-  }
-
-  /**
-   * Align with goal will take our current angle offset from the goal and command the pods to the calculated angle.
-   * @param angleOffset
-   */
-  @Deprecated
-  public void alignWithGoal(double angleOffset) {
-    double angleDiff = getRotation()
-      .minus(Rotation2d.fromDegrees(angleOffset))
-      .getDegrees();
-    double currentAngle = getRotation().getDegrees();
-
-    if (angleDiff < -0) {
-      angleDiff = 360 + angleDiff;
-    }
-
-    double power = (alignController.calculate(currentAngle, angleDiff) / 180);
-
-    setStates(kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, power)));
-  }
-
   public void setPodAngles(double angle) {
     for (int i = 0; i < states.length; i++) {
       SwerveModuleState state = states[i];
@@ -373,53 +270,6 @@ public class Base extends SubsystemBase {
       states[i] = state;
     }
   }
-
-  @Deprecated
-  public boolean rotate(double target) {
-    alignController.setP(align_P.getDouble(align_P_defualt));
-    alignController.setI(align_I.getDouble(align_I_defualt));
-    alignController.setD(align_D.getDouble(align_D_defualt));
-
-    double currentAngle = getRotation().getDegrees();
-    double power = (alignController.calculate(currentAngle, target) / 180);
-
-    NetworkTableInstance
-      .getDefault()
-      .getTable("debug")
-      .getEntry("rotate-power")
-      .setNumber(power);
-
-    setStates(kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, power)));
-
-    return alignController.atSetpoint();
-  }
-
-  /**
-   * NOTE: This needs a better implementation of finding the shortest direction to travel
-   * @param setpoint
-   * @param target
-   * @return a positive or negiative power in meters per second.
-   */
-  private double getPower(double target) {
-    double sign = 1;
-    double heading = getRotation().getDegrees();
-
-    if (target > heading) {
-      sign = 1;
-    } else if (target < heading) {
-      sign = -1;
-    }
-
-    return Math.copySign(1.4, sign);
-  }
-
-  /**
-   * This will calulate the gear reduction for the encoder.
-   * @param ticks This will be the ticks from the motor (Raw encoder units)
-   */
-  // public double calulateWheelTicks(double ticks) {
-  //   return (((ticks / 1.30) / 1.13) * 1.1) / FULL_ROT_TICKS;
-  // }
 
   /**
    * Sets the current chassis speeds of the robot to the given speeds and updates
@@ -546,30 +396,6 @@ public class Base extends SubsystemBase {
     }
 
     return -1.0;
-  }
-
-  public boolean isWithinError(double target, double current) {
-    return (target - current) < 2;
-  }
-
-  public boolean isOppsite(double v1, double v2) {
-    return (v1 > -0 && v2 < 0) || (v1 > 0 && v2 > -0);
-  }
-
-  @Deprecated
-  public double calulateStrafe(double offset) {
-    return (360 - offset) / 2;
-  }
-
-  @Deprecated
-  public double invertPower(double invertAngle, double angle, double power) {
-    boolean in_range = angle <= (invertAngle + 2) && angle <= (invertAngle - 2);
-
-    if (in_range) {
-      return power * -1.0;
-    }
-
-    return power;
   }
 
   @Override

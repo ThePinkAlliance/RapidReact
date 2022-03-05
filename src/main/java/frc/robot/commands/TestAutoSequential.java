@@ -10,12 +10,12 @@ import frc.robot.subsystems.Base;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class LeaveBlueLeft extends SequentialCommandGroup {
+public class TestAutoSequential extends SequentialCommandGroup {
 
   /** Creates a new LeaveBlueLeft. */
-  public LeaveBlueLeft(Base base) {
+  public TestAutoSequential(Base base) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new DriveByGyro(base, 61, 0));
+    addCommands(new Navigate(base, 61, 0), new Navigate(base, 0, 90));
   }
 }

@@ -15,8 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Drive;
-import frc.robot.commands.LeaveBlueLeft;
-import frc.robot.commands.LeaveBlueLeft_;
+import frc.robot.commands.TestAutoSequential;
 import frc.robot.commands.turnTest;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Limelight;
@@ -41,26 +40,13 @@ public class RobotContainer {
   // private final Shooter m_shooter = new Shooter();
   // private final TempTower tower = new TempTower();
 
-  // these values are filler's
-  double kP_X = 0;
-  double kD_X = 0;
-  double kI_X = 0;
-
-  double kP_Y = 0;
-  double kD_Y = 0;
-  double kI_Y = 0;
-
-  double kP_T = 0;
-  double kI_T = 0;
-  double kD_T = 0;
-
   Trajectory trajectory = new Trajectory();
   ShuffleboardTab driverDashboard = Shuffleboard.getTab("Dashboard");
   SendableChooser<SelectableTrajectory> selectedPath = new SendableChooser<SelectableTrajectory>();
 
   private final SelectableTrajectory leaveBlueLeft = new SelectableTrajectory(
     "Leave Blue Left",
-    new LeaveBlueLeft(m_base)
+    new TestAutoSequential(m_base)
   );
 
   private final SelectableTrajectory turnTest = new SelectableTrajectory(
@@ -82,11 +68,6 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
-
-    SmartDashboard.putNumber(
-      Turret.TURRET_NAME + " power",
-      Turret.TURRET_DEFAULT_POWER
-    );
 
     for (SelectableTrajectory t : trajectories) {
       if (t.location == leaveBlueLeft.name) {
@@ -110,15 +91,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     //base controller
     //left joystick
-    this.m_base.setDefaultCommand(
-        new Drive(
-          m_base,
-          () -> gamepad_base.getRawAxis(0),
-          () -> gamepad_base.getRawAxis(1),
-          () -> gamepad_base.getRawAxis(4),
-          this.gamepad_base
-        )
-      );
+    this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
     // this.m_shooter.setDefaultCommand(
     //     new Shoot(m_shooter, () -> gamepad_base.getRawAxis(2))
     //   );
@@ -147,12 +120,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // // set the current trajectory to execute
-    // selectTrajectory(selectedPath.getSelected());
-
-    // set the initial pose of the robot to the starting pose of the trajectory
-    // m_base.resetOdometry(trajectory.getInitialPose());
-
     if (selectedPath.getSelected() == null) {
       selectedPath.setDefaultOption("Leave Blue Left", leaveBlueLeft);
     }
