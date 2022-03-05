@@ -10,11 +10,25 @@ import frc.robot.ClimberModule.SOLENOID_STATE;
 
 public class Climbers extends SubsystemBase {
 
-  // The port range for the climbers is 40-49
-  public ClimberModule leftOutModule = new ClimberModule(40, 41, 0);
-  public ClimberModule leftInModule = new ClimberModule(42, 43, 0);
-  public ClimberModule rightOutModule = new ClimberModule(44, 45, 0);
-  public ClimberModule rightInModule = new ClimberModule(46, 47, 0);
+  // The port range for the climbers is 40-59
+  public ClimberModule leftOutModule = new ClimberModule(
+    40,
+    41,
+    42,
+    43,
+    true,
+    0
+  );
+  public ClimberModule leftInModule = new ClimberModule(
+    44,
+    45,
+    46,
+    47,
+    true,
+    0
+  );
+  public ClimberModule rightOutModule = new ClimberModule(48, 49, 50, 51, 0);
+  public ClimberModule rightInModule = new ClimberModule(52, 53, 54, 55, 0);
 
   /** Creates a new Climbers. */
   public Climbers() {}
@@ -31,17 +45,24 @@ public class Climbers extends SubsystemBase {
     rightInModule.setPosition(rightTwo);
   }
 
+  /**
+   * This is only recommended to be used in teleop and not auto.
+   * @param leftOut
+   * @param leftIn
+   * @param rightOut
+   * @param rightIn
+   */
   public void commandAllPower(
     double leftOut,
     double leftIn,
     double rightOut,
     double rightIn
   ) {
-    // dividing the joystick values by 2.5 will max then power at 40% while keeping the joystick scaling smooth.
-    leftOut = leftOut / 2.5;
-    leftIn = leftIn / 2.5;
-    rightOut = rightOut / 2.5;
-    rightIn = rightIn / 2.5;
+    // dividing the joystick values by 2.5 will max power at 40% while keeping the joystick scaling smooth.
+    leftOut = leftOut / 2.7;
+    leftIn = leftIn / 2.7;
+    rightOut = rightOut / 2.7;
+    rightIn = rightIn / 2.7;
 
     leftOutModule.setPower(leftOut);
     leftInModule.setPower(leftIn);

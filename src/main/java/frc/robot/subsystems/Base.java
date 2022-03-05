@@ -20,6 +20,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -61,14 +62,12 @@ public class Base extends SubsystemBase {
     );
 
   // physical constants
-  public static double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(188.69);
-  public static double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(182.97); // 179.20
-  public static double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(132.09);
-  public static double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(63.80); // 359.29
+  public static double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(190.00);
+  public static double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(183.59); // 179.20
+  public static double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(133.23); // 316.66
+  public static double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(66.35); // 245.97
 
-  public static double circumference =
-    Units.metersToInches(SdsModuleConfigurations.MK4_L1.getWheelDiameter()) *
-    Math.PI;
+  public static double circumference = 12.875;
 
   public static int BACK_RIGHT_DRIVE_MOTOR_PORT = 27;
   public static int BACK_LEFT_DRIVE_MOTOR_PORT = 25;
@@ -85,21 +84,21 @@ public class Base extends SubsystemBase {
   public static int FRONT_LEFT_CANCODER_ID = 31;
   public static int FRONT_RIGHT_CANCODER_ID = 34;
 
-  private AHRS gyro = new AHRS();
+  private AHRS gyro = new AHRS(SerialPort.Port.kUSB1);
 
   private ShuffleboardTab tab;
 
   /** 0 */
-  private final SwerveModule frontLeftModule;
+  public final SwerveModule frontLeftModule;
 
   /** 1 */
-  private final SwerveModule frontRightModule;
+  public final SwerveModule frontRightModule;
 
   /** 2 */
-  private final SwerveModule backLeftModule;
+  public final SwerveModule backLeftModule;
 
   /** 3 */
-  private final SwerveModule backRightModule;
+  public final SwerveModule backRightModule;
 
   private double previous_x = 0;
   private double previous_y = 0;
@@ -164,6 +163,7 @@ public class Base extends SubsystemBase {
 
   private Mk4ModuleConfiguration configuration = new Mk4ModuleConfiguration();
 
+  // this pid is for auto rotate pid controller
   private final double align_P_defualt = 20;
   private final double align_I_defualt = 0;
   private final double align_D_defualt = 0;
@@ -181,6 +181,7 @@ public class Base extends SubsystemBase {
     .getTable("debug")
     .getEntry("align-d");
 
+  // PID Controller for auto rotate
   private PIDController alignController = new PIDController(
     align_P.getDouble(align_P_defualt),
     align_I.getDouble(align_I_defualt),
@@ -260,12 +261,17 @@ public class Base extends SubsystemBase {
     this.frontRightModule.resetDrive();
   }
 
+  public SwerveModuleState[] getStates() {
+    return this.states;
+  }
+
   /**
    * NOTE: This needs to use the gyro to keep it from drifting from the desired heading
    *
    * @param targetPosition the desired unit of measurement is inches
    * @return
    */
+  @Deprecated
   public boolean driveStraight(double targetPosition, double targetAngle) {
     if (targetAngle == 0) {
       targetAngle = 360;
@@ -274,7 +280,7 @@ public class Base extends SubsystemBase {
     double front_left_pos = Math.abs(this.frontLeftModule.getDrivePosition());
     double front_right_pos = Math.abs(this.frontRightModule.getDrivePosition());
     Rotation2d angle_diff = getRotation()
-      .minus(Rotation2d.fromDegrees(targetAngle + 180));
+      .minus(Rotation2d.fromDegrees(targetAngle));
 
     if (angle_diff.getDegrees() < -0) {
       angle_diff = Rotation2d.fromDegrees((360 + targetAngle));
@@ -324,6 +330,7 @@ public class Base extends SubsystemBase {
    * Align with goal will take our current angle offset from the goal and command the pods to the calculated angle.
    * @param angleOffset
    */
+  @Deprecated
   public void alignWithGoal(double angleOffset) {
     double angleDiff = getRotation()
       .minus(Rotation2d.fromDegrees(angleOffset))
@@ -334,7 +341,7 @@ public class Base extends SubsystemBase {
       angleDiff = 360 + angleDiff;
     }
 
-    double power = (alignController.calculate(currentAngle, angleDiff) / 360);
+    double power = (alignController.calculate(currentAngle, angleDiff) / 180);
 
     setStates(kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, power)));
   }
@@ -359,6 +366,7 @@ public class Base extends SubsystemBase {
     }
   }
 
+  @Deprecated
   public boolean rotate(double target) {
     alignController.setP(align_P.getDouble(align_P_defualt));
     alignController.setI(align_I.getDouble(align_I_defualt));
@@ -375,12 +383,12 @@ public class Base extends SubsystemBase {
 
     setStates(kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, power)));
 
-    return Math.abs(target - currentAngle) < 1.2;
+    return alignController.atSetpoint();
   }
 
   /**
    * NOTE: This needs a better implementation of finding the shortest direction to travel
-   * @param angle
+   * @param setpoint
    * @param target
    * @return a positive or negiative power in meters per second.
    */
@@ -498,6 +506,10 @@ public class Base extends SubsystemBase {
     return Rotation2d.fromDegrees(360.0 - gyro.getYaw());
   }
 
+  public double getSensorYaw() {
+    return gyro.getYaw();
+  }
+
   /**
    * Returns if the robot inverted.
    */
@@ -556,7 +568,14 @@ public class Base extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    m_yaw.setNumber(gyro.getFusedHeading());
+    m_yaw.setNumber(gyro.getYaw());
+
+    Constants.isRed =
+      NetworkTableInstance
+        .getDefault()
+        .getTable("FMSInfo")
+        .getEntry("IsRedAlliance")
+        .getBoolean(true);
 
     setStates(this.states);
   }

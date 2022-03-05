@@ -63,10 +63,19 @@ public class Drive extends CommandBase {
     axis1y *= -1;
 
     ChassisSpeeds speedObject = new ChassisSpeeds(
-      modifyAxis(axis1y) * Base.MAX_VELOCITY_METERS_PER_SECOND,
-      modifyAxis(axis0x) * Base.MAX_VELOCITY_METERS_PER_SECOND,
-      modifyAxis(axis4rot) * Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+      modifyAxisLimited(axis1y) * Base.MAX_VELOCITY_METERS_PER_SECOND,
+      modifyAxisLimited(axis0x) * Base.MAX_VELOCITY_METERS_PER_SECOND,
+      modifyAxisLimited(axis4rot) * Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     );
+
+    if (js.getRawButton(Constants.JOYSTICK_LEFT_BUMPER)) {
+      speedObject =
+        new ChassisSpeeds(
+          modifyAxis(axis1y) * Base.MAX_VELOCITY_METERS_PER_SECOND,
+          modifyAxis(axis0x) * Base.MAX_VELOCITY_METERS_PER_SECOND,
+          modifyAxis(axis4rot) * Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+        );
+    }
 
     this.base.drive(speedObject);
   }
@@ -83,7 +92,7 @@ public class Drive extends CommandBase {
     }
   }
 
-  private static double modifyAxis(double value) {
+  private static double modifyAxisLimited(double value) {
     // Deadband
     value = deadband(value, 0.05);
 
@@ -92,6 +101,16 @@ public class Drive extends CommandBase {
 
     // Limit the speed to 60%
     value = value / 1.5;
+
+    return value;
+  }
+
+  private static double modifyAxis(double value) {
+    // Deadband
+    value = deadband(value, 0.05);
+
+    // Cubing due to raw power until robot reaches competition weight.
+    value = Math.copySign(value * value * value, value);
 
     return value;
   }

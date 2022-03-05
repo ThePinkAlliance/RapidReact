@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
+import java.net.NetworkInterface;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
@@ -19,8 +22,19 @@ package frc.robot;
 
 public final class Constants {
 
+  public static boolean isRed = true;
+
   public static int JOYSTICK_BUTTON_X = 3;
   public static int JOYSTICK_BUTTON_A = 1;
   public static int JOYSTICK_BUTTON_B = 2;
   public static int JOYSTICK_BUTTON_Y = 4;
+
+  // Triggers are used for intake
+  public static int JOYSTICK_LEFT_TRIGGER = 0;
+  public static int JOYSTICK_RIGHT_TRIGGER = 0;
+
+  // Turbo
+  public static int JOYSTICK_LEFT_BUMPER = 5;
+
+  public static int JOYSTICK_RIGHT_BUMPER = 0;
 }

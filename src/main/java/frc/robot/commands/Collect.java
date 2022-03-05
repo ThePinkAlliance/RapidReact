@@ -5,29 +5,26 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Base;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Collector;
 
-/** example command that uses an example subsystem. */
-public class ExampleCommand extends CommandBase {
+public class Collect extends CommandBase {
 
-  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
-  private final Base m_subsystem;
+  Collector m_collector;
 
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
-  public ExampleCommand(Base subsystem) {
-    m_subsystem = subsystem;
+  /** Creates a new Collect. */
+  public Collect(Collector collecter) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    addRequirements(collecter);
+
+    this.m_collector = collecter;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    //set motor to speed set in constants so we can change
+    this.m_collector.SetSpeed(Collector.COLLECTOR_MOTOR_SPEED);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -35,7 +32,10 @@ public class ExampleCommand extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    //stop motor so collector no longer runs
+    this.m_collector.SetSpeed(0.0);
+  }
 
   // Returns true when the command should end.
   @Override
