@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import com.ThePinkAlliance.swervelib.SdsModuleConfigurations;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -81,7 +80,7 @@ public class Navigate extends CommandBase {
     alignController.enableContinuousInput(-180, 180);
 
     alignController.setTolerance(0.5, 1.0);
-    straightController.setTolerance(1);
+    straightController.setTolerance(1.5);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -108,9 +107,6 @@ public class Navigate extends CommandBase {
     double distance_traveled_inches =
       ((0.123825) * (front_right_pos / Base.FULL_TALON_ROTATION_TICKS)) *
       12.875;
-
-    SmartDashboard.putNumber("left", front_left_pos);
-    SmartDashboard.putNumber("right", front_right_pos);
 
     double x_error = straightController.calculate(
       distance_traveled_inches,

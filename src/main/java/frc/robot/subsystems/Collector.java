@@ -6,22 +6,25 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Collector extends SubsystemBase {
 
-  public static int COLLECTOR_MOTOR_PORT = 52;
-  public static double COLLECTOR_MOTOR_SPEED = 1;
+  public static int COLLECTOR_MOTOR_PORT = 10;
+  public static double COLLECTOR_MOTOR_FULL_SPEED = 1;
 
-  TalonFX collectorMotor;
+  // TalonFX collectorMotor;
+  Compressor compressor;
 
   /** Creates a new Collector. */
-  public Collector() {
-    collectorMotor = new TalonFX(Collector.COLLECTOR_MOTOR_PORT);
+  public Collector(Compressor compressor) {
+    // collectorMotor = new TalonFX(Collector.COLLECTOR_MOTOR_PORT);
+    this.compressor = compressor;
   }
 
   public void SetSpeed(double speed) {
-    collectorMotor.set(ControlMode.PercentOutput, speed);
+    // collectorMotor.set(ControlMode.PercentOutput, speed);
   }
 
   @Override

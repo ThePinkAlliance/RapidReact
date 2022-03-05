@@ -5,8 +5,10 @@
 package frc.robot;
 
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -14,10 +16,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.Collect;
 import frc.robot.commands.Drive;
 import frc.robot.commands.TestAutoSequential;
 import frc.robot.commands.turnTest;
 import frc.robot.subsystems.Base;
+import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.LimelightLedMode;
 import frc.robot.subsystems.Turret;
@@ -33,9 +37,14 @@ import frc.robot.subsystems.Turret;
  */
 public class RobotContainer {
 
+  private final Compressor compressor = new Compressor(
+    PneumaticsModuleType.REVPH
+  );
+
   private final Joystick gamepad_base = new Joystick(0);
   private final Base m_base = new Base();
   private final Limelight m_limelight = new Limelight();
+  private final Collector m_collector = new Collector(compressor);
   // private final Turret m_turret = new Turret();
   // private final Shooter m_shooter = new Shooter();
   // private final TempTower tower = new TempTower();
@@ -97,6 +106,8 @@ public class RobotContainer {
     //   );
     new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_A)
     .whenPressed(m_base::zeroGyro);
+    new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_B)
+    .whenPressed(new Collect(m_collector, gamepad_base));
     // new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_X)
     // .whenPressed(
     //     new TurretRotate(
