@@ -100,6 +100,8 @@ public class Base extends SubsystemBase {
   /** 3 */
   public final SwerveModule backRightModule;
 
+  private final double DRIVE_MOTOR_RAMP_RATE = .75;
+
   private double previous_x = 0;
   private double previous_y = 0;
 
@@ -252,6 +254,12 @@ public class Base extends SubsystemBase {
         Base.FRONT_LEFT_CANCODER_ID,
         Base.FRONT_LEFT_MODULE_STEER_OFFSET
       );
+
+    // Setting the drive motor ramp rate
+    this.frontLeftModule.configRampRate(DRIVE_MOTOR_RAMP_RATE);
+    this.frontRightModule.configRampRate(DRIVE_MOTOR_RAMP_RATE);
+    this.backLeftModule.configRampRate(DRIVE_MOTOR_RAMP_RATE);
+    this.backRightModule.configRampRate(DRIVE_MOTOR_RAMP_RATE);
   }
 
   public void resetDriveMotors() {
