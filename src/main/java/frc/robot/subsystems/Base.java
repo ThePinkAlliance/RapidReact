@@ -62,14 +62,12 @@ public class Base extends SubsystemBase {
     );
 
   // physical constants
-  public static double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(188.69);
-  public static double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(182.97); // 179.20
-  public static double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(132.09); // 316.66
-  public static double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(63.80); // 245.97
+  public static double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(190.00);
+  public static double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(183.59); // 179.20
+  public static double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(133.23); // 316.66
+  public static double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(66.35); // 245.97
 
-  public static double circumference =
-    Units.metersToInches(SdsModuleConfigurations.MK4_L1.getWheelDiameter()) *
-    Math.PI;
+  public static double circumference = 12.875;
 
   public static int BACK_RIGHT_DRIVE_MOTOR_PORT = 27;
   public static int BACK_LEFT_DRIVE_MOTOR_PORT = 25;

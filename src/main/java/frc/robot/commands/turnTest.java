@@ -8,16 +8,18 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Base;
 
 public class turnTest extends CommandBase {
 
-  double p = 3.8; // 0.009, 3.7 works
-  double i = 0.01; // 0.6
-  double d = 0.002;
-  double setpoint = -90;
+  Timer timer;
+  double p = 3.9; // 0.009, 3.7 works, 3.9
+  double i = 0.6; // 0.6
+  double d = 0.0;
+  double setpoint = 45;
 
   PIDController alignController = new PIDController(p, i, d);
   Base base;
@@ -28,6 +30,7 @@ public class turnTest extends CommandBase {
   public turnTest(Base base) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.base = base;
+    this.timer = new Timer();
 
     addRequirements(base);
   }
@@ -45,6 +48,8 @@ public class turnTest extends CommandBase {
     SmartDashboard.putNumber("setpoint", setpoint);
 
     debug.getEntry("turn-target").getDouble(setpoint);
+
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
