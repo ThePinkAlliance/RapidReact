@@ -13,22 +13,23 @@ public class Collector extends SubsystemBase {
 
   public static int COLLECTOR_MOTOR_PORT = 10;
   public static double COLLECTOR_MOTOR_FULL_SPEED = 1;
-
-  // TalonFX collectorMotor;
-  Compressor compressor;
+  private TalonFX collectorMotor;
+  
 
   /** Creates a new Collector. */
-  public Collector(Compressor compressor) {
-    // collectorMotor = new TalonFX(Collector.COLLECTOR_MOTOR_PORT);
-    this.compressor = compressor;
+  public Collector() {
+
+    this.collectorMotor = new TalonFX(Collector.COLLECTOR_MOTOR_PORT);
+    
   }
 
   public void SetSpeed(double speed) {
-    // collectorMotor.set(ControlMode.PercentOutput, speed);
+      collectorMotor.set(ControlMode.PercentOutput, speed);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
   }
 }

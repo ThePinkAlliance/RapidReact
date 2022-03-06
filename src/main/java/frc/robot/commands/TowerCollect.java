@@ -24,29 +24,29 @@ public class TowerCollect extends CommandBase {
 
   @Override
   public void initialize() {
-    this.m_collectorSub.SetSpeed(Collector.COLLECTOR_MOTOR_FULL_SPEED);
-    this.m_tower.getRed();
-    this.m_tower.getBlue();
+    //this.m_collectorSub.SetSpeed(Collector.COLLECTOR_MOTOR_FULL_SPEED);
+    // this.m_tower.getRed();
+    // this.m_tower.getBlue();
   }
 
   @Override
   public void execute() {
-    double threshold = Tower.RGB_THRESHOLD;
-    if (isRed == true) {
-      if (this.m_tower.getBlue() >= threshold) {
-        this.m_collectorSub.SetSpeed(20.0);
-      }
-      if (this.m_tower.getRed() >= threshold) {
-        this.m_collectorSub.SetSpeed(0.0); // can change
-      }
-    }
-    if (isRed == false) {
-      if (this.m_tower.getBlue() >= threshold) {
-        this.m_collectorSub.SetSpeed(0.0);
-      }
-      if (this.m_tower.getRed() >= threshold) {
-        this.m_collectorSub.SetSpeed(20.0); // can change
-      }
-    }
+    // double threshold = Tower.RGB_THRESHOLD;
+    // if (isRed == true) {
+    //   if (this.m_tower.getBlue() >= threshold) {
+    //     this.m_collectorSub.SetSpeed(20.0);
+    //   }
+    //   if (this.m_tower.getRed() >= threshold) {
+    //     this.m_collectorSub.SetSpeed(0.0); // can change
+    //   }
+    // }
+    // if (isRed == false) {
+    //   if (this.m_tower.getBlue() >= threshold) {
+    //     this.m_collectorSub.SetSpeed(0.0);
+    //   }
+    //   if (this.m_tower.getRed() >= threshold) {
+    //     this.m_collectorSub.SetSpeed(20.0); // can change
+    //   }
+    // }
   }
 }

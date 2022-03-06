@@ -4,8 +4,11 @@
 
 package frc.robot.subsystems;
 
+//import com.ThePinkAlliance.swervelib.Mk4ModuleConfiguration;
+import com.ThePinkAlliance.swervelib.Mk4iSwerveModuleHelper;
 import com.ThePinkAlliance.swervelib.Mk4ModuleConfiguration;
-import com.ThePinkAlliance.swervelib.Mk4SwerveModuleHelper;
+//import com.ThePinkAlliance.swervelib.Mk4SwerveModuleHelper;
+//import com.ThePinkAlliance.swervelib.Mk4iSwerveModuleHelper;
 import com.ThePinkAlliance.swervelib.SdsModuleConfigurations;
 import com.ThePinkAlliance.swervelib.SwerveModule;
 import com.kauailabs.navx.frc.AHRS;
@@ -30,8 +33,8 @@ public class Base extends SubsystemBase {
 
   public static final double FULL_TALON_ROTATION_TICKS = 2048;
 
-  public static final Mk4SwerveModuleHelper.GearRatio motorRatio =
-    Mk4SwerveModuleHelper.GearRatio.L1;
+  public static final Mk4iSwerveModuleHelper.GearRatio motorRatio =
+    Mk4iSwerveModuleHelper.GearRatio.L1;
 
   public static final double MAX_VOLTAGE = 12.0;
 
@@ -47,10 +50,10 @@ public class Base extends SubsystemBase {
     //TODO - select a realistic rpm.
     5000.0 /
     60.0 *
-    SdsModuleConfigurations.MK4_L1.getDriveReduction() *
-    SdsModuleConfigurations.MK4_L1.getWheelDiameter() *
+    SdsModuleConfigurations.MK4I_L1.getDriveReduction() *
+    SdsModuleConfigurations.MK4I_L1.getWheelDiameter() *
     Math.PI; // 5.107;
-
+  
   public static final double MAX_ACCELERATION_METERS_PER_SECOND = 4.346;
   public static double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
     MAX_VELOCITY_METERS_PER_SECOND /
@@ -67,20 +70,21 @@ public class Base extends SubsystemBase {
 
   public static double circumference = 12.875;
 
-  public static int BACK_RIGHT_DRIVE_MOTOR_PORT = 27;
-  public static int BACK_LEFT_DRIVE_MOTOR_PORT = 25;
-  public static int FRONT_RIGHT_DRIVE_MOTOR_PORT = 21;
-  public static int FRONT_LEFT_DRIVE_MOTOR_PORT = 23;
+  public static int BACK_RIGHT_DRIVE_MOTOR_PORT = 40;
+  public static int BACK_LEFT_DRIVE_MOTOR_PORT = 49;
+  public static int FRONT_RIGHT_DRIVE_MOTOR_PORT = 43;
+  public static int FRONT_LEFT_DRIVE_MOTOR_PORT = 46;
 
-  public static int BACK_RIGHT_STEER_MOTOR_PORT = 26;
-  public static int BACK_LEFT_STEER_MOTOR_PORT = 24;
-  public static int FRONT_RIGHT_STEER_MOTOR_PORT = 20;
-  public static int FRONT_LEFT_STEER_MOTOR_PORT = 22;
+  public static int BACK_RIGHT_STEER_MOTOR_PORT = 41;
+  public static int BACK_LEFT_STEER_MOTOR_PORT = 61;
+  public static int FRONT_RIGHT_STEER_MOTOR_PORT = 44;
+  public static int FRONT_LEFT_STEER_MOTOR_PORT = 47;
 
-  public static int BACK_LEFT_CANCODER_ID = 32;
-  public static int BACK_RIGHT_CANCODER_ID = 33;
-  public static int FRONT_LEFT_CANCODER_ID = 31;
-  public static int FRONT_RIGHT_CANCODER_ID = 34;
+  public static int BACK_LEFT_CANCODER_ID = 62;
+  public static int BACK_RIGHT_CANCODER_ID = 42;
+  public static int FRONT_RIGHT_CANCODER_ID = 45;
+  public static int FRONT_LEFT_CANCODER_ID = 48;
+  
 
   private final double DRIVE_MOTOR_RAMP_RATE = .5;
 
@@ -178,7 +182,7 @@ public class Base extends SubsystemBase {
     this.tab = Shuffleboard.getTab("debug");
 
     this.backRightModule =
-      Mk4SwerveModuleHelper.createFalcon500(
+      Mk4iSwerveModuleHelper.createFalcon500(
         tab
           .getLayout("Back Right Module", BuiltInLayouts.kList)
           .withSize(2, 4)
@@ -192,7 +196,7 @@ public class Base extends SubsystemBase {
       );
 
     this.backLeftModule =
-      Mk4SwerveModuleHelper.createFalcon500(
+      Mk4iSwerveModuleHelper.createFalcon500(
         tab
           .getLayout("Back Left Module", BuiltInLayouts.kList)
           .withSize(2, 4)
@@ -206,7 +210,7 @@ public class Base extends SubsystemBase {
       );
 
     this.frontRightModule =
-      Mk4SwerveModuleHelper.createFalcon500(
+      Mk4iSwerveModuleHelper.createFalcon500(
         tab
           .getLayout("Front Right Module", BuiltInLayouts.kList)
           .withSize(2, 4)
@@ -220,7 +224,7 @@ public class Base extends SubsystemBase {
       );
 
     this.frontLeftModule =
-      Mk4SwerveModuleHelper.createFalcon500(
+      Mk4iSwerveModuleHelper.createFalcon500(
         tab
           .getLayout("Front Left Module", BuiltInLayouts.kList)
           .withSize(2, 4)

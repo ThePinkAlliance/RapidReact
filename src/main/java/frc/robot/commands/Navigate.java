@@ -43,7 +43,7 @@ public class Navigate extends CommandBase {
   );
 
   // 0.122807
-  double reduction = SdsModuleConfigurations.MK4_L1.getDriveReduction();
+  double reduction = SdsModuleConfigurations.MK4I_L1.getDriveReduction();
 
   double targetAngle = 0;
   double targetInches = 0;
@@ -185,7 +185,7 @@ public class Navigate extends CommandBase {
       this.base.frontRightModule.getDrivePosition() +
       ", " +
       (
-        (SdsModuleConfigurations.MK4_L1.getDriveReduction()) *
+        (SdsModuleConfigurations.MK4I_L1.getDriveReduction()) *
         (
           this.base.frontRightModule.getDrivePosition() /
           Base.FULL_TALON_ROTATION_TICKS

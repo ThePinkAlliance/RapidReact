@@ -37,4 +37,7 @@ public final class Constants {
   public static int JOYSTICK_LEFT_BUMPER = 5;
 
   public static int JOYSTICK_RIGHT_BUMPER = 0;
+
+  public static String DASH_SHOOTER_POWER = "Shooter Power:";
+
 }

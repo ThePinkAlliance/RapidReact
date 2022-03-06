@@ -12,18 +12,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
 
-  TalonFX motor = new TalonFX(36);
+  public static final double SHOOTER_POWER_DEFAULT = 0.75;
+  private final int SHOOTER_MOTOR = 30;
+  TalonFX motor = new TalonFX(SHOOTER_MOTOR);
 
   /** Creates a new Shooter. */
   public Shooter() {
     motor.setNeutralMode(NeutralMode.Coast);
-    motor.config_kP(0, 1);
-    motor.config_kI(0, 0);
-    motor.config_kD(0, 0);
-    motor.configVelocityMeasurementPeriod(
-      SensorVelocityMeasPeriod.Period_2Ms,
-      100
-    );
   }
 
   public void revUp(double velocity) {

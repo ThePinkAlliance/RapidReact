@@ -5,55 +5,53 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Tower;
 
-public class Shoot extends CommandBase {
 
-  private Shooter shooter;
+public class EnableTower extends CommandBase {
+
+  private Tower tower;
   private double power;
-  private double actualPower;
   private Joystick joystick;
+  private boolean bIntake;
 
   /** Creates a new Shoot. */
-  public Shoot(Shooter shooter, double power, Joystick js) {
+  public EnableTower(Tower tower, double power, Joystick js, boolean bIntake) {
     // Use addRequirements() here to declare subsystem dependencies.
 
-    this.shooter = shooter;
+    this.tower = tower;
     this.power = power;
     this.joystick = js;
-    this.actualPower = power;
+    this.bIntake = bIntake;
 
-    addRequirements(shooter);
+    addRequirements(tower);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-
-     double dashPower = SmartDashboard.getNumber(Constants.DASH_SHOOTER_POWER, this.power);
-     actualPower = dashPower;
-
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.command(actualPower);
+    if (bIntake == false)
+       tower.commandFrontMotor(power);
+    else
+       tower.commandFrontMotor(-power);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.command(0.0);
+    tower.commandFrontMotor(0.0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    boolean pressed = joystick.getRawButton(Constants.JOYSTICK_BUTTON_X);
+    boolean pressed = joystick.getRawButton(Constants.JOYSTICK_BUTTON_Y);
 
     if (pressed) {
       return false;

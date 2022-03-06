@@ -15,10 +15,11 @@ public class Collect extends CommandBase {
 
   Collector m_collector;
   Joystick joystick;
-  Solenoid solenoid = new Solenoid(PneumaticsModuleType.REVPH, 0);
+  //Solenoid solenoid = new Solenoid(PneumaticsModuleType.REVPH, 0);
+  boolean bIntake = false;
 
   /** Creates a new Collect. */
-  public Collect(Collector collecter, Joystick joystick) {
+  public Collect(Collector collecter, Joystick joystick, boolean bIntake) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(collecter);
 
@@ -34,9 +35,12 @@ public class Collect extends CommandBase {
   @Override
   public void execute() {
     // set motor to speed set in constants so we can change
-    this.m_collector.SetSpeed(Collector.COLLECTOR_MOTOR_FULL_SPEED);
+    if (bIntake == false)
+        this.m_collector.SetSpeed(-Collector.COLLECTOR_MOTOR_FULL_SPEED);
+    else
+        this.m_collector.SetSpeed(Collector.COLLECTOR_MOTOR_FULL_SPEED);
 
-    this.solenoid.set(true);
+    //this.solenoid.set(true);
   }
 
   // Called once the command ends or is interrupted.
@@ -44,7 +48,7 @@ public class Collect extends CommandBase {
   public void end(boolean interrupted) {
     //stop motor so collector no longer runs
     this.m_collector.SetSpeed(0.0);
-    this.solenoid.set(false);
+    //this.solenoid.set(false);
 
     System.out.println("COMMAND COLLECT END: " + interrupted);
   }
@@ -52,7 +56,7 @@ public class Collect extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    boolean pressed = joystick.getRawButton(Constants.JOYSTICK_BUTTON_B);
+    boolean pressed = joystick.getRawButton(Constants.JOYSTICK_BUTTON_X);
 
     if (pressed) {
       return false;

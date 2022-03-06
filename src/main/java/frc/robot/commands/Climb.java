@@ -37,11 +37,11 @@ public class Climb extends CommandBase {
   @Override
   public void execute() {
     if (side == SIDE.IN) {
-      this.m_climbers.leftInModule.setPosition(targetPosition);
-      this.m_climbers.rightInModule.setPosition(targetPosition);
+      //this.m_climbers.leftInModule.setPosition(targetPosition);
+      //this.m_climbers.rightInModule.setPosition(targetPosition);
     } else if (side == SIDE.OUT) {
-      this.m_climbers.leftOutModule.setPosition(targetPosition);
-      this.m_climbers.rightOutModule.setPosition(targetPosition);
+      //this.m_climbers.leftOutModule.setPosition(targetPosition);
+      //this.m_climbers.rightOutModule.setPosition(targetPosition);
     }
   }
 
@@ -52,35 +52,35 @@ public class Climb extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (side == SIDE.IN) {
-      return (
-        Math.abs(
-          (
-            (
-              m_climbers.leftInModule.currentPosition() +
-              m_climbers.rightInModule.currentPosition()
-            ) /
-            2.0
-          ) -
-          targetPosition
-        ) <
-        5.0
-      );
-    } else if (side == SIDE.OUT) {
-      return (
-        Math.abs(
-          (
-            (
-              m_climbers.leftOutModule.currentPosition() +
-              m_climbers.rightOutModule.currentPosition()
-            ) /
-            2.0
-          ) -
-          targetPosition
-        ) <
-        5.0
-      );
-    }
+    // if (side == SIDE.IN) {
+    //   return (
+    //     Math.abs(
+    //       (
+    //         (
+    //           m_climbers.leftInModule.currentPosition() +
+    //           m_climbers.rightInModule.currentPosition()
+    //         ) /
+    //         2.0
+    //       ) -
+    //       targetPosition
+    //     ) <
+    //     5.0
+    //   );
+    // } else if (side == SIDE.OUT) {
+    //   return (
+    //     Math.abs(
+    //       (
+    //         (
+    //           m_climbers.leftOutModule.currentPosition() +
+    //           m_climbers.rightOutModule.currentPosition()
+    //         ) /
+    //         2.0
+    //       ) -
+    //       targetPosition
+    //     ) <
+    //     5.0
+    //   );
+    // }
 
     return false;
   }
