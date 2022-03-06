@@ -9,10 +9,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Tower;
 
-public class CollectTowerGroup extends CommandBase {
+public class CollectGroup extends CommandBase {
 
   Collector m_collector;
   Joystick joystick;
+  Tower m_tower;
   int JOYSTICK_BUTTON;
   boolean bIntake;
 
@@ -23,9 +24,10 @@ public class CollectTowerGroup extends CommandBase {
    * @param JOYSTICK_BUTTON
    * @param bIntake
    */
-  public CollectTowerGroup(
+  public CollectGroup(
     Collector m_collector,
     Joystick joystick,
+    Tower m_tower,
     int JOYSTICK_BUTTON,
     boolean bIntake
   ) {
@@ -33,6 +35,7 @@ public class CollectTowerGroup extends CommandBase {
 
     this.m_collector = m_collector;
     this.joystick = joystick;
+    this.m_tower = m_tower;
 
     this.JOYSTICK_BUTTON = JOYSTICK_BUTTON;
     this.bIntake = bIntake;
@@ -49,13 +52,21 @@ public class CollectTowerGroup extends CommandBase {
   public void execute() {
     if (bIntake == false) {
       this.m_collector.SetSpeed(-Collector.COLLECTOR_MOTOR_FULL_SPEED);
-    } else this.m_collector.SetSpeed(Collector.COLLECTOR_MOTOR_FULL_SPEED);
+      this.m_tower.commandMotor(-1);
+    } else {
+      this.m_collector.SetSpeed(Collector.COLLECTOR_MOTOR_FULL_SPEED);
+      this.m_tower.commandMotor(1);
+    }
+
+    this.m_collector.setSolenoid(true);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     this.m_collector.SetSpeed(0);
+    this.m_tower.commandMotor(0);
+    this.m_collector.setSolenoid(false);
   }
 
   // Returns true when the command should end.

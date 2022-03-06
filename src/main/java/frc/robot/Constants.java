@@ -29,6 +29,8 @@ public final class Constants {
   public static int JOYSTICK_BUTTON_B = 2;
   public static int JOYSTICK_BUTTON_Y = 4;
 
+  public static double SHOOTER_CLOSE_HIGH = 0.65;
+
   // Triggers are used for intake
   public static int JOYSTICK_LEFT_TRIGGER = 0;
   public static int JOYSTICK_RIGHT_TRIGGER = 0;
@@ -39,5 +41,4 @@ public final class Constants {
   public static int JOYSTICK_RIGHT_BUMPER = 0;
 
   public static String DASH_SHOOTER_POWER = "Shooter Power:";
-
 }

@@ -116,6 +116,7 @@ public class Robot extends TimedRobot {
     // Cancels all running commands at the start of test mode.
     if (m_robotContainer != null) {
       m_robotContainer.enableLimelight();
+      m_robotContainer.testInit();
     }
     CommandScheduler.getInstance().cancelAll();
   }

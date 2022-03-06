@@ -28,6 +28,10 @@ public class Shooter extends SubsystemBase {
     motor.set(ControlMode.Velocity, velocity);
   }
 
+  public boolean isActivate() {
+    return this.isActivated;
+  }
+
   public void toggle(double power) {
     if (this.isActivated) {
       motor.set(ControlMode.PercentOutput, 0);

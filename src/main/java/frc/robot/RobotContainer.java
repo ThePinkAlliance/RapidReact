@@ -17,12 +17,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Collect;
-import frc.robot.commands.CollectTowerGroup;
+import frc.robot.commands.CollectGroup;
 import frc.robot.commands.Drive;
 import frc.robot.commands.EnableTower;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ShooterMonitor;
 import frc.robot.commands.TestAutoSequential;
+import frc.robot.commands.ToggleShooter;
 import frc.robot.commands.turnTest;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Collector;
@@ -49,6 +50,7 @@ public class RobotContainer {
   );
 
   private final Joystick gamepad_base = new Joystick(0);
+  private final Joystick gamepad_tower = new Joystick(1);
   private final Base m_base = new Base();
   private final Limelight m_limelight = new Limelight();
   private final Collector m_collector = new Collector();
@@ -109,27 +111,40 @@ public class RobotContainer {
   private void configureButtonBindings() {
     //base controller
     //left joystick
+
     this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
-    this.m_shooter.setDefaultCommand(
-        new ShooterMonitor(
-          m_shooter,
-          m_tower,
-          gamepad_base,
-          Constants.JOYSTICK_BUTTON_X,
-          Constants.JOYSTICK_BUTTON_Y
-        )
-      );
+
+    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
+    .whenPressed(new ToggleShooter(m_shooter));
+
+    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_X)
+      .whileHeld(
+        new Shoot(m_tower, Constants.SHOOTER_CLOSE_HIGH, gamepad_tower)
+      )
+      .whenReleased(new Shoot(m_tower, 0, gamepad_tower));
 
     new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_A)
     .whenPressed(m_base::zeroGyro);
 
     new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_B)
     .whenPressed(
-        new CollectTowerGroup(
+        new CollectGroup(
           m_collector,
           gamepad_base,
+          m_tower,
           Constants.JOYSTICK_BUTTON_B,
           true
+        )
+      );
+
+    new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_A)
+    .whenPressed(
+        new CollectGroup(
+          m_collector,
+          gamepad_base,
+          m_tower,
+          Constants.JOYSTICK_BUTTON_B,
+          false
         )
       );
     // new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_Y)
@@ -163,6 +178,10 @@ public class RobotContainer {
     if (m_limelight != null) {
       m_limelight.setLedState(LimelightLedMode.FORCE_OFF);
     }
+  }
+
+  public void testInit() {
+    m_base.setPodAngles(0);
   }
 
   public void setupDashboardValues() {

@@ -87,7 +87,7 @@ public class Base extends SubsystemBase {
   public static int FRONT_RIGHT_CANCODER_ID = 45;
   public static int FRONT_LEFT_CANCODER_ID = 48;
 
-  private final double DRIVE_MOTOR_RAMP_RATE = .5;
+  private final double DRIVE_MOTOR_RAMP_RATE = .10;
 
   private AHRS gyro = new AHRS(SerialPort.Port.kUSB1);
 

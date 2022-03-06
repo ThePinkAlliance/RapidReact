@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -23,7 +24,7 @@ public class Tower extends SubsystemBase {
   private final I2C.Port port = I2C.Port.kOnboard;
   private final ColorSensorV3 colorSensor = new ColorSensorV3(port);
 
-  public static final double RGB_THRESHOLD = 2584;
+  public static final double RGB_THRESHOLD = 230;
 
   private TalonFX frontMotor = new TalonFX(TOWER_MOTOR);
 
@@ -37,6 +38,7 @@ public class Tower extends SubsystemBase {
   /** Creates a new TempBase. */
   public Tower() {
     this.frontMotor.setInverted(true);
+    this.frontMotor.setNeutralMode(NeutralMode.Brake);
   }
 
   //public ColorSensorV3 getColorSensor() {
@@ -68,7 +70,6 @@ public class Tower extends SubsystemBase {
 
   public void commandMotors(double front, double back) {
     this.frontMotor.set(ControlMode.PercentOutput, front);
-    //this.backMotor.set(ControlMode.PercentOutput, back);
   }
 
   public void commandMotor(double front) {
