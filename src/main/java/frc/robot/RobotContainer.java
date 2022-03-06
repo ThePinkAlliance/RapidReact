@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -19,9 +17,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Collect;
+import frc.robot.commands.CollectTowerGroup;
 import frc.robot.commands.Drive;
 import frc.robot.commands.EnableTower;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.ShooterMonitor;
 import frc.robot.commands.TestAutoSequential;
 import frc.robot.commands.turnTest;
 import frc.robot.subsystems.Base;
@@ -29,8 +29,9 @@ import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.LimelightLedMode;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Tower;
+import frc.robot.subsystems.Turret;
+import java.util.function.DoubleSupplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -109,15 +110,30 @@ public class RobotContainer {
     //base controller
     //left joystick
     this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
+    this.m_shooter.setDefaultCommand(
+        new ShooterMonitor(
+          m_shooter,
+          m_tower,
+          gamepad_base,
+          Constants.JOYSTICK_BUTTON_X,
+          Constants.JOYSTICK_BUTTON_Y
+        )
+      );
+
     new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_A)
     .whenPressed(m_base::zeroGyro);
+
     new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_B)
-    .whenPressed(new Collect(m_collector, gamepad_base, true));
-    new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_X)
-    .whenPressed(new Shoot(m_shooter, 1.0, gamepad_base));
-    new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_Y)
-    .whenPressed(new EnableTower(m_tower, 1.0, gamepad_base, true));
- 
+    .whenPressed(
+        new CollectTowerGroup(
+          m_collector,
+          gamepad_base,
+          Constants.JOYSTICK_BUTTON_B,
+          true
+        )
+      );
+    // new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_Y)
+    // .whenPressed(new EnableTower(m_tower, 1.0, gamepad_base, true));
   }
 
   public void selectTrajectory(SelectableTrajectory selectableTrajectory) {
@@ -150,6 +166,9 @@ public class RobotContainer {
   }
 
   public void setupDashboardValues() {
-     SmartDashboard.putNumber(Constants.DASH_SHOOTER_POWER, Shooter.SHOOTER_POWER_DEFAULT);
+    SmartDashboard.putNumber(
+      Constants.DASH_SHOOTER_POWER,
+      Shooter.SHOOTER_POWER_DEFAULT
+    );
   }
 }

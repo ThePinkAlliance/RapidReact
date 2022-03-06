@@ -4,9 +4,9 @@
 
 package frc.robot.subsystems;
 
+import com.ThePinkAlliance.swervelib.Mk4ModuleConfiguration;
 //import com.ThePinkAlliance.swervelib.Mk4ModuleConfiguration;
 import com.ThePinkAlliance.swervelib.Mk4iSwerveModuleHelper;
-import com.ThePinkAlliance.swervelib.Mk4ModuleConfiguration;
 //import com.ThePinkAlliance.swervelib.Mk4SwerveModuleHelper;
 //import com.ThePinkAlliance.swervelib.Mk4iSwerveModuleHelper;
 import com.ThePinkAlliance.swervelib.SdsModuleConfigurations;
@@ -53,7 +53,7 @@ public class Base extends SubsystemBase {
     SdsModuleConfigurations.MK4I_L1.getDriveReduction() *
     SdsModuleConfigurations.MK4I_L1.getWheelDiameter() *
     Math.PI; // 5.107;
-  
+
   public static final double MAX_ACCELERATION_METERS_PER_SECOND = 4.346;
   public static double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
     MAX_VELOCITY_METERS_PER_SECOND /
@@ -63,10 +63,12 @@ public class Base extends SubsystemBase {
     );
 
   // physical constants
-  public static double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(190.00);
-  public static double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(183.59); // 179.20
-  public static double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(133.23); // 316.66
-  public static double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(66.35); // 245.97
+  public static double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(44.82);
+  public static double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(226.48); // 179.20
+  public static double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(132.71); // 316.66
+  public static double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(
+    274.65
+  ); // 245.97
 
   public static double circumference = 12.875;
 
@@ -84,7 +86,6 @@ public class Base extends SubsystemBase {
   public static int BACK_RIGHT_CANCODER_ID = 42;
   public static int FRONT_RIGHT_CANCODER_ID = 45;
   public static int FRONT_LEFT_CANCODER_ID = 48;
-  
 
   private final double DRIVE_MOTOR_RAMP_RATE = .5;
 

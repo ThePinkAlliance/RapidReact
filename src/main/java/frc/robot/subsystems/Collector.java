@@ -14,17 +14,16 @@ public class Collector extends SubsystemBase {
   public static int COLLECTOR_MOTOR_PORT = 10;
   public static double COLLECTOR_MOTOR_FULL_SPEED = 1;
   private TalonFX collectorMotor;
-  
 
   /** Creates a new Collector. */
   public Collector() {
-
     this.collectorMotor = new TalonFX(Collector.COLLECTOR_MOTOR_PORT);
-    
+
+    this.collectorMotor.setInverted(true);
   }
 
   public void SetSpeed(double speed) {
-      collectorMotor.set(ControlMode.PercentOutput, speed);
+    collectorMotor.set(ControlMode.PercentOutput, speed);
   }
 
   @Override

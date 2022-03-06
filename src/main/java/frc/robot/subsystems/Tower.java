@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.ColorSensorV3;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,21 +20,24 @@ public class Tower extends SubsystemBase {
    */
   private final int TOWER_MOTOR = 20;
 
-  //private final I2C.Port port = I2C.Port.kOnboard;
-  //private final ColorSensorV3 colorSensor = new ColorSensorV3(port);
+  private final I2C.Port port = I2C.Port.kOnboard;
+  private final ColorSensorV3 colorSensor = new ColorSensorV3(port);
 
-  //public static final double RGB_THRESHOLD = 12000;
+  public static final double RGB_THRESHOLD = 2584;
 
   private TalonFX frontMotor = new TalonFX(TOWER_MOTOR);
+
   //private TalonFX backMotor = new TalonFX(51);
 
-  //private DoubleSupplier red = () -> 0.0;
-  //private DoubleSupplier blue = () -> 0.0;
+  private DoubleSupplier red = () -> 0.0;
+  private DoubleSupplier blue = () -> 0.0;
 
   // private BooleanSupplier
 
   /** Creates a new TempBase. */
-  public Tower() {}
+  public Tower() {
+    this.frontMotor.setInverted(true);
+  }
 
   //public ColorSensorV3 getColorSensor() {
   //  return this.colorSensor;
@@ -44,42 +48,55 @@ public class Tower extends SubsystemBase {
   //}
 
   //public double getBlue() {
-    //return this.blue.getAsDouble();
+  //return this.blue.getAsDouble();
   //}
 
   //public DoubleSupplier getRedSupplier() {
-    //return this.red;
+  //return this.red;
   //}
 
   //public DoubleSupplier getBlueSupplier() {
-    //return this.blue;
+  //return this.blue;
   //}
+
+  public boolean ballDetected() {
+    double red = this.red.getAsDouble();
+    double blue = this.blue.getAsDouble();
+
+    return (red >= Tower.RGB_THRESHOLD || blue >= Tower.RGB_THRESHOLD);
+  }
 
   public void commandMotors(double front, double back) {
     this.frontMotor.set(ControlMode.PercentOutput, front);
     //this.backMotor.set(ControlMode.PercentOutput, back);
   }
 
-  public void commandFrontMotor(double front) {
+  public void commandMotor(double front) {
     this.frontMotor.set(ControlMode.PercentOutput, front);
   }
 
   //public void commandBackMotor(double back) {
-    //this.backMotor.set(ControlMode.PercentOutput, back);
+  //this.backMotor.set(ControlMode.PercentOutput, back);
   //}
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
 
-    //if (colorSensor != null) {
-      //this.blue = () -> colorSensor.getBlue();
-    //   this.red = () -> colorSensor.getRed();
+    if (colorSensor != null) {
+      this.blue = () -> colorSensor.getBlue();
+      this.red = () -> colorSensor.getRed();
 
-    //   SmartDashboard.putNumber("blue", colorSensor.getRawColor().blue);
-    //   SmartDashboard.putNumber("red", colorSensor.getRawColor().red);
-    //   SmartDashboard.putNumber("ir", colorSensor.getIR());
-    //   SmartDashboard.putNumber("proximity", colorSensor.getProximity());
-    // }
+      NetworkTableInstance
+        .getDefault()
+        .getTable("debug")
+        .getEntry("red")
+        .setNumber(colorSensor.getRed());
+      NetworkTableInstance
+        .getDefault()
+        .getTable("debug")
+        .getEntry("blue")
+        .setNumber(colorSensor.getBlue());
+    }
   }
 }
