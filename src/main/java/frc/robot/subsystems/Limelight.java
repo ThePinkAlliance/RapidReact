@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import frc.robot.subsystems.LimelightLedMode;
 
 // ADDRESS FOR THE LIMELIGHT FEED: http://limelight.local:5801/
 
@@ -81,10 +80,10 @@ public class Limelight extends SubsystemBase {
     //double availableTargets = tv.getDouble(0.0); //I would revisit this so the robot does not 
                                                  //run crazy if there are no available targets
     
-    SmartDashboard.putNumber("Object Offset X: ", offsetX);
-    SmartDashboard.putNumber("Object Offset Y: ", targetAngle);
-    SmartDashboard.putNumber("Limelight Area: ", objectArea);
-    SmartDashboard.putNumber("Limelight Skew: ", robotSkew);
+    //SmartDashboard.putNumber("Object Offset X: ", offsetX);
+    //SmartDashboard.putNumber("Object Offset Y: ", targetAngle);
+    //SmartDashboard.putNumber("Limelight Area: ", objectArea);
+    //SmartDashboard.putNumber("Limelight Skew: ", robotSkew);
   }
 
   @Override

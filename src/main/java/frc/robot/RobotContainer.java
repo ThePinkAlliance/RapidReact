@@ -5,34 +5,28 @@
 package frc.robot;
 
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.Collect;
 import frc.robot.commands.CollectGroup;
+import frc.robot.commands.DashboardPublish;
 import frc.robot.commands.Drive;
-import frc.robot.commands.EnableTower;
-import frc.robot.commands.Shoot;
-import frc.robot.commands.ShooterMonitor;
 import frc.robot.commands.TestAutoSequential;
 import frc.robot.commands.ToggleShooter;
 import frc.robot.commands.turnTest;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Collector;
-import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.LimelightLedMode;
+import frc.robot.subsystems.Dashboard;
+//import frc.robot.subsystems.Limelight;
+//import frc.robot.subsystems.LimelightLedMode;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Tower;
-import frc.robot.subsystems.Turret;
-import java.util.function.DoubleSupplier;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -45,18 +39,15 @@ import java.util.function.DoubleSupplier;
  */
 public class RobotContainer {
 
-  private final Compressor compressor = new Compressor(
-    PneumaticsModuleType.REVPH
-  );
-
   private final Joystick gamepad_base = new Joystick(0);
   private final Joystick gamepad_tower = new Joystick(1);
   private final Base m_base = new Base();
-  private final Limelight m_limelight = new Limelight();
+  //private final Limelight m_limelight = new Limelight();
   private final Collector m_collector = new Collector();
-  // private final Turret m_turret = new Turret();
   private final Shooter m_shooter = new Shooter();
-  private final Tower m_tower = new Tower();
+  //private final Tower m_tower = new Tower();
+  //DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
+  //private final Dashboard m_dashboard = new Dashboard(m_base, m_collector, m_tower, m_shooter, null);
 
   Trajectory trajectory = new Trajectory();
   ShuffleboardTab driverDashboard = Shuffleboard.getTab("Dashboard");
@@ -97,7 +88,9 @@ public class RobotContainer {
     driverDashboard.add(selectedPath);
     // for now select leave blue 1 for testing
 
-    setupDashboardValues();
+    //Initialize and publish for the first time.  Default command of dashboard handles thereafter.
+    //m_dashboard.initialize();
+    //m_dashboard.publishDashboard();
   }
 
   /**
@@ -113,15 +106,12 @@ public class RobotContainer {
     //left joystick
 
     this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
+    //this.m_dashboard.setDefaultCommand(new DashboardPublish(m_dashboard));
 
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
     .whenPressed(new ToggleShooter(m_shooter));
 
-    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_X)
-      .whileHeld(
-        new Shoot(m_tower, Constants.SHOOTER_CLOSE_HIGH, gamepad_tower)
-      )
-      .whenReleased(new Shoot(m_tower, 0, gamepad_tower));
+    
 
     new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_A)
     .whenPressed(m_base::zeroGyro);
@@ -131,24 +121,11 @@ public class RobotContainer {
         new CollectGroup(
           m_collector,
           gamepad_base,
-          m_tower,
           Constants.JOYSTICK_BUTTON_B,
           true
         )
       );
 
-    new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_A)
-    .whenPressed(
-        new CollectGroup(
-          m_collector,
-          gamepad_base,
-          m_tower,
-          Constants.JOYSTICK_BUTTON_B,
-          false
-        )
-      );
-    // new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_Y)
-    // .whenPressed(new EnableTower(m_tower, 1.0, gamepad_base, true));
   }
 
   public void selectTrajectory(SelectableTrajectory selectableTrajectory) {
@@ -168,26 +145,21 @@ public class RobotContainer {
     return selectedPath.getSelected().getDefualtCommand();
   }
 
-  public void enableLimelight() {
-    if (m_limelight != null) {
-      m_limelight.setLedState(LimelightLedMode.FORCE_ON);
-    }
-  }
+  // public void enableLimelight() {
+  //   if (m_limelight != null) {
+  //     m_limelight.setLedState(LimelightLedMode.FORCE_ON);
+  //   }
+  // }
 
-  public void disableLimelight() {
-    if (m_limelight != null) {
-      m_limelight.setLedState(LimelightLedMode.FORCE_OFF);
-    }
-  }
+  // public void disableLimelight() {
+  //   if (m_limelight != null) {
+  //     m_limelight.setLedState(LimelightLedMode.FORCE_OFF);
+  //   }
+  // }
 
   public void testInit() {
     m_base.setPodAngles(0);
   }
 
-  public void setupDashboardValues() {
-    SmartDashboard.putNumber(
-      Constants.DASH_SHOOTER_POWER,
-      Shooter.SHOOTER_POWER_DEFAULT
-    );
-  }
+  
 }

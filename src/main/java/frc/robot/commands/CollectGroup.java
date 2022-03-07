@@ -27,7 +27,6 @@ public class CollectGroup extends CommandBase {
   public CollectGroup(
     Collector m_collector,
     Joystick joystick,
-    Tower m_tower,
     int JOYSTICK_BUTTON,
     boolean bIntake
   ) {
@@ -35,8 +34,6 @@ public class CollectGroup extends CommandBase {
 
     this.m_collector = m_collector;
     this.joystick = joystick;
-    this.m_tower = m_tower;
-
     this.JOYSTICK_BUTTON = JOYSTICK_BUTTON;
     this.bIntake = bIntake;
 
@@ -51,27 +48,28 @@ public class CollectGroup extends CommandBase {
   @Override
   public void execute() {
     if (bIntake == false) {
-      this.m_collector.SetSpeed(-Collector.COLLECTOR_MOTOR_FULL_SPEED);
-      this.m_tower.commandMotor(-1);
+      this.m_collector.SetSpeedCollector(-Collector.COLLECTOR_MOTOR_FULL_SPEED);
+      this.m_collector.SetSpeedTower(-1);
+      //this.m_tower.commandMotor(-1);
     } else {
-      this.m_collector.SetSpeed(Collector.COLLECTOR_MOTOR_FULL_SPEED);
-      this.m_tower.commandMotor(1);
+      this.m_collector.SetSpeedCollector(Collector.COLLECTOR_MOTOR_FULL_SPEED);
+      this.m_collector.SetSpeedTower(1);
+      //this.m_tower.commandMotor(1);
     }
-
     this.m_collector.setSolenoid(true);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    this.m_collector.SetSpeed(0);
-    this.m_tower.commandMotor(0);
+    this.m_collector.SetSpeedCollector(0);
+    this.m_collector.SetSpeedTower(0);
     this.m_collector.setSolenoid(false);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return joystick.getRawButtonReleased(JOYSTICK_BUTTON);
+    return joystick.getRawButton(JOYSTICK_BUTTON) == false ? true : false;
   }
 }
