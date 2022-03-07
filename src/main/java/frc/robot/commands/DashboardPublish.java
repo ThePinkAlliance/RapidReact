@@ -4,53 +4,44 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
-import frc.robot.subsystems.Turret;
-import java.util.function.DoubleSupplier;
-import edu.wpi.first.wpilibj.Joystick;
+import frc.robot.subsystems.Base;
+import frc.robot.subsystems.Dashboard;
 
-public class TurretRotate extends CommandBase {
+public class DashboardPublish extends CommandBase {
 
-  private Turret turret;
-  private double power;
-  private Joystick js;
-
-  /** Creates a new Shoot. */
-  public TurretRotate(Turret turret, Joystick joystick, double power) {
+  Dashboard dashboard;
+ 
+  /** Creates a new LeaveBlueLeft_test. */
+  public DashboardPublish(Dashboard dashboard) {
     // Use addRequirements() here to declare subsystem dependencies.
-
-    this.turret = turret;
-    this.power = power;
-    this.js = joystick;
-
-    addRequirements(turret);
+    this.dashboard = dashboard;
+    addRequirements(dashboard);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    turret.rotate(power);
+     dashboard.publishDashboard();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    turret.rotate(0.0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (js.getRawButton(Constants.JOYSTICK_BUTTON_X))
-       return false;
-    else
-       return true;
+    return false;
   }
 }

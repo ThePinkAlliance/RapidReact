@@ -5,8 +5,12 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.wpilibj.Compressor;
+import com.revrobotics.Rev2mDistanceSensor;
+import com.revrobotics.Rev2mDistanceSensor.Port;
+import com.revrobotics.Rev2mDistanceSensor.Unit;
+
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,15 +19,43 @@ public class Collector extends SubsystemBase {
 
   public static int COLLECTOR_MOTOR_PORT = 10;
   public static double COLLECTOR_MOTOR_FULL_SPEED = 1;
+  public static double TOWER_MOTOR_FULL_SPEED = 1;
+  public static final double TOWER_SENSOR_TRIGGER_DISTANCE = 150.0; //millimeters
+  private final int TOWER_MOTOR = 20;
+  
+  //Collector
   private TalonFX collectorMotor;
   private Solenoid solenoid;
+  private boolean collectorRunning = false;
+  //Tower
+  private TalonFX towerMotor;
+  private Rev2mDistanceSensor distOnboard;
+  private boolean towerOverride = false;
+
 
   /** Creates a new Collector. */
   public Collector() {
+    //Collector
     this.collectorMotor = new TalonFX(Collector.COLLECTOR_MOTOR_PORT);
     this.solenoid = new Solenoid(PneumaticsModuleType.REVPH, 0);
-
     this.collectorMotor.setInverted(true);
+    //Tower
+    this.towerMotor = new TalonFX(TOWER_MOTOR);
+    this.towerMotor.setInverted(true);
+    this.towerMotor.setNeutralMode(NeutralMode.Brake);
+    this.distOnboard = new Rev2mDistanceSensor(Port.kOnboard);
+    this.distOnboard.setDistanceUnits(Unit.kMillimeters);
+    this.distOnboard.setAutomaticMode(true);
+    this.distOnboard.setEnabled(true);
+    towerOverride = false;
+  }
+
+  public void enableOverride() {
+    this.towerOverride = true;
+  }
+
+  public void disableOverride() {
+    this.towerOverride = false;
   }
 
   public void dropCollector() {
@@ -35,8 +67,33 @@ public class Collector extends SubsystemBase {
     this.solenoid.set(on);
   }
 
-  public void SetSpeed(double speed) {
+  public void SetSpeedCollector(double speed) {
     collectorMotor.set(ControlMode.PercentOutput, speed);
+    if (speed != 0)
+       collectorRunning = true;
+    else
+       collectorRunning = false;
+  }
+
+  public boolean ballDetected() {
+    boolean bRangeValid = this.distOnboard.isRangeValid();
+    double distance = this.distOnboard.getRange();
+    boolean bDetected =  distance < TOWER_SENSOR_TRIGGER_DISTANCE;
+    System.out.println("RANGE VALID: " + bRangeValid + ", Distance: " + distance + ", bDetected: " + bDetected);
+    return (bDetected && bRangeValid);
+  }
+
+  public void SetSpeedTower(double speed) {
+    boolean ball = ballDetected();
+    System.out.println("OUTPUT: " + collectorRunning + ", BALL: " + ball);
+    //towerMotor.set(ControlMode.PercentOutput, TOWER_MOTOR_FULL_SPEED);
+    if (this.towerOverride) {
+      towerMotor.set(ControlMode.PercentOutput, TOWER_MOTOR_FULL_SPEED);
+    } else if (collectorRunning && ball == false) {
+      towerMotor.set(ControlMode.PercentOutput, TOWER_MOTOR_FULL_SPEED);
+    } else {
+      towerMotor.set(ControlMode.PercentOutput, 0.0);
+    }
   }
 
   @Override

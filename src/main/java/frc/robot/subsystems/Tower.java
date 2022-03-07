@@ -8,10 +8,14 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.ColorSensorV3;
+import com.revrobotics.Rev2mDistanceSensor;
+
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import com.revrobotics.Rev2mDistanceSensor.Port;
+import com.revrobotics.Rev2mDistanceSensor.Unit;
+
 import java.util.function.DoubleSupplier;
 
 public class Tower extends SubsystemBase {
@@ -19,85 +23,54 @@ public class Tower extends SubsystemBase {
   /**
    * NOTE: sometimes i2c devices won't be constructed until a little while after the robot starts.
    */
-  private final int TOWER_MOTOR = 20;
-
-  private final I2C.Port port = I2C.Port.kOnboard;
-  private final ColorSensorV3 colorSensor = new ColorSensorV3(port);
-
   public static final double RGB_THRESHOLD = 230;
-
-  private TalonFX frontMotor = new TalonFX(TOWER_MOTOR);
-
-  //private TalonFX backMotor = new TalonFX(51);
+  private final int TOWER_MOTOR = 20;
+  //private final I2C.Port port = I2C.Port.kOnboard;
+  //private final ColorSensorV3 colorSensor = new ColorSensorV3(port);
+  private final Rev2mDistanceSensor distOnboard = new Rev2mDistanceSensor(Port.kOnboard);
+  
+  private TalonFX motor = new TalonFX(TOWER_MOTOR);
+  public static final double TOWER_SENSOR_TRIGGER_DISTANCE = 10.0; //millimeters
 
   private DoubleSupplier red = () -> 0.0;
   private DoubleSupplier blue = () -> 0.0;
 
-  // private BooleanSupplier
-
   /** Creates a new TempBase. */
   public Tower() {
-    this.frontMotor.setInverted(true);
-    this.frontMotor.setNeutralMode(NeutralMode.Brake);
+    this.motor.setInverted(true);
+    this.motor.setNeutralMode(NeutralMode.Brake);
+    this.distOnboard.setDistanceUnits(Unit.kMillimeters);
+    this.distOnboard.setAutomaticMode(true);
   }
-
-  //public ColorSensorV3 getColorSensor() {
-  //  return this.colorSensor;
-  //}
-
-  //public double getRed() {
-  //  return this.red.getAsDouble();
-  //}
-
-  //public double getBlue() {
-  //return this.blue.getAsDouble();
-  //}
-
-  //public DoubleSupplier getRedSupplier() {
-  //return this.red;
-  //}
-
-  //public DoubleSupplier getBlueSupplier() {
-  //return this.blue;
-  //}
 
   public boolean ballDetected() {
-    double red = this.red.getAsDouble();
-    double blue = this.blue.getAsDouble();
-
-    return (red >= Tower.RGB_THRESHOLD || blue >= Tower.RGB_THRESHOLD);
-  }
-
-  public void commandMotors(double front, double back) {
-    this.frontMotor.set(ControlMode.PercentOutput, front);
+    boolean bRangeValid = this.distOnboard.isRangeValid();
+    boolean bDetected =  this.distOnboard.GetRange() < TOWER_SENSOR_TRIGGER_DISTANCE;
+    return (bRangeValid && bDetected);
   }
 
   public void commandMotor(double front) {
-    this.frontMotor.set(ControlMode.PercentOutput, front);
+    this.motor.set(ControlMode.PercentOutput, front);
   }
-
-  //public void commandBackMotor(double back) {
-  //this.backMotor.set(ControlMode.PercentOutput, back);
-  //}
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
 
-    if (colorSensor != null) {
-      this.blue = () -> colorSensor.getBlue();
-      this.red = () -> colorSensor.getRed();
+    // if (colorSensor != null) {
+    //   this.blue = () -> colorSensor.getBlue();
+    //   this.red = () -> colorSensor.getRed();
 
-      NetworkTableInstance
-        .getDefault()
-        .getTable("debug")
-        .getEntry("red")
-        .setNumber(colorSensor.getRed());
-      NetworkTableInstance
-        .getDefault()
-        .getTable("debug")
-        .getEntry("blue")
-        .setNumber(colorSensor.getBlue());
-    }
+    //   NetworkTableInstance
+    //     .getDefault()
+    //     .getTable("debug")
+    //     .getEntry("red")
+    //     .setNumber(colorSensor.getRed());
+    //   NetworkTableInstance
+    //     .getDefault()
+    //     .getTable("debug")
+    //     .getEntry("blue")
+    //     .setNumber(colorSensor.getBlue());
+    // }
   }
 }

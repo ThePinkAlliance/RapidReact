@@ -16,7 +16,6 @@ public class ToggleShooter extends CommandBase {
   public ToggleShooter(Shooter shooter) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.shooter = shooter;
-
     addRequirements(shooter);
   }
 
@@ -27,7 +26,7 @@ public class ToggleShooter extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.toggle(Constants.SHOOTER_CLOSE_HIGH);
+    shooter.toggle(Constants.SHOOTER_POWER_CLOSE_HIGH);
   }
 
   // Called once the command ends or is interrupted.

@@ -28,8 +28,7 @@ public class ShooterMonitor extends CommandBase {
     int JOYSTICK_BUTTON_SHOOT,
     int JOYSTICK_BUTTON_ACTIVATE_SHOOTER
   ) {
-    // Use addRequirements() here to declare subsystem dependencies.
-
+    
     this.m_tower = m_tower;
     this.m_shooter = m_shooter;
     this.joystick = joystick;
@@ -59,7 +58,7 @@ public class ShooterMonitor extends CommandBase {
     }
 
     if (toggle_shooter) {
-      m_shooter.toggle(Constants.SHOOTER_CLOSE_HIGH);
+      m_shooter.toggle(Constants.SHOOTER_POWER_CLOSE_HIGH);
     }
 
     if (shoot && m_tower.ballDetected() && m_shooter.isActivate()) {

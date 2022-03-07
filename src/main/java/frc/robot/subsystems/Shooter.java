@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
@@ -47,15 +46,11 @@ public class Shooter extends SubsystemBase {
   }
 
   public void command(double power) {
-    motor.set(ControlMode.PercentOutput, power);
 
-    if (power > 0) {
-      this.isActivated = true;
-    } else if (power == 0) {
-      this.isActivated = false;
-    } else if (power < -0) {
-      this.isActivated = true;
-    }
+    //apply power
+    motor.set(ControlMode.PercentOutput, power);
+    //when power is being applied:  isActivated needs to be true
+    this.isActivated = (power != 0) ? true : false;
   }
 
   @Override
