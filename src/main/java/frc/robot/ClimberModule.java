@@ -22,6 +22,9 @@ public class ClimberModule {
     BOTH,
   }
 
+  public static final int CLIMBER_MODULE_RATIO = 227;
+  public static final int CLIMBER_MODULE_MOTOR_TICK_COUNT = 2049;
+
   private Solenoid lockerLeftSolenoid;
   private Solenoid lockerRightSolenoid;
   // parent
@@ -34,6 +37,7 @@ public class ClimberModule {
   private double PEAK_FORWARD = 0.5;
   private double PEAK_REVERSE = -0.5;
   private double ALLOWABLE_CLOSELOOP_ERROR = 400;
+  
 
   private DigitalInput limitLeftSwitch;
   private DigitalInput limitRightSwitch;

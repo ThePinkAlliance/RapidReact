@@ -30,13 +30,12 @@ public final class Constants {
 
   public static double SHOOTER_POWER_CLOSE_HIGH = 0.65;
 
-  // Triggers are used for intake
-  public static int JOYSTICK_LEFT_TRIGGER = 0;
-  public static int JOYSTICK_RIGHT_TRIGGER = 0;
+  public static int JOYSTICK_LEFT_TRIGGER = 2;
+  public static int JOYSTICK_RIGHT_TRIGGER = 3;
 
-  // Turbo
   public static int JOYSTICK_LEFT_BUMPER = 5;
+  public static int JOYSTICK_RIGHT_BUMPER = 6;
 
-  public static int JOYSTICK_RIGHT_BUMPER = 0;
+
 
 }

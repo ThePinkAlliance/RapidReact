@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.Climb.SIDE;
 import frc.robot.subsystems.Climbers;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -17,6 +16,6 @@ public class AutoClimb extends SequentialCommandGroup {
   public AutoClimb(Climbers climbers) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new Climb(climbers, 10, SIDE.IN));
+   
   }
 }
