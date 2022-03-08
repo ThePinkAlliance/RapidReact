@@ -7,13 +7,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Collector;
-import frc.robot.subsystems.Tower;
 
 public class CollectGroup extends CommandBase {
 
   Collector m_collector;
   Joystick joystick;
-  Tower m_tower;
   int JOYSTICK_BUTTON;
   boolean bIntake;
 

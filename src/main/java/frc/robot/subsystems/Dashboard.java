@@ -19,7 +19,6 @@ public class Dashboard extends SubsystemBase {
 
   private Base base;
   private Collector collector;
-  private Tower tower;
   private Shooter shooter;
   private Climbers climbers;
 

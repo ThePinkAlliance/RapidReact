@@ -47,15 +47,15 @@ public class Limelight extends SubsystemBase {
 
 
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    NetworkTableEntry tx = table.getEntry("tx");
+    //NetworkTableEntry tx = table.getEntry("tx");
     NetworkTableEntry ty = table.getEntry("ty");
-    NetworkTableEntry ta = table.getEntry("ta");
-    NetworkTableEntry ts = table.getEntry("ts");
+    //NetworkTableEntry ta = table.getEntry("ta");
+    //NetworkTableEntry ts = table.getEntry("ts");
 
     double targetAngle = ty.getDouble(0.0); //offset of target
-    double offsetX = tx.getDouble(0.0);
-    double objectArea = ta.getDouble(0.0);
-    double robotSkew = ts.getDouble(0.0);
+    //double offsetX = tx.getDouble(0.0);
+    //double objectArea = ta.getDouble(0.0);
+    //double robotSkew = ts.getDouble(0.0);
 
     double limelightAngle = 48; //Angle the limelight is positioned at
     double limelightElevation = 23.5; //How far the limelight is above the ground

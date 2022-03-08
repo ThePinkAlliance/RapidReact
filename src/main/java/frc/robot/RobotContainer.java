@@ -16,17 +16,17 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.CollectGroup;
 import frc.robot.commands.DashboardPublish;
 import frc.robot.commands.Drive;
+import frc.robot.commands.JoystickClimb;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.TestAutoSequential;
-import frc.robot.commands.ToggleShooter;
 import frc.robot.commands.turnTest;
 import frc.robot.subsystems.Base;
+import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Dashboard;
 //import frc.robot.subsystems.Limelight;
 //import frc.robot.subsystems.LimelightLedMode;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Tower;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -45,6 +45,7 @@ public class RobotContainer {
   //private final Limelight m_limelight = new Limelight();
   private final Collector m_collector = new Collector();
   private final Shooter m_shooter = new Shooter();
+  private final Climbers m_climbers = new Climbers();
   //DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
   //private final Dashboard m_dashboard = new Dashboard(m_base, m_collector, m_shooter, null);
 
@@ -105,6 +106,7 @@ public class RobotContainer {
     //left joystick
 
     this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
+    this.m_climbers.setDefaultCommand(new JoystickClimb(m_climbers, this.gamepad_tower));
     //this.m_dashboard.setDefaultCommand(new DashboardPublish(m_dashboard));
 
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)

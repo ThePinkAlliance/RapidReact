@@ -5,10 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ThePinkAlliance.swervelib.Mk4ModuleConfiguration;
-//import com.ThePinkAlliance.swervelib.Mk4ModuleConfiguration;
 import com.ThePinkAlliance.swervelib.Mk4iSwerveModuleHelper;
-//import com.ThePinkAlliance.swervelib.Mk4SwerveModuleHelper;
-//import com.ThePinkAlliance.swervelib.Mk4iSwerveModuleHelper;
 import com.ThePinkAlliance.swervelib.SdsModuleConfigurations;
 import com.ThePinkAlliance.swervelib.SwerveModule;
 import com.kauailabs.navx.frc.AHRS;
@@ -47,7 +44,6 @@ public class Base extends SubsystemBase {
 
   public static final double MAX_VELOCITY_METERS_PER_SECOND =
     //6380 is the theoretical max rpm (e.g. NO LOAD RPM)
-    //TODO - select a realistic rpm.
     5000.0 /
     60.0 *
     SdsModuleConfigurations.MK4I_L1.getDriveReduction() *

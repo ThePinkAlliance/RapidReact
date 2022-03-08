@@ -25,6 +25,8 @@ public final class Constants {
   public static int JOYSTICK_BUTTON_A = 1;
   public static int JOYSTICK_BUTTON_B = 2;
   public static int JOYSTICK_BUTTON_Y = 4;
+  public static int JOYSTICK_LEFT_Y_AXIS = 1;
+  public static int JOYSTICK_RIGHT_Y_AXIS = 5;
 
   public static double SHOOTER_POWER_CLOSE_HIGH = 0.65;
 

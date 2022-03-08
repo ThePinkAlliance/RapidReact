@@ -6,39 +6,102 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.ClimberModule;
+import frc.robot.ClimberModule.SOLENOID_SIDE;
 import frc.robot.ClimberModule.SOLENOID_STATE;
+
+// public ClimberModule(
+//     int pneumaticsLeftId,
+//     int pneumaticsRightId,
+//     int motorLeftId,
+//     int motorRightId,
+//     int motorCenterId,
+//     boolean inverted,
+//     int limitSwitchLeftChannel,
+//     int limitSwitchRightChannel
+//   ) {
 
 public class Climbers extends SubsystemBase {
 
-  // // The port range for the climbers is 40-59
-  public ClimberModule longClimberModule = new ClimberModule(
-    40,
-    41,
-    42,
-    43,
-    true,
-    0
-  );
-  public ClimberModule shortClimberModule = new ClimberModule(
-    44,
-    45,
-    46,
-    47,
-    true,
-    0
-  );
+  private final int LONG_PNEUMATIC_LEFT_ID = 0;
+  private final int LONG_PNEUMATIC_RIGHT_ID = 0;
+  private final int LONG_MOTOR_LEFT_ID = 0;
+ // private final int LONG_MOTOR_CENTER_ID = 0;
+  private final int LONG_MOTOR_RIGHT_ID = 0;
+  private final int LONG_LIMIT_LEFT_ID = 0;
+  private final int LONG_LIMIT_RIGHT_ID = 0;
+
+  private final int SHORT_PNEUMATIC_LEFT_ID = 0;
+  private final int SHORT_PNEUMATIC_RIGHT_ID = 0;
+  private final int SHORT_MOTOR_LEFT_ID = 0;
+  //private final int SHORT_MOTOR_CENTER_ID = 0;
+  private final int SHORT_MOTOR_RIGHT_ID = 0;
+  private final int SHORT_LIMIT_LEFT_ID = 0;
+  private final int SHORT_LIMIT_RIGHT_ID = 0;
+
+  public ClimberModule shortClimberModule;
+  public ClimberModule longClimberModule;
+
 
   /** Creates a new Climbers. */
-  public Climbers() {}
+  public Climbers() {
 
-  public void command(ClimberModule module, double power) {
-    boolean contactedPole = module.contactedPole();
+    longClimberModule = new ClimberModule(
+      LONG_PNEUMATIC_LEFT_ID,
+      LONG_PNEUMATIC_RIGHT_ID,
+      LONG_MOTOR_LEFT_ID,
+      //LONG_MOTOR_CENTER_ID,
+      LONG_MOTOR_RIGHT_ID,
+      true,
+      LONG_LIMIT_LEFT_ID,
+      LONG_LIMIT_RIGHT_ID
+    );
 
-    if (!contactedPole) {
-      module.setPower(power);
-    }
+    shortClimberModule = new ClimberModule(
+      SHORT_PNEUMATIC_LEFT_ID,
+      SHORT_PNEUMATIC_RIGHT_ID,
+      SHORT_MOTOR_LEFT_ID,
+      //SHORT_MOTOR_CENTER_ID,
+      SHORT_MOTOR_RIGHT_ID,
+      true,
+      SHORT_LIMIT_LEFT_ID,
+      SHORT_LIMIT_RIGHT_ID
+    );
+
   }
 
+  public void command(ClimberModule module, double power) {
+      module.setPower(power);
+  }
+
+  public void openArmLocks(ClimberModule module) {
+      module.setSolenoidState(SOLENOID_STATE.UNLOCKED, SOLENOID_SIDE.BOTH);
+  }
+
+  public void openShortArms() {
+     openArmLocks(shortClimberModule);
+  }
+
+  public void openLongArms() {
+    openArmLocks(longClimberModule);
+  }
+
+  public void openAllLocks() {
+    openLongArms();
+    openShortArms();
+  }
+
+  public void closeArmLocks(ClimberModule module) {
+    module.setSolenoidState(SOLENOID_STATE.LOCKED, SOLENOID_SIDE.BOTH);
+  }
+
+  public void closeShortArms() {
+    closeArmLocks(shortClimberModule);
+  }
+
+  public void closeLongArms() {
+    closeArmLocks(longClimberModule);
+  }
+  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
