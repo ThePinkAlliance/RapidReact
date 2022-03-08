@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.CollectGroup;
 import frc.robot.commands.DashboardPublish;
 import frc.robot.commands.Drive;
+import frc.robot.commands.Shoot;
 import frc.robot.commands.TestAutoSequential;
 import frc.robot.commands.ToggleShooter;
 import frc.robot.commands.turnTest;
@@ -26,7 +27,6 @@ import frc.robot.subsystems.Dashboard;
 //import frc.robot.subsystems.LimelightLedMode;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Tower;
-
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -45,9 +45,8 @@ public class RobotContainer {
   //private final Limelight m_limelight = new Limelight();
   private final Collector m_collector = new Collector();
   private final Shooter m_shooter = new Shooter();
-  //private final Tower m_tower = new Tower();
   //DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
-  //private final Dashboard m_dashboard = new Dashboard(m_base, m_collector, m_tower, m_shooter, null);
+  //private final Dashboard m_dashboard = new Dashboard(m_base, m_collector, m_shooter, null);
 
   Trajectory trajectory = new Trajectory();
   ShuffleboardTab driverDashboard = Shuffleboard.getTab("Dashboard");
@@ -109,9 +108,15 @@ public class RobotContainer {
     //this.m_dashboard.setDefaultCommand(new DashboardPublish(m_dashboard));
 
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
-    .whenPressed(new ToggleShooter(m_shooter));
-
-    
+    .whenPressed(
+        new Shoot(
+          m_shooter,
+          m_collector,
+          Shooter.SHOOTER_POWER_CLOSE_HIGH,
+          Constants.JOYSTICK_BUTTON_Y,
+          gamepad_tower
+        )
+      );
 
     new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_A)
     .whenPressed(m_base::zeroGyro);
@@ -125,7 +130,6 @@ public class RobotContainer {
           true
         )
       );
-
   }
 
   public void selectTrajectory(SelectableTrajectory selectableTrajectory) {
@@ -160,6 +164,4 @@ public class RobotContainer {
   public void testInit() {
     m_base.setPodAngles(0);
   }
-
-  
 }

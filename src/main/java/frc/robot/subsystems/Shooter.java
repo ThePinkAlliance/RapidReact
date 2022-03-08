@@ -11,7 +11,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
 
-  public static final double SHOOTER_POWER_DEFAULT = 0.75;
+  public static final double SHOOTER_POWER_CLOSE_HIGH = 0.65;
+  public static final double SHOOTER_POWER_CLOSE_LOW = 0.75;
+  public static final double SHOOTER_POWER_CLOSE_DEFAULT =
+    SHOOTER_POWER_CLOSE_HIGH;
+
   private final int SHOOTER_MOTOR = 30;
 
   private boolean isActivated = false;
@@ -31,6 +35,48 @@ public class Shooter extends SubsystemBase {
     return this.isActivated;
   }
 
+  public boolean readyToShoot() {
+    double velocity =
+      (
+        (
+          (this.motor.getSelectedSensorVelocity()) /
+          Base.FULL_TALON_ROTATION_TICKS
+        ) *
+        600
+      );
+    double max = 5859;
+    double threshold = 100;
+
+    return Math.abs(velocity - max) >= threshold;
+  }
+
+  public boolean readyToShoot(double threshold) {
+    double velocity =
+      (
+        (
+          (this.motor.getSelectedSensorVelocity()) /
+          Base.FULL_TALON_ROTATION_TICKS
+        ) *
+        600
+      );
+    double max = 5859;
+
+    return Math.abs(velocity - max) >= threshold;
+  }
+
+  public boolean readyToShoot(double threshold, double max) {
+    double velocity =
+      (
+        (
+          (this.motor.getSelectedSensorVelocity()) /
+          Base.FULL_TALON_ROTATION_TICKS
+        ) *
+        600
+      );
+
+    return Math.abs(velocity - max) >= threshold;
+  }
+
   public void toggle(double power) {
     if (this.isActivated) {
       motor.set(ControlMode.PercentOutput, 0);
@@ -42,14 +88,13 @@ public class Shooter extends SubsystemBase {
   }
 
   public void toggle() {
-    this.toggle(Shooter.SHOOTER_POWER_DEFAULT);
+    this.toggle(Shooter.SHOOTER_POWER_CLOSE_DEFAULT);
   }
 
   public void command(double power) {
-
-    //apply power
+    // apply power
     motor.set(ControlMode.PercentOutput, power);
-    //when power is being applied:  isActivated needs to be true
+    // when power is being applied:  isActivated needs to be true
     this.isActivated = (power != 0) ? true : false;
   }
 

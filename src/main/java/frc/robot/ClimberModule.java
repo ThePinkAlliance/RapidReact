@@ -1,25 +1,20 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class ClimberModule extends SubsystemBase {
-
-  private final int PRIMARY_PID_SLOT = 0;
-  private final int TIMEOUT_MS = 100;
+public class ClimberModule {
 
   private Solenoid lockerSolenoid;
+
+  // parent
   private TalonFX motorLeft;
   private TalonFX motorRight;
-  private TalonFX motorCenter;
-  private PIDController angleController;
+
+  // private TalonFX motorCenter;
 
   public enum SOLENOID_STATE {
     LOCKED,
@@ -27,13 +22,11 @@ public class ClimberModule extends SubsystemBase {
     UNKNOWN,
   }
 
+  private double RAMP_RATE = 3;
+
   private DigitalInput limitSwitch;
 
   private SOLENOID_STATE solenoidState = SOLENOID_STATE.UNKNOWN;
-  private double targetPosition = 0;
-
-  private final double kP = 0.02;
-  private final double kI = 0.002;
 
   public ClimberModule(
     int _pheumaticsId,
@@ -42,22 +35,13 @@ public class ClimberModule extends SubsystemBase {
     int motorCenterId,
     int limitSwitchChannel
   ) {
-    this.lockerSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
+    this.lockerSolenoid = new Solenoid(PneumaticsModuleType.REVPH, 0);
 
     this.motorLeft = new TalonFX(motorLeftId);
-    this.motorRight = new TalonFX(motorRightId);
-    this.motorCenter = new TalonFX(motorCenterId);
-
-    this.angleController = new PIDController(0, 0, 0);
-
-    this.motorLeft.config_kP(PRIMARY_PID_SLOT, kP, TIMEOUT_MS);
-    this.motorLeft.config_kI(PRIMARY_PID_SLOT, kI, TIMEOUT_MS);
-
-    this.motorRight.config_kP(PRIMARY_PID_SLOT, kP, TIMEOUT_MS);
-    this.motorRight.config_kI(PRIMARY_PID_SLOT, kI, TIMEOUT_MS);
-
-    this.motorCenter.config_kP(PRIMARY_PID_SLOT, kP, TIMEOUT_MS);
-    this.motorCenter.config_kI(PRIMARY_PID_SLOT, kI, TIMEOUT_MS);
+    this.motorLeft.configOpenloopRamp(RAMP_RATE);
+    // this.motorCenter = new TalonFX(motorCenterId);
+    this.motorRight.follow(motorLeft);
+    // this.motorCenter.follow(motorParentLeft);
 
     this.limitSwitch = new DigitalInput(limitSwitchChannel);
   }
@@ -70,39 +54,27 @@ public class ClimberModule extends SubsystemBase {
     boolean inverted,
     int limitSwitchChannel
   ) {
-    this.lockerSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, 0);
+    this.lockerSolenoid = new Solenoid(PneumaticsModuleType.REVPH, 0);
 
     this.motorLeft = new TalonFX(motorLeftId);
     this.motorRight = new TalonFX(motorRightId);
-    this.motorCenter = new TalonFX(motorCenterId);
+    // this.motorCenter = new TalonFX(motorCenterId);
 
-    this.angleController = new PIDController(0, 0, 0);
+    this.motorLeft.configOpenloopRamp(RAMP_RATE);
 
-    this.motorLeft.config_kP(PRIMARY_PID_SLOT, kP, TIMEOUT_MS);
-    this.motorLeft.config_kI(PRIMARY_PID_SLOT, kI, TIMEOUT_MS);
-
-    this.motorRight.config_kP(PRIMARY_PID_SLOT, kP, TIMEOUT_MS);
-    this.motorRight.config_kI(PRIMARY_PID_SLOT, kI, TIMEOUT_MS);
-
-    this.motorCenter.config_kP(PRIMARY_PID_SLOT, kP, TIMEOUT_MS);
-    this.motorCenter.config_kI(PRIMARY_PID_SLOT, kI, TIMEOUT_MS);
-
-    this.motorLeft.setInverted(inverted);
     this.motorLeft.setInverted(inverted);
 
     this.motorRight.setInverted(inverted);
-    this.motorRight.setInverted(inverted);
 
-    this.motorCenter.setInverted(inverted);
-    this.motorCenter.setInverted(inverted);
+    // this.motorCenter.setInverted(inverted);
 
     this.limitSwitch = new DigitalInput(limitSwitchChannel);
   }
 
   public void setPower(double power) {
+    power = power / 2.5;
+
     this.motorLeft.set(ControlMode.PercentOutput, power);
-    this.motorRight.set(ControlMode.PercentOutput, power);
-    this.motorCenter.set(ControlMode.PercentOutput, power);
   }
 
   public void setSolenoidState(SOLENOID_STATE state) {
@@ -114,6 +86,8 @@ public class ClimberModule extends SubsystemBase {
         break;
       case UNLOCKED:
         this.lockerSolenoid.set(false);
+        break;
+      case UNKNOWN:
         break;
     }
   }
@@ -131,18 +105,10 @@ public class ClimberModule extends SubsystemBase {
    * @return The avarage selected sensor position.
    */
   public double currentPosition() {
-    double l = motorLeft.getSelectedSensorPosition();
-    double r = motorRight.getSelectedSensorPosition();
-    double c = motorCenter.getSelectedSensorPosition();
-
-    return (l + r + c) / 3.0;
+    return this.motorLeft.getSelectedSensorPosition();
   }
 
   public void setPosition(double pos) {
-    targetPosition = pos;
-
     this.motorLeft.set(ControlMode.Position, pos);
-    this.motorRight.set(ControlMode.Position, pos);
-    this.motorCenter.set(ControlMode.Position, pos);
   }
 }
