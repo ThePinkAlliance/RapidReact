@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
 
 public class ClimberModule {
 
@@ -24,28 +23,28 @@ public class ClimberModule {
   }
 
   public static final int CLIMBER_MODULE_RATIO = 227;
-  public static final int CLIMBER_MODULE_MOTOR_TICK_COUNT = 2049;
+  public static final int CLIMBER_MODULE_MOTOR_TICK_COUNT = 2048;
 
   private DoubleSolenoid lockerSolenoid;
   // parent
   private TalonFX motorLeft;
   //private TalonFX motorCenter;
   private TalonFX motorRight;
-  private double RAMP_RATE = 3;
-  private double NOMINAL_FORWARD = 0.3;
-  private double NOMINAL_REVERSE = -0.3;
-  private double PEAK_FORWARD = 0.5;
-  private double PEAK_REVERSE = -0.5;
-  private double ALLOWABLE_CLOSELOOP_ERROR = 400;
-  private double MIN_ALLOWABLE_POSITION = 100;
+  private double RAMP_RATE = 0;
+  private double NOMINAL_FORWARD = 0.5;
+  private double NOMINAL_REVERSE = -0.5;
+  private double PEAK_FORWARD = 0.7;
+  private double PEAK_REVERSE = -0.7;
+    private double MIN_ALLOWABLE_POSITION = 100;
   private double MAX_ALLOWABLE_POSITION =
     0.7 * (ClimberModule.CLIMBER_MODULE_RATIO * 2048);
 
   private DigitalInput limitLeftSwitch;
   private DigitalInput limitRightSwitch;
 
-  private Value LOCK = Value.kForward;
-  private Value UNLOCK = Value.kReverse;
+  private Value LOCK = Value.kReverse;
+  private Value UNLOCK = Value.kForward;
+  private Value OFF = Value.kOff;
 
   public ClimberModule(
     int pneumaticsId1,
@@ -58,7 +57,7 @@ public class ClimberModule {
   ) {
     this.lockerSolenoid =
       new DoubleSolenoid(
-        PneumaticsModuleType.REVPH,
+        PneumaticsModuleType.CTREPCM,
         pneumaticsId1,
         pneumaticsId2
       );
@@ -69,14 +68,14 @@ public class ClimberModule {
     //this.motorCenter.configFactoryDefault();
     this.motorRight.configFactoryDefault();
 
-    //this.motorLeft.configOpenloopRamp(RAMP_RATE);
+    this.motorLeft.configOpenloopRamp(RAMP_RATE);
     this.motorLeft.configClosedloopRamp(RAMP_RATE);
     this.motorLeft.setInverted(inverted);
     this.motorRight.setInverted(inverted);
     // this.motorCenter.setInverted(inverted);
     this.motorRight.follow(motorLeft);
     //this.motorCenter.follow(motorLeft);
-
+    if (false){
     this.motorLeft.configSelectedFeedbackSensor(
         TalonFXFeedbackDevice.IntegratedSensor,
         ClimberModuleConstants.kPIDLoopIdx,
@@ -102,7 +101,7 @@ public class ClimberModule {
       );
     this.motorLeft.configAllowableClosedloopError(
         ClimberModuleConstants.kPIDLoopIdx,
-        ALLOWABLE_CLOSELOOP_ERROR,
+        ClimberModuleConstants.ALLOWABLE_CLOSELOOP_ERROR,
         ClimberModuleConstants.kTimeoutMs
       );
     this.motorLeft.config_kF(
@@ -125,6 +124,7 @@ public class ClimberModule {
         ClimberModuleConstants.kGains.kD,
         ClimberModuleConstants.kTimeoutMs
       );
+    }
 
     this.limitLeftSwitch = new DigitalInput(limitSwitchLeftChannel);
     this.limitRightSwitch = new DigitalInput(limitSwitchRightChannel);
@@ -133,6 +133,10 @@ public class ClimberModule {
   @Deprecated
   public void setPower(double power) {
     power = power / 2.5;
+    this.motorLeft.set(ControlMode.PercentOutput, power);
+  }
+
+  public void moveArms(double power) {
     this.motorLeft.set(ControlMode.PercentOutput, power);
   }
 
@@ -174,12 +178,12 @@ public class ClimberModule {
   }
 
   public void setPosition(double pos) {
-    boolean keepGoing =
-      Math.abs(pos) <= MIN_ALLOWABLE_POSITION &&
-      Math.abs(pos) >= MAX_ALLOWABLE_POSITION;
+    // boolean keepGoing =
+    //   Math.abs(pos) <= MIN_ALLOWABLE_POSITION &&
+    //   Math.abs(pos) >= MAX_ALLOWABLE_POSITION;
 
-    if (keepGoing) {
+    //if (keepGoing) {
       this.motorLeft.set(ControlMode.Position, pos);
-    }
+    //}
   }
 }

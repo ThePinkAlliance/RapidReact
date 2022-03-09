@@ -1,5 +1,5 @@
 package frc.robot;
-public class ClimberModuleConstants {
+public class ShooterConstants {
 	/**
 	 * Which PID slot to pull gains from. Starting 2018, you can choose from
 	 * 0,1,2 or 3. Only the first two (0,1) are visible in web-based
@@ -32,6 +32,6 @@ public class ClimberModuleConstants {
 	 * Gains used in Positon Closed Loop, to be adjusted accordingly
      * Gains(kp, ki, kd, kf, izone, peak output);
      */
-    static final ShooterGains kGains = new ShooterGains(0.15, 0.0, 1.0, 0.0, 0, 1.0);
+    public static final ShooterGains kGains = new ShooterGains(0.0, 0.0, 0.0, 0.35, 0, 1.0);
     public static double ALLOWABLE_CLOSELOOP_ERROR = 400;
 }

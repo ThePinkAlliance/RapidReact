@@ -21,6 +21,7 @@ public class Collector extends SubsystemBase {
   public static double TOWER_MOTOR_FULL_SPEED = 1;
   public static final double TOWER_SENSOR_TRIGGER_DISTANCE = 150.0; //millimeters
   private final int TOWER_MOTOR_PORT = 20;
+  private final int SOLENOID_ID = 0;
 
   //Collector
   private TalonFX collectorMotor;
@@ -35,7 +36,7 @@ public class Collector extends SubsystemBase {
   public Collector() {
     //Collector
     this.collectorMotor = new TalonFX(Collector.COLLECTOR_MOTOR_PORT);
-    this.solenoid = new Solenoid(PneumaticsModuleType.REVPH, 3);
+    this.solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID_ID);
     this.collectorMotor.setInverted(true);
     //Tower
     this.towerMotor = new TalonFX(TOWER_MOTOR_PORT);
@@ -52,7 +53,7 @@ public class Collector extends SubsystemBase {
     this.towerOverride = true;
   }
 
-  public void disableOverride() {
+  public void disableTowerOverride() {
     this.towerOverride = false;
   }
 
@@ -74,14 +75,14 @@ public class Collector extends SubsystemBase {
     boolean bRangeValid = this.ballSensor.isRangeValid();
     double distance = this.ballSensor.getRange();
     boolean bDetected = distance < TOWER_SENSOR_TRIGGER_DISTANCE;
-    System.out.println(
-      "RANGE VALID: " +
-      bRangeValid +
-      ", Distance: " +
-      distance +
-      ", bDetected: " +
-      bDetected
-    );
+    // System.out.println(
+    //   "RANGE VALID: " +
+    //   bRangeValid +
+    //   ", Distance: " +
+    //   distance +
+    //   ", bDetected: " +
+    //   bDetected
+    // );
     return (bDetected && bRangeValid);
   }
 
