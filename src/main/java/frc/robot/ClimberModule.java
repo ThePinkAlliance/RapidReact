@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -45,6 +46,8 @@ public class ClimberModule {
   private Value LOCK = Value.kReverse;
   private Value UNLOCK = Value.kForward;
   private Value OFF = Value.kOff;
+  private boolean SWITCH_OPEN = true;
+  private boolean SWITCH_CLOSE = false;
 
   public ClimberModule(
     int pneumaticsId1,
@@ -67,7 +70,8 @@ public class ClimberModule {
     this.motorLeft.configFactoryDefault();
     //this.motorCenter.configFactoryDefault();
     this.motorRight.configFactoryDefault();
-
+    this. motorLeft.setNeutralMode(NeutralMode.Brake);
+    this. motorRight.setNeutralMode(NeutralMode.Brake);
     this.motorLeft.configOpenloopRamp(RAMP_RATE);
     this.motorLeft.configClosedloopRamp(RAMP_RATE);
     this.motorLeft.setInverted(inverted);
@@ -154,7 +158,7 @@ public class ClimberModule {
   }
 
   public boolean contactedLeftPole() {
-    return limitLeftSwitch.get();
+    return (limitLeftSwitch.get() == SWITCH_CLOSE);
   }
 
   public void lockArm() {
@@ -162,7 +166,7 @@ public class ClimberModule {
   }
 
   public boolean contactedRightPole() {
-    return limitRightSwitch.get();
+    return (limitRightSwitch.get() == SWITCH_CLOSE);
   }
 
   public boolean bothArmsMadeContact() {

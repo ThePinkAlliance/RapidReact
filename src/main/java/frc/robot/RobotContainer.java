@@ -124,7 +124,7 @@ public class RobotContainer {
     //       Constants.JOYSTICK_BUTTON_B
     //     )
     //   );
-
+    //Shooter - Shoot
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
     .whenPressed(
         new Shoot(
@@ -135,7 +135,7 @@ public class RobotContainer {
           gamepad_tower
         )
       );
-
+    //Collector Intake
     new JoystickButton(gamepad_base, Constants.JOYSTICK_RIGHT_BUMPER)
     .whenPressed(
         new CollectGroup(
@@ -145,7 +145,7 @@ public class RobotContainer {
           true
         )
       );
-
+    //Collector Outtake
     new JoystickButton(gamepad_base, Constants.JOYSTICK_LEFT_BUMPER)
     .whenPressed(
         new CollectGroup(
