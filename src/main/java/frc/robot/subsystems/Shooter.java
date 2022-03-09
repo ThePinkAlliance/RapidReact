@@ -5,13 +5,16 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
 
-  public static final double SHOOTER_POWER_CLOSE_HIGH = 0.65;
+  public static final double SHOOTER_POWER_CLOSE_HIGH = 0.75;
   public static final double SHOOTER_POWER_CLOSE_LOW = 0.75;
   public static final double SHOOTER_POWER_CLOSE_DEFAULT =
     SHOOTER_POWER_CLOSE_HIGH;
@@ -25,10 +28,7 @@ public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
   public Shooter() {
     motor.setNeutralMode(NeutralMode.Coast);
-  }
-
-  public void revUp(double velocity) {
-    motor.set(ControlMode.Velocity, velocity);
+    //motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
   }
 
   public boolean isActivate() {
@@ -44,10 +44,10 @@ public class Shooter extends SubsystemBase {
         ) *
         600
       );
-    double max = 5859;
+    double max = 4500;//5859;
     double threshold = 100;
-
-    return Math.abs(velocity - max) >= threshold;
+    SmartDashboard.putNumber("shooter velo", velocity);
+    return Math.abs(velocity - max) <= threshold;
   }
 
   public boolean readyToShoot(double threshold) {
@@ -61,10 +61,10 @@ public class Shooter extends SubsystemBase {
       );
     double max = 5859;
 
-    return Math.abs(velocity - max) >= threshold;
+    return Math.abs(velocity - max) <= threshold;
   }
 
-  public boolean readyToShoot(double threshold, double max) {
+  public boolean readyToShoot(double max, double threshold) {
     double velocity =
       (
         (
@@ -74,7 +74,7 @@ public class Shooter extends SubsystemBase {
         600
       );
 
-    return Math.abs(velocity - max) >= threshold;
+    return Math.abs(velocity - max) <= threshold;
   }
 
   public void toggle(double power) {
@@ -96,6 +96,11 @@ public class Shooter extends SubsystemBase {
     motor.set(ControlMode.PercentOutput, power);
     // when power is being applied:  isActivated needs to be true
     this.isActivated = (power != 0) ? true : false;
+  }
+
+  public void commandRpm(double rpm) {
+    double velo = (rpm * 248) / 600;
+    motor.set(ControlMode.Velocity, velo); 
   }
 
   @Override

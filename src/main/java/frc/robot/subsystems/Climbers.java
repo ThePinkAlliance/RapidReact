@@ -6,19 +6,9 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.ClimberModule;
-import frc.robot.ClimberModule.SOLENOID_SIDE;
 import frc.robot.ClimberModule.SOLENOID_STATE;
 
-// public ClimberModule(
-//     int pneumaticsLeftId,
-//     int pneumaticsRightId,
-//     int motorLeftId,
-//     int motorRightId,
-//     int motorCenterId,
-//     boolean inverted,
-//     int limitSwitchLeftChannel,
-//     int limitSwitchRightChannel
-//   ) {
+
 
 public class Climbers extends SubsystemBase {
 
@@ -67,7 +57,7 @@ public class Climbers extends SubsystemBase {
         SHORT_MOTOR_LEFT_ID,
         //SHORT_MOTOR_CENTER_ID,
         SHORT_MOTOR_RIGHT_ID,
-        true,
+        false,
         SHORT_LIMIT_LEFT_ID,
         SHORT_LIMIT_RIGHT_ID
       );

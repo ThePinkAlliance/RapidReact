@@ -48,11 +48,9 @@ public class CollectGroup extends CommandBase {
     if (bIntake == false) {
       this.m_collector.SetSpeedCollector(-Collector.COLLECTOR_MOTOR_FULL_SPEED);
       this.m_collector.SetSpeedTower(-Collector.TOWER_MOTOR_FULL_SPEED);
-      //this.m_tower.commandMotor(-1);
     } else {
       this.m_collector.SetSpeedCollector(Collector.COLLECTOR_MOTOR_FULL_SPEED);
       this.m_collector.SetSpeedTower(Collector.TOWER_MOTOR_FULL_SPEED);
-      //this.m_tower.commandMotor(1);
     }
     this.m_collector.setSolenoid(true);
   }
