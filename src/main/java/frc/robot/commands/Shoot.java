@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Shooter;
@@ -14,13 +15,13 @@ public class Shoot extends CommandBase {
   private Shooter m_shooter;
   private Joystick joystick;
   private Collector m_collector;
-  private double power;
+  private double rpm;
   private int buttonId;
 
   public Shoot(
     Shooter m_shooter,
     Collector m_collector,
-    double power,
+    double rpm,
     int buttonId,
     Joystick joystick
   ) {
@@ -28,7 +29,7 @@ public class Shoot extends CommandBase {
 
     this.m_collector = m_collector;
     this.m_shooter = m_shooter;
-    this.power = power;
+    this.rpm = rpm;
     this.buttonId = buttonId;
     this.joystick = joystick;
 
@@ -42,7 +43,7 @@ public class Shoot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double rpm = 4500;
+    rpm = SmartDashboard.getNumber("shooter rpms", rpm);
     boolean ready = m_shooter.readyToShoot(rpm, 100);
 
     if (ready) {
@@ -53,6 +54,8 @@ public class Shoot extends CommandBase {
 
     this.m_collector.SetSpeedTower(Collector.TOWER_MOTOR_FULL_SPEED);
     this.m_shooter.commandRpm(rpm);
+    SmartDashboard.putNumber("shooter output percent:", this.m_shooter.getMotorOutputPercent());
+    SmartDashboard.putNumber("shooter rpms:", this.m_shooter.getMotorRpms());
   }
 
   // Called once the command ends or is interrupted.

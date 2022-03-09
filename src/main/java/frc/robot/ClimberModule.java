@@ -35,8 +35,7 @@ public class ClimberModule {
   private double NOMINAL_REVERSE = -0.5;
   private double PEAK_FORWARD = 0.7;
   private double PEAK_REVERSE = -0.7;
-  private double ALLOWABLE_CLOSELOOP_ERROR = 4000;
-  private double MIN_ALLOWABLE_POSITION = 100;
+    private double MIN_ALLOWABLE_POSITION = 100;
   private double MAX_ALLOWABLE_POSITION =
     0.7 * (ClimberModule.CLIMBER_MODULE_RATIO * 2048);
 
@@ -102,7 +101,7 @@ public class ClimberModule {
       );
     this.motorLeft.configAllowableClosedloopError(
         ClimberModuleConstants.kPIDLoopIdx,
-        ALLOWABLE_CLOSELOOP_ERROR,
+        ClimberModuleConstants.ALLOWABLE_CLOSELOOP_ERROR,
         ClimberModuleConstants.kTimeoutMs
       );
     this.motorLeft.config_kF(

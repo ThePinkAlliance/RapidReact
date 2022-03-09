@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.CollectGroup;
@@ -92,6 +93,8 @@ public class RobotContainer {
     //Initialize and publish for the first time.  Default command of dashboard handles thereafter.
     //m_dashboard.initialize();
     //m_dashboard.publishDashboard();
+    SmartDashboard.putNumber("shooter output percent:", this.m_shooter.getMotorOutputPercent());
+    SmartDashboard.putNumber("shooter rpms:", this.m_shooter.getMotorRpms());
   }
 
   /**
@@ -105,7 +108,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     //base controller
     //left joystick
-
+    
     this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
      this.m_climbers.setDefaultCommand(
          new JoystickClimb(m_climbers, this.gamepad_tower)
