@@ -35,7 +35,7 @@ public class Collector extends SubsystemBase {
   public Collector() {
     //Collector
     this.collectorMotor = new TalonFX(Collector.COLLECTOR_MOTOR_PORT);
-    this.solenoid = new Solenoid(PneumaticsModuleType.REVPH, 0);
+    this.solenoid = new Solenoid(PneumaticsModuleType.REVPH, 3);
     this.collectorMotor.setInverted(true);
     //Tower
     this.towerMotor = new TalonFX(TOWER_MOTOR_PORT);

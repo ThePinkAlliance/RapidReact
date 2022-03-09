@@ -12,10 +12,12 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.CollectGroup;
 import frc.robot.commands.DashboardPublish;
 import frc.robot.commands.Drive;
+import frc.robot.commands.FlywheelSpinup;
 import frc.robot.commands.JoystickClimb;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.TestAutoSequential;
@@ -45,7 +47,7 @@ public class RobotContainer {
   //private final Limelight m_limelight = new Limelight();
   private final Collector m_collector = new Collector();
   private final Shooter m_shooter = new Shooter();
-  private final Climbers m_climbers = new Climbers();
+  // private final Climbers m_climbers = new Climbers();
   //DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
   //private final Dashboard m_dashboard = new Dashboard(m_base, m_collector, m_shooter, null);
 
@@ -106,8 +108,20 @@ public class RobotContainer {
     //left joystick
 
     this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
-    this.m_climbers.setDefaultCommand(new JoystickClimb(m_climbers, this.gamepad_tower));
+    // this.m_climbers.setDefaultCommand(
+    //     new JoystickClimb(m_climbers, this.gamepad_tower)
+    //   );
     //this.m_dashboard.setDefaultCommand(new DashboardPublish(m_dashboard));
+
+    // Spinup the flywheel
+    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
+    .whenPressed(
+        new FlywheelSpinup(
+          m_shooter,
+          gamepad_tower,
+          Constants.JOYSTICK_BUTTON_B
+        )
+      );
 
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
     .whenPressed(
@@ -120,16 +134,23 @@ public class RobotContainer {
         )
       );
 
-    new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_A)
-    .whenPressed(m_base::zeroGyro);
-
-    new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_B)
+    new JoystickButton(gamepad_base, Constants.JOYSTICK_RIGHT_BUMPER)
     .whenPressed(
         new CollectGroup(
           m_collector,
           gamepad_base,
-          Constants.JOYSTICK_BUTTON_B,
+          Constants.JOYSTICK_RIGHT_BUMPER,
           true
+        )
+      );
+
+    new JoystickButton(gamepad_base, Constants.JOYSTICK_LEFT_BUMPER)
+    .whenPressed(
+        new CollectGroup(
+          m_collector,
+          gamepad_base,
+          Constants.JOYSTICK_LEFT_BUMPER,
+          false
         )
       );
   }

@@ -52,7 +52,8 @@ public class Drive extends CommandBase {
       modifyAxisLimited(axis4rot) * Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     );
 
-    if (js.getRawButton(Constants.JOYSTICK_LEFT_BUMPER)) {
+    // Turbo
+    if (js.getRawButton(Constants.JOYSTICK_LEFT_Y_AXIS_BUTTON)) {
       speedObject =
         new ChassisSpeeds(
           modifyAxis(axis1y) * Base.MAX_VELOCITY_METERS_PER_SECOND,
@@ -83,8 +84,8 @@ public class Drive extends CommandBase {
     // Cubing due to raw power until robot reaches competition weight.
     value = Math.copySign(value * value * value, value);
 
-    // Limit the speed to 60%
-    value = value / 1.5;
+    // Limit the speed to 75%
+    value = value / 1.33;
 
     return value;
   }

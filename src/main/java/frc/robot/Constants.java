@@ -25,6 +25,7 @@ public final class Constants {
   public static int JOYSTICK_BUTTON_A = 1;
   public static int JOYSTICK_BUTTON_B = 2;
   public static int JOYSTICK_BUTTON_Y = 4;
+  public static int JOYSTICK_LEFT_Y_AXIS_BUTTON = 9;
   public static int JOYSTICK_LEFT_Y_AXIS = 1;
   public static int JOYSTICK_RIGHT_Y_AXIS = 5;
 
@@ -35,7 +36,4 @@ public final class Constants {
 
   public static int JOYSTICK_LEFT_BUMPER = 5;
   public static int JOYSTICK_RIGHT_BUMPER = 6;
-
-
-
 }
