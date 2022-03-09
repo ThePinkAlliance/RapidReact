@@ -19,7 +19,9 @@ import frc.robot.commands.DashboardPublish;
 import frc.robot.commands.Drive;
 import frc.robot.commands.FlywheelSpinup;
 import frc.robot.commands.JoystickClimb;
+import frc.robot.commands.LeaveTarmack;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.ShootLeaveTarmac;
 import frc.robot.commands.TestAutoSequential;
 import frc.robot.commands.turnTest;
 import frc.robot.subsystems.Base;
@@ -65,12 +67,24 @@ public class RobotContainer {
     new turnTest(m_base)
   );
 
+  private final SelectableTrajectory LeaveTarmac = new SelectableTrajectory(
+    "Leave Tarmac",
+    new LeaveTarmack(m_base)
+  );
+
+  private final SelectableTrajectory ShootLeaveTarmac = new SelectableTrajectory(
+    "Shoot Leave Tarmac",
+    new ShootLeaveTarmac(m_base, m_shooter, m_collector)
+  );
+
   /**
    * This contains all the trajectories that can be selected from the dashboard.
    */
   private final SelectableTrajectory[] trajectories = {
     leaveBlueLeft,
     turnTest,
+    LeaveTarmac,
+    ShootLeaveTarmac,
   };
 
   /**
@@ -93,7 +107,10 @@ public class RobotContainer {
     //Initialize and publish for the first time.  Default command of dashboard handles thereafter.
     //m_dashboard.initialize();
     //m_dashboard.publishDashboard();
-    SmartDashboard.putNumber("shooter output percent:", this.m_shooter.getMotorOutputPercent());
+    SmartDashboard.putNumber(
+      "shooter output percent:",
+      this.m_shooter.getMotorOutputPercent()
+    );
     SmartDashboard.putNumber("shooter rpms:", this.m_shooter.getMotorRpms());
   }
 
@@ -108,11 +125,11 @@ public class RobotContainer {
   private void configureButtonBindings() {
     //base controller
     //left joystick
-    
+
     this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
-     this.m_climbers.setDefaultCommand(
-         new JoystickClimb(m_climbers, this.gamepad_tower)
-       );
+    this.m_climbers.setDefaultCommand(
+        new JoystickClimb(m_climbers, this.gamepad_tower)
+      );
     //this.m_dashboard.setDefaultCommand(new DashboardPublish(m_dashboard));
 
     // Spinup the flywheel
