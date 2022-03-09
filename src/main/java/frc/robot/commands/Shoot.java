@@ -43,7 +43,7 @@ public class Shoot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    rpm = SmartDashboard.getNumber("shooter rpms", rpm);
+    rpm = SmartDashboard.getNumber("shooter rpms:", rpm);
     boolean ready = m_shooter.readyToShoot(rpm, 100);
 
     if (ready) {

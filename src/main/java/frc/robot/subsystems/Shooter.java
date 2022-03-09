@@ -16,8 +16,8 @@ import frc.robot.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
 
-  public static final double SHOOTER_POWER_CLOSE_HIGH = 0.75;
-  public static final double SHOOTER_POWER_CLOSE_LOW = 0.75;
+  public static final double SHOOTER_POWER_CLOSE_HIGH = 4000;
+  public static final double SHOOTER_POWER_CLOSE_LOW = 4000;
   public static final double SHOOTER_POWER_CLOSE_DEFAULT =
     SHOOTER_POWER_CLOSE_HIGH;
   
@@ -51,7 +51,7 @@ public class Shooter extends SubsystemBase {
       );
     return Math.abs(velocity);
   }
-  
+
   public boolean readyToShoot(double max, double threshold) {
     double velocity = getMotorRpms();
     return Math.abs(velocity - max) <= threshold;

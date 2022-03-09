@@ -22,14 +22,14 @@ public class Climbers extends SubsystemBase {
   // private final int LONG_MOTOR_CENTER_ID = 0;
   private final int LONG_MOTOR_RIGHT_ID = 51;
 
-  private final int LONG_LIMIT_LEFT_ID = 0;
-  private final int LONG_LIMIT_RIGHT_ID = 1;
+  private final int LONG_LIMIT_LEFT_ID = 1;
+  private final int LONG_LIMIT_RIGHT_ID = 3;
 
   //private final int SHORT_MOTOR_CENTER_ID = 0;
   private final int SHORT_MOTOR_LEFT_ID = 52;
   private final int SHORT_MOTOR_RIGHT_ID = 53;
-  private final int SHORT_LIMIT_LEFT_ID = 2;
-  private final int SHORT_LIMIT_RIGHT_ID = 3;
+  private final int SHORT_LIMIT_LEFT_ID = 0;
+  private final int SHORT_LIMIT_RIGHT_ID = 2;
 
   public ClimberModule shortClimberModule;
   public ClimberModule longClimberModule;
