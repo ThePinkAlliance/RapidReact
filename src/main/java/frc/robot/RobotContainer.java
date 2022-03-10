@@ -151,9 +151,9 @@ public class RobotContainer {
     //left joystick
 
     this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
-    // this.m_climbers.setDefaultCommand(
-    //     new JoystickClimb(m_climbers, this.gamepad_tower)
-    //   );
+    this.m_climbers.setDefaultCommand(
+        new JoystickClimb(m_climbers, this.gamepad_tower)
+      );
     //this.m_dashboard.setDefaultCommand(new DashboardPublish(m_dashboard));
 
     //Shooter - Shoot - move tower to push ball up to shooter
@@ -197,7 +197,7 @@ public class RobotContainer {
         )
       );
     //Collector Outtake
-    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
+    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
     .whenPressed(
         new MoveShortArms(
           m_climbers,

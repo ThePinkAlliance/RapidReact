@@ -18,6 +18,7 @@ public class JoystickClimb extends CommandBase {
   private Joystick joystick;
 
   private final double BUMPER_DEADZONE = 0.5;
+  private final double MIN_SHORT_CLIMBER_POSITION = 6240;
 
   enum engagedSides {
     IN,
@@ -100,11 +101,10 @@ public class JoystickClimb extends CommandBase {
 
     double leftYstick = joystick.getRawAxis(Constants.JOYSTICK_LEFT_Y_AXIS);
     double shortPosition = Math.abs(climbers.shortClimberModule.getPosition());
-    double minPosition = 6240;
     /* Deadband gamepad, short climbers */
     if (
       Math.abs(leftYstick) < 0.10 ||
-      (shortPosition <= minPosition && leftYstick > 0)
+      (shortPosition <= MIN_SHORT_CLIMBER_POSITION && leftYstick > 0)
     ) {
       /* Within 10% of zero */
       leftYstick = 0;
