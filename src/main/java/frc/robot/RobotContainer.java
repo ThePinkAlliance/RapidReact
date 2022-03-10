@@ -22,6 +22,7 @@ import frc.robot.commands.JoystickClimb;
 import frc.robot.commands.LeaveTarmack;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ShootLeaveTarmac;
+import frc.robot.commands.ShootLeaveTarmacCollectShoot;
 import frc.robot.commands.TestAutoSequential;
 import frc.robot.commands.turnTest;
 import frc.robot.subsystems.Base;
@@ -77,6 +78,11 @@ public class RobotContainer {
     new ShootLeaveTarmac(m_base, m_shooter, m_collector)
   );
 
+  private final SelectableTrajectory ShootLeaveTarmacCollectShoot = new SelectableTrajectory(
+    "Shoot Leave Tarmac Collect And Shoot",
+    new ShootLeaveTarmacCollectShoot(m_base, m_shooter, m_collector)
+  );
+
   /**
    * This contains all the trajectories that can be selected from the dashboard.
    */
@@ -85,6 +91,7 @@ public class RobotContainer {
     turnTest,
     LeaveTarmac,
     ShootLeaveTarmac,
+    ShootLeaveTarmacCollectShoot,
   };
 
   /**

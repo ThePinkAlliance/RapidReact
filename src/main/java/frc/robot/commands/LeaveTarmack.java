@@ -14,12 +14,12 @@ public class LeaveTarmack extends SequentialCommandGroup {
 
   private static double TARMAC_WIDTH = 93;
   private static double ROBOT_WIDTH = 24;
-  public static double TRAVEL_DISTANCE = -TARMAC_WIDTH + ROBOT_WIDTH;
+  public static double TRAVEL_DISTANCE = TARMAC_WIDTH + ROBOT_WIDTH;
 
   /** Creates a new LeaveTarmack. */
   public LeaveTarmack(Base base) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new Navigate(base, TRAVEL_DISTANCE));
+    addCommands(new Navigate(base, -TRAVEL_DISTANCE));
   }
 }
