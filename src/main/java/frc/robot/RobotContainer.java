@@ -161,7 +161,7 @@ public class RobotContainer {
     .whenPressed(
         new MoveTower(
           m_collector,
-          Shooter.SHOOTER_POWER_CLOSE_HIGH,
+          Shooter.SHOOTER_POWER_CLOSE_HIGH_V2,
           Constants.JOYSTICK_BUTTON_X,
           gamepad_tower,
           true
@@ -171,7 +171,7 @@ public class RobotContainer {
     .whenPressed(
         new SpinUpShooter(
           m_shooter,
-          Shooter.SHOOTER_POWER_CLOSE_HIGH,
+          Shooter.SHOOTER_POWER_CLOSE_HIGH_V2,
           Constants.JOYSTICK_BUTTON_A,
           gamepad_tower
         )

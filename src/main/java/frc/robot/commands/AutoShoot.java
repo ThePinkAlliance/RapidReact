@@ -19,19 +19,13 @@ public class AutoShoot extends CommandBase {
   private Collector m_collector;
 
   private double rpm;
-  private int MAX_BALLS;
 
   private int ballsShot = 0;
   private boolean shotBefore = false;
 
   private Timer timer;
 
-  public AutoShoot(
-    Shooter m_shooter,
-    Collector m_collector,
-    double rpm,
-    int MAX_BALLS
-  ) {
+  public AutoShoot(Shooter m_shooter, Collector m_collector, double rpm) {
     // Use addRequirements() here to declare subsystem dependencies.
 
     this.m_collector = m_collector;
@@ -39,7 +33,6 @@ public class AutoShoot extends CommandBase {
     this.rpm = rpm;
 
     this.timer = new Timer();
-    this.MAX_BALLS = MAX_BALLS;
 
     addRequirements(this.m_shooter, this.m_collector);
   }
@@ -60,7 +53,6 @@ public class AutoShoot extends CommandBase {
 
     if (ready) {
       this.m_collector.enableTowerOverride();
-
       // this.shotBefore = true;
     } else {
       // if (currentRPM <= Math.abs(currentRPM - (rpm - 120)) && shotBefore) {
@@ -76,7 +68,10 @@ public class AutoShoot extends CommandBase {
       Dashboard.DASH_SHOOTER_VELOCITY,
       this.m_shooter.getMotorOutputPercent()
     );
-    SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_RPMS, this.m_shooter.getMotorRpms());
+    SmartDashboard.putNumber(
+      Dashboard.DASH_SHOOTER_RPMS,
+      this.m_shooter.getMotorRpms()
+    );
   }
 
   // Called once the command ends or is interrupted.

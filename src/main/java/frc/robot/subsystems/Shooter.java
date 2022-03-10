@@ -9,18 +9,18 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
 
-  public static final double SHOOTER_POWER_CLOSE_HIGH = 3800;
+  public static final double SHOOTER_POWER_CLOSE_HIGH = 3325; // 3800
+  public static final double SHOOTER_POWER_CLOSE_HIGH_V2 = 3325;
   public static final double SHOOTER_POWER_CLOSE_LOW = 3800;
   public static final double SHOOTER_POWER_CLOSE_DEFAULT =
-    SHOOTER_POWER_CLOSE_HIGH;
-  
+    SHOOTER_POWER_CLOSE_HIGH_V2;
+
   private double RAMP_RATE = 0;
   private double NOMINAL_FORWARD = 0;
   private double NOMINAL_REVERSE = 0;
@@ -70,7 +70,7 @@ public class Shooter extends SubsystemBase {
 
   public void commandRpm(double rpm) {
     double velo = (rpm * 2048) / 600;
-    motor.set(ControlMode.Velocity, velo); 
+    motor.set(ControlMode.Velocity, velo);
     // when power is being applied:  isActivated needs to be true
     this.isActivated = (rpm != 0) ? true : false;
   }
@@ -80,8 +80,8 @@ public class Shooter extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-private void configureMotor() {
-    this. motor.setNeutralMode(NeutralMode.Coast);
+  private void configureMotor() {
+    this.motor.setNeutralMode(NeutralMode.Coast);
     this.motor.configSelectedFeedbackSensor(
         TalonFXFeedbackDevice.IntegratedSensor,
         ShooterConstants.kPIDLoopIdx,
@@ -130,6 +130,5 @@ private void configureMotor() {
         ShooterConstants.kGains.kD,
         ShooterConstants.kTimeoutMs
       );
-}
-
+  }
 }

@@ -45,8 +45,7 @@ public class Shoot extends CommandBase {
   @Override
   public void execute() {
     rpm = SmartDashboard.getNumber(Dashboard.DASH_SHOOTER_TARGET_RPMS, rpm);
-    boolean ready = m_shooter.readyToShoot(rpm, 100);
-    
+    boolean ready = m_shooter.readyToShoot(rpm, 60);
 
     if (ready) {
       this.m_collector.enableTowerOverride();
@@ -56,8 +55,14 @@ public class Shoot extends CommandBase {
 
     this.m_collector.SetSpeedTowerForOverride(Collector.TOWER_MOTOR_FULL_SPEED);
     this.m_shooter.commandRpm(rpm);
-    SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_VELOCITY, this.m_shooter.getMotorOutputPercent());
-    SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_RPMS, this.m_shooter.getMotorRpms());
+    SmartDashboard.putNumber(
+      Dashboard.DASH_SHOOTER_VELOCITY,
+      this.m_shooter.getMotorOutputPercent()
+    );
+    SmartDashboard.putNumber(
+      Dashboard.DASH_SHOOTER_RPMS,
+      this.m_shooter.getMotorRpms()
+    );
   }
 
   // Called once the command ends or is interrupted.
