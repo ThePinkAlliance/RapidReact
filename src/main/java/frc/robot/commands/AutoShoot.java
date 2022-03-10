@@ -62,7 +62,7 @@ public class AutoShoot extends CommandBase {
 
       this.shotBefore = true;
     } else {
-      if (300 <= Math.abs(currentRPM - (rpm - 100)) && shotBefore) {
+      if (Math.abs(currentRPM - (rpm - 100)) >= 300 && shotBefore) {
         this.ballsShot = ballsShot++;
         this.shotBefore = false;
       }
