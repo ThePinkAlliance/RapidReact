@@ -21,12 +21,12 @@ import frc.robot.commands.DashboardPublish;
 import frc.robot.commands.Drive;
 import frc.robot.commands.JoystickClimb;
 import frc.robot.commands.LeaveTarmack;
+import frc.robot.commands.MoveShortArms;
 import frc.robot.commands.MoveTower;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ShootLeaveTarmac;
 import frc.robot.commands.ShootLeaveTarmacCollectShoot;
 import frc.robot.commands.SpinUpShooter;
-import frc.robot.commands.MoveShortArms;
 import frc.robot.commands.TestAutoSequential;
 import frc.robot.commands.turnTest;
 import frc.robot.subsystems.Base;
@@ -58,13 +58,9 @@ public class RobotContainer {
   //DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
   //private final Dashboard m_dashboard = new Dashboard(m_base, m_collector, m_shooter, null);
 
-
-  
-
   Trajectory trajectory = new Trajectory();
   //ShuffleboardTab driverDashboard = Shuffleboard.getTab("Dashboard");
   SendableChooser<SelectableTrajectory> selectedPath = new SendableChooser<SelectableTrajectory>();
-  
 
   private final SelectableTrajectory LeaveTarmac = new SelectableTrajectory(
     "Leave Tarmac",
@@ -93,10 +89,9 @@ public class RobotContainer {
     LeaveTarmac,
     ShootLeaveTarmac,
     ShootLeaveTarmacCollectShoot,
-    autoMidClimb
+    autoMidClimb,
   };
 
-  
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -112,8 +107,6 @@ public class RobotContainer {
       }
     }
 
-
-
     //driverDashboard.add(selectedPath);
     SmartDashboard.putData(selectedPath);
 
@@ -126,19 +119,23 @@ public class RobotContainer {
       Dashboard.DASH_SHOOTER_VELOCITY,
       this.m_shooter.getMotorOutputPercent()
     );
-    SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_TARGET_RPMS,Shooter.SHOOTER_POWER_CLOSE_HIGH);
-    SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_RPMS,m_shooter.getMotorRpms());
+    SmartDashboard.putNumber(
+      Dashboard.DASH_SHOOTER_TARGET_RPMS,
+      Shooter.SHOOTER_POWER_CLOSE_HIGH
+    );
+    SmartDashboard.putNumber(
+      Dashboard.DASH_SHOOTER_RPMS,
+      m_shooter.getMotorRpms()
+    );
     SmartDashboard.putBoolean(Dashboard.DASH_SHOOTER_READY, false);
     SmartDashboard.putNumber(
-       Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
-       m_climbers.longClimberModule.getPosition()
-     );
-     SmartDashboard.putNumber(
-       Dashboard.DASH_CLIMBER_SHORT_ARM_POSITION,
-       m_climbers.shortClimberModule.getPosition()
-     );
-
-    
+      Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
+      m_climbers.longClimberModule.getPosition()
+    );
+    SmartDashboard.putNumber(
+      Dashboard.DASH_CLIMBER_SHORT_ARM_POSITION,
+      m_climbers.shortClimberModule.getPosition()
+    );
   }
 
   /**
@@ -154,9 +151,9 @@ public class RobotContainer {
     //left joystick
 
     this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
-    this.m_climbers.setDefaultCommand(
-        new JoystickClimb(m_climbers, this.gamepad_tower)
-      );
+    // this.m_climbers.setDefaultCommand(
+    //     new JoystickClimb(m_climbers, this.gamepad_tower)
+    //   );
     //this.m_dashboard.setDefaultCommand(new DashboardPublish(m_dashboard));
 
     //Shooter - Shoot - move tower to push ball up to shooter
@@ -171,14 +168,14 @@ public class RobotContainer {
         )
       );
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_A)
-      .whenPressed(
-          new SpinUpShooter(
-            m_shooter,
-            Shooter.SHOOTER_POWER_CLOSE_HIGH,
-            Constants.JOYSTICK_BUTTON_A,
-            gamepad_tower
-          )
-        );
+    .whenPressed(
+        new SpinUpShooter(
+          m_shooter,
+          Shooter.SHOOTER_POWER_CLOSE_HIGH,
+          Constants.JOYSTICK_BUTTON_A,
+          gamepad_tower
+        )
+      );
     //Collector Intake
     new JoystickButton(gamepad_base, Constants.JOYSTICK_RIGHT_BUMPER)
     .whenPressed(
@@ -199,11 +196,15 @@ public class RobotContainer {
           false
         )
       );
-      //Collector Outtake
+    //Collector Outtake
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
     .whenPressed(
-      new MoveShortArms(m_climbers, ClimberModule.SHORT_ARM_MID_CLIMB_START, MoveShortArms.ARM_MOVE_UP)
-     //new ClimbDrive(m_base, m_climbers, 0, 0.7, false)
+        new MoveShortArms(
+          m_climbers,
+          ClimberModule.SHORT_ARM_MID_CLIMB_START,
+          MoveShortArms.ARM_MOVE_UP
+        )
+        //new ClimbDrive(m_base, m_climbers, 0, 0.7, false)
       );
   }
 
