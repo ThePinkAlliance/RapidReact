@@ -16,8 +16,8 @@ import frc.robot.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
 
-  public static final double SHOOTER_POWER_CLOSE_HIGH = 4000;
-  public static final double SHOOTER_POWER_CLOSE_LOW = 4000;
+  public static final double SHOOTER_POWER_CLOSE_HIGH = 3800;
+  public static final double SHOOTER_POWER_CLOSE_LOW = 3800;
   public static final double SHOOTER_POWER_CLOSE_DEFAULT =
     SHOOTER_POWER_CLOSE_HIGH;
   
@@ -69,7 +69,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void commandRpm(double rpm) {
-    double velo = (rpm * 248) / 600;
+    double velo = (rpm * 2048) / 600;
     motor.set(ControlMode.Velocity, velo); 
     // when power is being applied:  isActivated needs to be true
     this.isActivated = (rpm != 0) ? true : false;
@@ -88,7 +88,7 @@ private void configureMotor() {
         ShooterConstants.kTimeoutMs
       );
     //this.motor.setSensorPhase(true);  //NOT NEEDED SINCE ITS INTEGRATED SENSOR
-
+    this.motor.configClosedloopRamp(RAMP_RATE);
     this.motor.configNominalOutputForward(
         NOMINAL_FORWARD,
         ShooterConstants.kTimeoutMs

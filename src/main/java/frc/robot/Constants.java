@@ -29,6 +29,8 @@ public final class Constants {
   public static int JOYSTICK_LEFT_Y_AXIS = 1;
   public static int JOYSTICK_RIGHT_Y_AXIS = 5;
 
+  public static int JOYSTICK_POV_180 = 180;
+
   public static double SHOOTER_POWER_CLOSE_HIGH = 0.65;
 
   public static int JOYSTICK_LEFT_TRIGGER = 2;

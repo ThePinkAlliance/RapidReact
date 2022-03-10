@@ -19,6 +19,10 @@ public class Dashboard extends SubsystemBase {
   public static String DASH_SHOOTER_RPMS = "Shooter RPMs:";
   public static String DASH_SHOOTER_TARGET_RPMS = "Shooter Target RPMs:";
   public static String DASH_SHOOTER_VELOCITY = "Shooter Velocity:";
+  public static String DASH_SHOOTER_READY = "Shooter Ready";
+  public static String DASH_CLIMBER_LONG_ARM_POSITION = "Climber Long Arm";
+  public static String DASH_CLIMBER_SHORT_ARM_POSITION = "Climber Short Arm";
+  
 
 
   private Base base;

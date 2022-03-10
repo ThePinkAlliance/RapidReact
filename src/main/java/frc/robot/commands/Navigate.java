@@ -24,6 +24,8 @@ public class Navigate extends CommandBase {
   double align_kI = 0.5;
   double align_kD = 0.003;
 
+  boolean bBackwards = false;
+
   /**
    * kP:
    * kI:
@@ -66,6 +68,14 @@ public class Navigate extends CommandBase {
     addRequirements(base);
   }
 
+  public Navigate(Base base, double targetInches, boolean bBackwards) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    this.base = base;
+    this.targetInches = targetInches;
+    this.bBackwards = bBackwards;
+    addRequirements(base);
+  }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
@@ -81,6 +91,7 @@ public class Navigate extends CommandBase {
 
     alignController.setTolerance(0.5, 1.0);
     straightController.setTolerance(1.5);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -169,6 +180,8 @@ public class Navigate extends CommandBase {
       .getTable("debug")
       .getEntry("yaw")
       .setNumber(base.getSensorYaw());
+    if (bBackwards)
+       x_power *= -1;
     ChassisSpeeds speeds = new ChassisSpeeds(x_power, 0, theta_power);
 
     base.drive(speeds);

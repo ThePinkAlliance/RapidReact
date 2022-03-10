@@ -63,11 +63,6 @@ public class Climbers extends SubsystemBase {
       );
   }
 
-  @Deprecated
-  public void command(ClimberModule module, double power) {
-    module.setPower(power);
-  }
-
   public void openArmLocks(ClimberModule module) {
     module.setSolenoidState(SOLENOID_STATE.UNLOCKED);
   }

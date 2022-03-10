@@ -29,10 +29,10 @@ public class ShootLeaveTarmacCollectShoot extends SequentialCommandGroup {
         Shooter.SHOOTER_POWER_CLOSE_HIGH,
         1
       ),
-      new Navigate(m_base, -LeaveTarmack.TRAVEL_DISTANCE / 2),
+      new Navigate(m_base, LeaveTarmack.TRAVEL_DISTANCE / 2, true),
       new Navigate(m_base, 0, 180),
       new Navigate(m_base, LeaveTarmack.TRAVEL_DISTANCE / 2)
-      .alongWith(new CollectGroupAuto(m_collector, 12, true)),
+      .alongWith(new AutoCollectGroup(m_collector, 12, true)),
       new Navigate(m_base, 0, 180),
       new Navigate(m_base, LeaveTarmack.TRAVEL_DISTANCE)
     );

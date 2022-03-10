@@ -4,12 +4,12 @@ package frc.robot.commands;
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-import edu.wpi.first.wpilibj.Joystick;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Collector;
 
-public class CollectGroupAuto extends CommandBase {
+public class AutoCollectGroup extends CommandBase {
 
   Collector m_collector;
   boolean bIntake;
@@ -23,7 +23,7 @@ public class CollectGroupAuto extends CommandBase {
    * @param JOYSTICK_BUTTON
    * @param bIntake
    */
-  public CollectGroupAuto(
+  public AutoCollectGroup(
     Collector m_collector,
     double MAX_SECONDS,
     boolean bIntake
@@ -48,10 +48,10 @@ public class CollectGroupAuto extends CommandBase {
   public void execute() {
     if (bIntake == false) {
       this.m_collector.SetSpeedCollector(-Collector.COLLECTOR_MOTOR_FULL_SPEED);
-      this.m_collector.SetSpeedTower(-Collector.TOWER_MOTOR_FULL_SPEED);
+      this.m_collector.SetSpeedTowerForOverride(-Collector.TOWER_MOTOR_FULL_SPEED);
     } else {
       this.m_collector.SetSpeedCollector(Collector.COLLECTOR_MOTOR_FULL_SPEED);
-      this.m_collector.SetSpeedTower(Collector.TOWER_MOTOR_FULL_SPEED);
+      this.m_collector.SetSpeedTowerForOverride(Collector.TOWER_MOTOR_FULL_SPEED);
     }
     this.m_collector.setSolenoid(true);
   }
@@ -60,7 +60,7 @@ public class CollectGroupAuto extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     this.m_collector.SetSpeedCollector(0);
-    this.m_collector.SetSpeedTower(0);
+    this.m_collector.SetSpeedTowerForOverride(0);
     this.m_collector.setSolenoid(false);
   }
 

@@ -23,23 +23,15 @@ public class ClimberModule {
     BOTH,
   }
 
-  public static final int CLIMBER_MODULE_RATIO = 227;
-  public static final int CLIMBER_MODULE_MOTOR_TICK_COUNT = 2048;
+  public static final int SHORT_ARM_MID_CLIMB_START = -222222;
+  public static final int SHORT_ARM_MID_CLIMB_FINISH = -143195;
 
   private DoubleSolenoid lockerSolenoid;
   // parent
   private TalonFX motorLeft;
   //private TalonFX motorCenter;
   private TalonFX motorRight;
-  private double RAMP_RATE = 0;
-  private double NOMINAL_FORWARD = 0.5;
-  private double NOMINAL_REVERSE = -0.5;
-  private double PEAK_FORWARD = 0.7;
-  private double PEAK_REVERSE = -0.7;
-    private double MIN_ALLOWABLE_POSITION = 100;
-  private double MAX_ALLOWABLE_POSITION =
-    0.7 * (ClimberModule.CLIMBER_MODULE_RATIO * 2048);
-
+  private double RAMP_RATE = 0.25;
   private DigitalInput limitLeftSwitch;
   private DigitalInput limitRightSwitch;
 
@@ -79,65 +71,10 @@ public class ClimberModule {
     // this.motorCenter.setInverted(inverted);
     this.motorRight.follow(motorLeft);
     //this.motorCenter.follow(motorLeft);
-    if (false){
-    this.motorLeft.configSelectedFeedbackSensor(
-        TalonFXFeedbackDevice.IntegratedSensor,
-        ClimberModuleConstants.kPIDLoopIdx,
-        ClimberModuleConstants.kTimeoutMs
-      );
-    //this.motorLeft.setSensorPhase(true);  //NOT NEEDED SINCE ITS INTEGRATED SENSOR
-
-    this.motorLeft.configNominalOutputForward(
-        NOMINAL_FORWARD,
-        ClimberModuleConstants.kTimeoutMs
-      );
-    this.motorLeft.configNominalOutputReverse(
-        NOMINAL_REVERSE,
-        ClimberModuleConstants.kTimeoutMs
-      );
-    this.motorLeft.configPeakOutputForward(
-        PEAK_FORWARD,
-        ClimberModuleConstants.kTimeoutMs
-      );
-    this.motorLeft.configPeakOutputReverse(
-        PEAK_REVERSE,
-        ClimberModuleConstants.kTimeoutMs
-      );
-    this.motorLeft.configAllowableClosedloopError(
-        ClimberModuleConstants.kPIDLoopIdx,
-        ClimberModuleConstants.ALLOWABLE_CLOSELOOP_ERROR,
-        ClimberModuleConstants.kTimeoutMs
-      );
-    this.motorLeft.config_kF(
-        ClimberModuleConstants.kPIDLoopIdx,
-        ClimberModuleConstants.kGains.kF,
-        ClimberModuleConstants.kTimeoutMs
-      );
-    this.motorLeft.config_kP(
-        ClimberModuleConstants.kPIDLoopIdx,
-        ClimberModuleConstants.kGains.kP,
-        ClimberModuleConstants.kTimeoutMs
-      );
-    this.motorLeft.config_kI(
-        ClimberModuleConstants.kPIDLoopIdx,
-        ClimberModuleConstants.kGains.kI,
-        ClimberModuleConstants.kTimeoutMs
-      );
-    this.motorLeft.config_kD(
-        ClimberModuleConstants.kPIDLoopIdx,
-        ClimberModuleConstants.kGains.kD,
-        ClimberModuleConstants.kTimeoutMs
-      );
-    }
-
+    motorLeft.setSelectedSensorPosition(0);
+    
     this.limitLeftSwitch = new DigitalInput(limitSwitchLeftChannel);
     this.limitRightSwitch = new DigitalInput(limitSwitchRightChannel);
-  }
-
-  @Deprecated
-  public void setPower(double power) {
-    power = power / 2.5;
-    this.motorLeft.set(ControlMode.PercentOutput, power);
   }
 
   public void moveArms(double power) {
@@ -179,6 +116,14 @@ public class ClimberModule {
 
   public double getPosition() {
     return this.motorLeft.getSelectedSensorPosition();
+  }
+
+  public void resetLeftSensorPosition() {
+    this.motorLeft.setSelectedSensorPosition(0);
+  }
+
+  public void resetRightSensorPosition() {
+    this.motorRight.setSelectedSensorPosition(0);
   }
 
   public void setPosition(double pos) {

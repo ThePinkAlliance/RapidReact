@@ -14,15 +14,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.AutoMidClimb;
+import frc.robot.commands.ClimbDrive;
 import frc.robot.commands.CollectGroup;
 import frc.robot.commands.DashboardPublish;
 import frc.robot.commands.Drive;
-import frc.robot.commands.FlywheelSpinup;
 import frc.robot.commands.JoystickClimb;
 import frc.robot.commands.LeaveTarmack;
+import frc.robot.commands.MoveTower;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ShootLeaveTarmac;
 import frc.robot.commands.ShootLeaveTarmacCollectShoot;
+import frc.robot.commands.SpinUpShooter;
+import frc.robot.commands.MoveShortArms;
 import frc.robot.commands.TestAutoSequential;
 import frc.robot.commands.turnTest;
 import frc.robot.subsystems.Base;
@@ -54,19 +58,13 @@ public class RobotContainer {
   //DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
   //private final Dashboard m_dashboard = new Dashboard(m_base, m_collector, m_shooter, null);
 
+
+  
+
   Trajectory trajectory = new Trajectory();
-  ShuffleboardTab driverDashboard = Shuffleboard.getTab("Dashboard");
+  //ShuffleboardTab driverDashboard = Shuffleboard.getTab("Dashboard");
   SendableChooser<SelectableTrajectory> selectedPath = new SendableChooser<SelectableTrajectory>();
-
-  private final SelectableTrajectory leaveBlueLeft = new SelectableTrajectory(
-    "Leave Blue Left",
-    new TestAutoSequential(m_base)
-  );
-
-  private final SelectableTrajectory turnTest = new SelectableTrajectory(
-    "Turn test",
-    new turnTest(m_base)
-  );
+  
 
   private final SelectableTrajectory LeaveTarmac = new SelectableTrajectory(
     "Leave Tarmac",
@@ -83,17 +81,22 @@ public class RobotContainer {
     new ShootLeaveTarmacCollectShoot(m_base, m_shooter, m_collector)
   );
 
+  private final SelectableTrajectory autoMidClimb = new SelectableTrajectory(
+    "AutoMidClimb",
+    new AutoMidClimb(m_base, m_climbers)
+  );
+
   /**
    * This contains all the trajectories that can be selected from the dashboard.
    */
   private final SelectableTrajectory[] trajectories = {
-    leaveBlueLeft,
-    turnTest,
     LeaveTarmac,
     ShootLeaveTarmac,
     ShootLeaveTarmacCollectShoot,
+    autoMidClimb
   };
 
+  
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -102,13 +105,18 @@ public class RobotContainer {
     configureButtonBindings();
 
     for (SelectableTrajectory t : trajectories) {
-      if (t.location == leaveBlueLeft.name) {
+      if (t.location == ShootLeaveTarmac.name) {
         selectedPath.setDefaultOption(t.name, t);
       } else {
         selectedPath.addOption(t.name, t);
       }
     }
-    driverDashboard.add(selectedPath);
+
+
+
+    //driverDashboard.add(selectedPath);
+    SmartDashboard.putData(selectedPath);
+
     // for now select leave blue 1 for testing
 
     //Initialize and publish for the first time.  Default command of dashboard handles thereafter.
@@ -120,6 +128,17 @@ public class RobotContainer {
     );
     SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_TARGET_RPMS,Shooter.SHOOTER_POWER_CLOSE_HIGH);
     SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_RPMS,m_shooter.getMotorRpms());
+    SmartDashboard.putBoolean(Dashboard.DASH_SHOOTER_READY, false);
+    SmartDashboard.putNumber(
+       Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
+       m_climbers.longClimberModule.getPosition()
+     );
+     SmartDashboard.putNumber(
+       Dashboard.DASH_CLIMBER_SHORT_ARM_POSITION,
+       m_climbers.shortClimberModule.getPosition()
+     );
+
+    
   }
 
   /**
@@ -140,26 +159,26 @@ public class RobotContainer {
       );
     //this.m_dashboard.setDefaultCommand(new DashboardPublish(m_dashboard));
 
-    // Spinup the flywheel
-    // new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
-    // .whenPressed(
-    //     new FlywheelSpinup(
-    //       m_shooter,
-    //       gamepad_tower,
-    //       Constants.JOYSTICK_BUTTON_B
-    //     )
-    //   );
-    //Shooter - Shoot
-    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
+    //Shooter - Shoot - move tower to push ball up to shooter
+    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_X)
     .whenPressed(
-        new Shoot(
-          m_shooter,
+        new MoveTower(
           m_collector,
           Shooter.SHOOTER_POWER_CLOSE_HIGH,
-          Constants.JOYSTICK_BUTTON_Y,
-          gamepad_tower
+          Constants.JOYSTICK_BUTTON_X,
+          gamepad_tower,
+          true
         )
       );
+    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_A)
+      .whenPressed(
+          new SpinUpShooter(
+            m_shooter,
+            Shooter.SHOOTER_POWER_CLOSE_HIGH,
+            Constants.JOYSTICK_BUTTON_A,
+            gamepad_tower
+          )
+        );
     //Collector Intake
     new JoystickButton(gamepad_base, Constants.JOYSTICK_RIGHT_BUMPER)
     .whenPressed(
@@ -180,6 +199,12 @@ public class RobotContainer {
           false
         )
       );
+      //Collector Outtake
+    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
+    .whenPressed(
+      new MoveShortArms(m_climbers, ClimberModule.SHORT_ARM_MID_CLIMB_START, MoveShortArms.ARM_MOVE_UP)
+     //new ClimbDrive(m_base, m_climbers, 0, 0.7, false)
+      );
   }
 
   public void selectTrajectory(SelectableTrajectory selectableTrajectory) {
@@ -193,7 +218,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     if (selectedPath.getSelected() == null) {
-      selectedPath.setDefaultOption("Leave Blue Left", leaveBlueLeft);
+      selectedPath.setDefaultOption(ShootLeaveTarmac.name, ShootLeaveTarmac);
     }
 
     return selectedPath.getSelected().getDefualtCommand();

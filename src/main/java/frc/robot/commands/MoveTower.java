@@ -8,32 +8,35 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Collector;
 
-public class CollectGroup extends CommandBase {
+public class MoveTower extends CommandBase {
 
   Collector m_collector;
   Joystick joystick;
   int JOYSTICK_BUTTON;
   boolean bIntake;
+  double shooterPowerCloseHigh;
 
   /**
    * NOTE bIntake won't be updated if this command is not being called repeatedly
    * @param m_collector
-   * @param joystick
+   * @param shooterPowerCloseHigh
    * @param JOYSTICK_BUTTON
-   * @param bIntake
+   * @param gamepad_tower
    */
-  public CollectGroup(
+  public MoveTower(
     Collector m_collector,
-    Joystick joystick,
+    double shooterPowerCloseHigh,
     int JOYSTICK_BUTTON,
+    Joystick gamepad_tower,
     boolean bIntake
   ) {
     // Use addRequirements() here to declare subsystem dependencies.
 
     this.m_collector = m_collector;
-    this.joystick = joystick;
+    this.shooterPowerCloseHigh = shooterPowerCloseHigh;
     this.JOYSTICK_BUTTON = JOYSTICK_BUTTON;
     this.bIntake = bIntake;
+    this.joystick = gamepad_tower;
 
     addRequirements(m_collector);
   }
@@ -45,22 +48,16 @@ public class CollectGroup extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (bIntake == false) {
-      this.m_collector.SetSpeedCollector(-Collector.COLLECTOR_MOTOR_FULL_SPEED);
-      this.m_collector.SetSpeedTowerForOverride(-Collector.TOWER_MOTOR_FULL_SPEED);
-    } else {
-      this.m_collector.SetSpeedCollector(Collector.COLLECTOR_MOTOR_FULL_SPEED);
-      this.m_collector.SetSpeedTowerForOverride(Collector.TOWER_MOTOR_FULL_SPEED);
-    }
-    this.m_collector.setSolenoid(true);
+    if (bIntake == false)
+      this.m_collector.SetSpeedTower(-Collector.TOWER_MOTOR_FULL_SPEED);
+    else
+      this.m_collector.SetSpeedTower(Collector.TOWER_MOTOR_FULL_SPEED);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    this.m_collector.SetSpeedCollector(0);
-    this.m_collector.SetSpeedTowerForOverride(0);
-    this.m_collector.setSolenoid(false);
+    this.m_collector.SetSpeedTowerForOverride(0); 
   }
 
   // Returns true when the command should end.

@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Shooter;
@@ -30,7 +29,7 @@ public class ShootLeaveTarmac extends SequentialCommandGroup {
         Shooter.SHOOTER_POWER_CLOSE_HIGH,
         1
       ),
-      new Navigate(m_base, -LeaveTarmack.TRAVEL_DISTANCE)
+      new Navigate(m_base, LeaveTarmack.TRAVEL_DISTANCE, true)
     );
   }
 }

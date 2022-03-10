@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import javax.lang.model.util.ElementScanner6;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -31,6 +33,7 @@ public class Collector extends SubsystemBase {
   private TalonFX towerMotor;
   private Rev2mDistanceSensor ballSensor;
   private boolean towerOverride = false;
+  private boolean towerReverse = false;
 
   /** Creates a new Collector. */
   public Collector() {
@@ -86,7 +89,7 @@ public class Collector extends SubsystemBase {
     return (bDetected && bRangeValid);
   }
 
-  public void SetSpeedTower(double towerSpeed) {
+  public void SetSpeedTowerForOverride(double towerSpeed) {
     boolean ballFound = ballDetected();
     System.out.println("OUTPUT: " + collectorRunning + ", BALL: " + ballFound);
     //towerMotor.set(ControlMode.PercentOutput, TOWER_MOTOR_FULL_SPEED);
@@ -98,6 +101,11 @@ public class Collector extends SubsystemBase {
       towerMotor.set(ControlMode.PercentOutput, 0.0);
     }
   }
+
+  public void SetSpeedTower(double power) {
+    towerMotor.set(ControlMode.PercentOutput, power);
+  }
+
 
   @Override
   public void periodic() {

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.ClimberModule;
 import frc.robot.Constants;
 import frc.robot.subsystems.Climbers;
+import frc.robot.subsystems.Dashboard;
 
 public class JoystickClimb extends CommandBase {
 
@@ -124,14 +125,14 @@ public class JoystickClimb extends CommandBase {
     //   ClimberModule.CLIMBER_MODULE_RATIO *
     //   ClimberModule.CLIMBER_MODULE_MOTOR_TICK_COUNT;
     // climbers.longClimberModule.setPosition(targetPositionRotations);
-    // SmartDashboard.putNumber(
-    //   "LONG ARM POSITION:",
-    //   climbers.longClimberModule.getPosition()
-    // );
-    // SmartDashboard.putNumber(
-    //   "SHORT ARM POSITION:",
-    //   climbers.shortClimberModule.getPosition()
-    // );
+     SmartDashboard.putNumber(
+       Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
+       climbers.longClimberModule.getPosition()
+     );
+     SmartDashboard.putNumber(
+       Dashboard.DASH_CLIMBER_SHORT_ARM_POSITION,
+       climbers.shortClimberModule.getPosition()
+     );
 
   }
 

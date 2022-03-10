@@ -20,6 +20,6 @@ public class LeaveTarmack extends SequentialCommandGroup {
   public LeaveTarmack(Base base) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new Navigate(base, -TRAVEL_DISTANCE));
+    addCommands(new Navigate(base, TRAVEL_DISTANCE));
   }
 }
