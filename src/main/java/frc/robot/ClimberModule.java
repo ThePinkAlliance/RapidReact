@@ -62,8 +62,8 @@ public class ClimberModule {
     this.motorLeft.configFactoryDefault();
     //this.motorCenter.configFactoryDefault();
     this.motorRight.configFactoryDefault();
-    this. motorLeft.setNeutralMode(NeutralMode.Brake);
-    this. motorRight.setNeutralMode(NeutralMode.Brake);
+    this.motorLeft.setNeutralMode(NeutralMode.Brake);
+    this.motorRight.setNeutralMode(NeutralMode.Brake);
     this.motorLeft.configOpenloopRamp(RAMP_RATE);
     this.motorLeft.configClosedloopRamp(RAMP_RATE);
     this.motorLeft.setInverted(inverted);
@@ -72,7 +72,7 @@ public class ClimberModule {
     this.motorRight.follow(motorLeft);
     //this.motorCenter.follow(motorLeft);
     motorLeft.setSelectedSensorPosition(0);
-    
+
     this.limitLeftSwitch = new DigitalInput(limitSwitchLeftChannel);
     this.limitRightSwitch = new DigitalInput(limitSwitchRightChannel);
   }
@@ -132,7 +132,7 @@ public class ClimberModule {
     //   Math.abs(pos) >= MAX_ALLOWABLE_POSITION;
 
     //if (keepGoing) {
-      this.motorLeft.set(ControlMode.Position, pos);
+    this.motorLeft.set(ControlMode.Position, pos);
     //}
   }
 }
