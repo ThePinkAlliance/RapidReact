@@ -62,7 +62,7 @@ public class AutoShoot extends CommandBase {
 
       this.shotBefore = true;
     } else {
-      if (currentRPM <= Math.abs(currentRPM - (rpm - 120)) && shotBefore) {
+      if (300 <= Math.abs(currentRPM - (rpm - 100)) && shotBefore) {
         this.ballsShot = ballsShot++;
         this.shotBefore = false;
       }
@@ -90,6 +90,6 @@ public class AutoShoot extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return ballsShot == MAX_BALLS || timer.get() < MAX_TIMER_SECS;
+    return ballsShot == MAX_BALLS || timer.get() > MAX_TIMER_SECS;
   }
 }
