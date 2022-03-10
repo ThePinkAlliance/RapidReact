@@ -71,6 +71,8 @@ public class Shooter extends SubsystemBase {
   public void commandRpm(double rpm) {
     double velo = (rpm * 248) / 600;
     motor.set(ControlMode.Velocity, velo); 
+    // when power is being applied:  isActivated needs to be true
+    this.isActivated = (rpm != 0) ? true : false;
   }
 
   @Override

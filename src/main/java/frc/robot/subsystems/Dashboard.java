@@ -16,6 +16,10 @@ public class Dashboard extends SubsystemBase {
   public static String DASH_BASE_BLPOS = "Base BLPos:";
   public static String DASH_BASE_BRPOS = "Base BRPos:";
   public static String DASH_TOWER_BALL_DETECTED = "Tower Ball Detected:";
+  public static String DASH_SHOOTER_RPMS = "Shooter RPMs:";
+  public static String DASH_SHOOTER_TARGET_RPMS = "Shooter Target RPMs:";
+  public static String DASH_SHOOTER_VELOCITY = "Shooter Velocity:";
+
 
   private Base base;
   private Collector collector;
