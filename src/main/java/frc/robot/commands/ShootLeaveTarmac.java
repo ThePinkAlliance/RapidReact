@@ -24,7 +24,12 @@ public class ShootLeaveTarmac extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new AutoShoot(m_shooter, m_collector, Constants.SHOOTER_POWER_CLOSE_HIGH),
+      new AutoShoot(
+        m_shooter,
+        m_collector,
+        Shooter.SHOOTER_POWER_CLOSE_HIGH,
+        1
+      ),
       new Navigate(m_base, LeaveTarmack.TRAVEL_DISTANCE)
     );
   }

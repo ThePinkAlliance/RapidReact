@@ -12,7 +12,7 @@ import frc.robot.subsystems.Base;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class LeaveTarmack extends SequentialCommandGroup {
 
-  private static double TARMAC_WIDTH = 84;
+  private static double TARMAC_WIDTH = 93;
   private static double ROBOT_WIDTH = 24;
   public static double TRAVEL_DISTANCE = -TARMAC_WIDTH + ROBOT_WIDTH;
 
