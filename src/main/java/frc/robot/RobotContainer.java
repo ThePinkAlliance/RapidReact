@@ -115,10 +115,11 @@ public class RobotContainer {
     //m_dashboard.initialize();
     //m_dashboard.publishDashboard();
     SmartDashboard.putNumber(
-      "shooter output percent:",
+      Dashboard.DASH_SHOOTER_VELOCITY,
       this.m_shooter.getMotorOutputPercent()
     );
-    SmartDashboard.putNumber("shooter rpms:", this.m_shooter.getMotorRpms());
+    SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_TARGET_RPMS,Shooter.SHOOTER_POWER_CLOSE_HIGH);
+    SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_RPMS,m_shooter.getMotorRpms());
   }
 
   /**
