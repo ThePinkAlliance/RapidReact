@@ -99,12 +99,17 @@ public class JoystickClimb extends CommandBase {
     // }
 
     double leftYstick = joystick.getRawAxis(Constants.JOYSTICK_LEFT_Y_AXIS);
-    /* Deadband gamepad */
-    if (Math.abs(leftYstick) < 0.10) {
+    double shortPosition = Math.abs(climbers.shortClimberModule.getPosition());
+    double minPosition = 6240;
+    /* Deadband gamepad, short climbers */
+    if (
+      Math.abs(leftYstick) < 0.10 ||
+      (shortPosition <= minPosition && leftYstick > 0)
+    ) {
       /* Within 10% of zero */
       leftYstick = 0;
     }
-    leftYstick = Math.copySign(leftYstick*leftYstick, leftYstick);
+    leftYstick = Math.copySign(leftYstick * leftYstick, leftYstick);
     climbers.shortClimberModule.moveArms(leftYstick);
 
     // double targetPositionRotations =
@@ -112,28 +117,27 @@ public class JoystickClimb extends CommandBase {
     // climbers.shortClimberModule.setPosition(targetPositionRotations);
 
     double rightYstick = joystick.getRawAxis(Constants.JOYSTICK_RIGHT_Y_AXIS);
-    /* Deadband gamepad */
+    /* Deadband gamepad, long climbers */
     if (Math.abs(rightYstick) < 0.10) {
       /* Within 10% of zero */
       rightYstick = 0;
     }
-    rightYstick = Math.copySign(rightYstick*rightYstick, rightYstick);
-    climbers.longClimberModule.moveArms(rightYstick);
+    rightYstick = Math.copySign(rightYstick * rightYstick, rightYstick);
+    // climbers.longClimberModule.moveArms(rightYstick);
 
     // targetPositionRotations =
     //   rightYstick *
     //   ClimberModule.CLIMBER_MODULE_RATIO *
     //   ClimberModule.CLIMBER_MODULE_MOTOR_TICK_COUNT;
     // climbers.longClimberModule.setPosition(targetPositionRotations);
-     SmartDashboard.putNumber(
-       Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
-       climbers.longClimberModule.getPosition()
-     );
-     SmartDashboard.putNumber(
-       Dashboard.DASH_CLIMBER_SHORT_ARM_POSITION,
-       climbers.shortClimberModule.getPosition()
-     );
-
+    SmartDashboard.putNumber(
+      Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
+      climbers.longClimberModule.getPosition()
+    );
+    SmartDashboard.putNumber(
+      Dashboard.DASH_CLIMBER_SHORT_ARM_POSITION,
+      climbers.shortClimberModule.getPosition()
+    );
   }
 
   // Called once the command ends or is interrupted.
