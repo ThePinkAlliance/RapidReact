@@ -19,6 +19,7 @@ public class JoystickClimb extends CommandBase {
 
   private final double BUMPER_DEADZONE = 0.5;
   private final double MIN_SHORT_CLIMBER_POSITION = 6240;
+  private final double MAX_SHORT_CLIMBER_POSITION = 213077.3;
 
   enum engagedSides {
     IN,
@@ -104,7 +105,8 @@ public class JoystickClimb extends CommandBase {
     /* Deadband gamepad, short climbers */
     if (
       Math.abs(leftYstick) < 0.10 ||
-      (shortPosition <= MIN_SHORT_CLIMBER_POSITION && leftYstick > 0)
+      (shortPosition <= MIN_SHORT_CLIMBER_POSITION && leftYstick > 0) ||
+      (shortPosition >= MAX_SHORT_CLIMBER_POSITION && leftYstick < -0)
     ) {
       /* Within 10% of zero */
       leftYstick = 0;
