@@ -15,8 +15,8 @@ import frc.robot.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
 
-  public static final double SHOOTER_POWER_CLOSE_HIGH = 3325; // 3800
-  public static final double SHOOTER_POWER_CLOSE_HIGH_V2 = 3325;
+  public static final double SHOOTER_POWER_CLOSE_HIGH = 3500; // 3800, 3425
+  public static final double SHOOTER_POWER_CLOSE_HIGH_V2 = 3500;
   public static final double SHOOTER_POWER_CLOSE_LOW = 3800;
   public static final double SHOOTER_POWER_CLOSE_DEFAULT =
     SHOOTER_POWER_CLOSE_HIGH_V2;
@@ -24,6 +24,7 @@ public class Shooter extends SubsystemBase {
   private double RAMP_RATE = 0;
   private double NOMINAL_FORWARD = 0;
   private double NOMINAL_REVERSE = 0;
+  public static double GEAR_MULTIPLYER = 1.6;
   private double PEAK_FORWARD = 1;
   private double PEAK_REVERSE = -1;
   private final int SHOOTER_MOTOR = 30;
@@ -44,8 +45,11 @@ public class Shooter extends SubsystemBase {
     double velocity =
       (
         (
-          (this.motor.getSelectedSensorVelocity()) /
-          Base.FULL_TALON_ROTATION_TICKS
+          (
+            (this.motor.getSelectedSensorVelocity()) /
+            Base.FULL_TALON_ROTATION_TICKS
+          ) /
+          Shooter.GEAR_MULTIPLYER
         ) *
         600
       );
@@ -69,7 +73,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void commandRpm(double rpm) {
-    double velo = (rpm * 2048) / 600;
+    double velo = ((rpm * 2048) * GEAR_MULTIPLYER) / 600;
     motor.set(ControlMode.Velocity, velo);
     // when power is being applied:  isActivated needs to be true
     this.isActivated = (rpm != 0) ? true : false;

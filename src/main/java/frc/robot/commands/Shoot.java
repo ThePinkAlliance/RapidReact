@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Shooter;
@@ -45,7 +46,12 @@ public class Shoot extends CommandBase {
   @Override
   public void execute() {
     rpm = SmartDashboard.getNumber(Dashboard.DASH_SHOOTER_TARGET_RPMS, rpm);
+    boolean boost = joystick.getRawButtonPressed(Constants.JOYSTICK_BUTTON_B);
     boolean ready = m_shooter.readyToShoot(rpm, 60);
+
+    if (boost) {
+      rpm = rpm + 250;
+    }
 
     if (ready) {
       this.m_collector.enableTowerOverride();
