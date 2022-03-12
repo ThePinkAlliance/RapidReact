@@ -21,6 +21,7 @@ import frc.robot.commands.DashboardPublish;
 import frc.robot.commands.Drive;
 import frc.robot.commands.JoystickClimb;
 import frc.robot.commands.LeaveTarmack;
+import frc.robot.commands.MoveLongArms;
 import frc.robot.commands.MoveShortArms;
 import frc.robot.commands.MoveTower;
 import frc.robot.commands.Shoot;
@@ -196,16 +197,23 @@ public class RobotContainer {
           false
         )
       );
-    //Collector Outtake
-    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
-    .whenPressed(
-        new MoveShortArms(
-          m_climbers,
-          ClimberModule.SHORT_ARM_MID_CLIMB_START,
-          MoveShortArms.ARM_MOVE_UP
-        )
-        //new ClimbDrive(m_base, m_climbers, 0, 0.7, false)
-      );
+    //Climbers
+    // new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
+    // .whenPressed(
+    //     new MoveShortArms(
+    //       m_climbers,
+    //       ClimberModule.SHORT_ARM_MID_CLIMB_START,
+    //       MoveShortArms.ARM_MOVE_UP
+    //     )
+    //     // .andThen(
+    //     //     new MoveLongArms(
+    //     //       m_climbers,
+    //     //       ClimberModule.LONG_ARM_MID_CLIMB_START,s
+    //     //       MoveLongArms.ARM_MOVE_UP
+    //     //     )
+    //     //   )
+    //     //new ClimbDrive(m_base, m_climbers, 0, 0.7, false)
+    //   );
   }
 
   public void selectTrajectory(SelectableTrajectory selectableTrajectory) {

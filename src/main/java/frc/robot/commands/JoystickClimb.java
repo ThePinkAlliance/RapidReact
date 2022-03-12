@@ -125,7 +125,7 @@ public class JoystickClimb extends CommandBase {
       rightYstick = 0;
     }
     rightYstick = Math.copySign(rightYstick * rightYstick, rightYstick);
-    // climbers.longClimberModule.moveArms(rightYstick);
+    climbers.longClimberModule.moveArms(rightYstick);
 
     // targetPositionRotations =
     //   rightYstick *

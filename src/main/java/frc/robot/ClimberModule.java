@@ -26,6 +26,9 @@ public class ClimberModule {
   public static final int SHORT_ARM_MID_CLIMB_START = -222222;
   public static final int SHORT_ARM_MID_CLIMB_FINISH = -143195;
 
+  public static final int LONG_ARM_MID_CLIMB_START = -222222;
+  public static final int LONG_ARM_MID_CLIMB_FINISH = -143195;
+
   private DoubleSolenoid lockerSolenoid;
   // parent
   private TalonFX motorLeft;

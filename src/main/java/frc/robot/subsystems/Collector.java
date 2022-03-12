@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import javax.lang.model.util.ElementScanner6;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -15,6 +13,7 @@ import com.revrobotics.Rev2mDistanceSensor.Unit;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import javax.lang.model.util.ElementScanner6;
 
 public class Collector extends SubsystemBase {
 
@@ -105,7 +104,6 @@ public class Collector extends SubsystemBase {
   public void SetSpeedTower(double power) {
     towerMotor.set(ControlMode.PercentOutput, power);
   }
-
 
   @Override
   public void periodic() {
