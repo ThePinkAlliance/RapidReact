@@ -9,6 +9,10 @@ import com.ThePinkAlliance.swervelib.Mk4iSwerveModuleHelper;
 import com.ThePinkAlliance.swervelib.SdsModuleConfigurations;
 import com.ThePinkAlliance.swervelib.SwerveModule;
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.Num;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -16,6 +20,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -149,6 +154,8 @@ public class Base extends SubsystemBase {
     .getTable("debug")
     .getEntry("yaw_diff");
 
+  // private final SwerveDrivePoseEstimator estimator = new SwerveDrivePoseEstimator(Rotation2d.fromDegrees(gyro.getYaw()), new Pose2d(), kinematics, , localMeasurementStdDevs, visionMeasurementStdDevs)
+
   private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(
     kinematics,
     Rotation2d.fromDegrees(gyro.getFusedHeading())
@@ -240,6 +247,12 @@ public class Base extends SubsystemBase {
     this.backLeftModule.configRampRate(DRIVE_MOTOR_RAMP_RATE);
     this.backRightModule.configRampRate(DRIVE_MOTOR_RAMP_RATE);
   }
+
+  // public Matrix getStateMatrix() {
+  //   SwerveModuleState one = this.states[0];
+
+  //   return new Matrix<, N3>();
+  // }
 
   public void resetDriveMotors() {
     this.backLeftModule.resetDrive();
