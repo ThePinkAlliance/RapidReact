@@ -4,14 +4,23 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.AutoMidClimb;
 import frc.robot.commands.CollectGroup;
@@ -27,6 +36,7 @@ import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Shooter;
+import java.util.List;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -73,6 +83,25 @@ public class RobotContainer {
     new AutoMidClimb(m_base, m_climbers)
   );
 
+  private PIDController XController = new PIDController(
+    BaseConstants.XControllerGains.kP,
+    BaseConstants.XControllerGains.kI,
+    BaseConstants.XControllerGains.kD
+  );
+
+  private PIDController YController = new PIDController(
+    BaseConstants.YControllerGains.kP,
+    BaseConstants.YControllerGains.kI,
+    BaseConstants.YControllerGains.kD
+  );
+
+  private ProfiledPIDController ThetaController = new ProfiledPIDController(
+    BaseConstants.ThetaControllerGains.kP,
+    BaseConstants.ThetaControllerGains.kI,
+    BaseConstants.ThetaControllerGains.kD,
+    new TrapezoidProfile.Constraints(0, 0)
+  );
+
   /**
    * This contains all the trajectories that can be selected from the dashboard.
    */
@@ -82,6 +111,18 @@ public class RobotContainer {
     ShootLeaveTarmacCollectShoot,
     autoMidClimb,
   };
+
+  private final TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
+    Base.MAX_VELOCITY_METERS_PER_SECOND,
+    Base.MAX_ACCELERATION_METERS_PER_SECOND
+  );
+
+  private final Trajectory testTrajectory = TrajectoryGenerator.generateTrajectory(
+    new Pose2d(),
+    List.of(),
+    new Pose2d(10, 0, new Rotation2d()),
+    trajectoryConfig
+  );
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -216,11 +257,28 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    if (selectedPath.getSelected() == null) {
-      selectedPath.setDefaultOption(ShootLeaveTarmac.name, ShootLeaveTarmac);
-    }
-
-    return selectedPath.getSelected().getDefualtCommand();
+    return new SwerveControllerCommand(
+      testTrajectory,
+      m_base.getPose(),
+      m_base.kinematics,
+      XController,
+      YController,
+      ThetaController,
+      states -> {
+        m_base.setStates(states);
+      },
+      m_base
+    )
+      .andThen(
+        () -> {
+          m_base.drive(new ChassisSpeeds(0, 0, 0));
+        }
+      )
+      .andThen(
+        () -> {
+          System.out.println("END OF COMMAND: " + "auto navigate");
+        }
+      );
   }
 
   // public void enableLimelight() {

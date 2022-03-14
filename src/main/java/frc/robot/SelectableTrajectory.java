@@ -119,37 +119,37 @@ public class SelectableTrajectory {
       throw new Error("Unable to open trajectory: " + location);
     }
 
-    this.SwerveControllerCommand =
-      new SwerveControllerCommand(
-        trajectory,
-        m_base::getPose,
-        m_base.kinematics,
-        // this is the x axis PID Controller
-        new PIDController(
-          SmartDashboard.getNumber("kP-X", 0),
-          SmartDashboard.getNumber("kI-X", 0),
-          SmartDashboard.getNumber("kD-X", 0)
-        ),
-        // this is the y axis PID Contrller
-        new PIDController(
-          SmartDashboard.getNumber("kP-Y", 0),
-          SmartDashboard.getNumber("kI-Y", 0),
-          SmartDashboard.getNumber("kD-Y", 0)
-        ),
-        new ProfiledPIDController(
-          SmartDashboard.getNumber("theta-P", 0),
-          SmartDashboard.getNumber("theta-I", 0),
-          SmartDashboard.getNumber("theta-D", 0),
-          new TrapezoidProfile.Constraints(
-            Base.MAX_VELOCITY_METERS_PER_SECOND,
-            Base.MAX_ACCELERATION_METERS_PER_SECOND
-          )
-        ),
-        states -> {
-          m_base.setStates(states);
-        },
-        m_base
-      );
+    // this.SwerveControllerCommand =
+    //   new SwerveControllerCommand(
+    //     trajectory,
+    //     m_base::getPose,
+    //     m_base.kinematics,
+    //     // this is the x axis PID Controller
+    //     new PIDController(
+    //       SmartDashboard.getNumber("kP-X", 0),
+    //       SmartDashboard.getNumber("kI-X", 0),
+    //       SmartDashboard.getNumber("kD-X", 0)
+    //     ),
+    //     // this is the y axis PID Contrller
+    //     new PIDController(
+    //       SmartDashboard.getNumber("kP-Y", 0),
+    //       SmartDashboard.getNumber("kI-Y", 0),
+    //       SmartDashboard.getNumber("kD-Y", 0)
+    //     ),
+    //     new ProfiledPIDController(
+    //       SmartDashboard.getNumber("theta-P", 0),
+    //       SmartDashboard.getNumber("theta-I", 0),
+    //       SmartDashboard.getNumber("theta-D", 0),
+    //       new TrapezoidProfile.Constraints(
+    //         Base.MAX_VELOCITY_METERS_PER_SECOND,
+    //         Base.MAX_ACCELERATION_METERS_PER_SECOND
+    //       )
+    //     ),
+    //     states -> {
+    //       m_base.setStates(states);
+    //     },
+    //     m_base
+    //   );
 
     this.defualtCommand =
       SwerveControllerCommand.andThen(
@@ -212,37 +212,37 @@ public class SelectableTrajectory {
     this.trajectory = trajectory;
     this.name = name;
 
-    this.SwerveControllerCommand =
-      new SwerveControllerCommand(
-        trajectory,
-        m_base::getPose,
-        m_base.kinematics,
-        // this is the x axis PID Controller
-        new PIDController(
-          SmartDashboard.getNumber("kP-X", 0),
-          SmartDashboard.getNumber("kI-X", 0),
-          SmartDashboard.getNumber("kD-X", 0)
-        ),
-        // this is the y axis PID Contrller
-        new PIDController(
-          SmartDashboard.getNumber("kP-Y", 0),
-          SmartDashboard.getNumber("kI-Y", 0),
-          SmartDashboard.getNumber("kD-Y", 0)
-        ),
-        new ProfiledPIDController(
-          SmartDashboard.getNumber("theta-P", 0),
-          SmartDashboard.getNumber("theta-I", 0),
-          SmartDashboard.getNumber("theta-D", 0),
-          new TrapezoidProfile.Constraints(
-            Base.MAX_VELOCITY_METERS_PER_SECOND,
-            Base.MAX_ACCELERATION_METERS_PER_SECOND
-          )
-        ),
-        states -> {
-          m_base.setStates(states);
-        },
-        m_base
-      );
+    // this.SwerveControllerCommand =
+    //   new SwerveControllerCommand(
+    //     trajectory,
+    //     m_base::getPose,
+    //     m_base.kinematics,
+    //     // this is the x axis PID Controller
+    //     new PIDController(
+    //       SmartDashboard.getNumber("kP-X", 0),
+    //       SmartDashboard.getNumber("kI-X", 0),
+    //       SmartDashboard.getNumber("kD-X", 0)
+    //     ),
+    //     // this is the y axis PID Contrller
+    //     new PIDController(
+    //       SmartDashboard.getNumber("kP-Y", 0),
+    //       SmartDashboard.getNumber("kI-Y", 0),
+    //       SmartDashboard.getNumber("kD-Y", 0)
+    //     ),
+    //     new ProfiledPIDController(
+    //       SmartDashboard.getNumber("theta-P", 0),
+    //       SmartDashboard.getNumber("theta-I", 0),
+    //       SmartDashboard.getNumber("theta-D", 0),
+    //       new TrapezoidProfile.Constraints(
+    //         Base.MAX_VELOCITY_METERS_PER_SECOND,
+    //         Base.MAX_ACCELERATION_METERS_PER_SECOND
+    //       )
+    //     ),
+    //     states -> {
+    //       m_base.setStates(states);
+    //     },
+    //     m_base
+    //   );
 
     this.defualtCommand =
       SwerveControllerCommand.andThen(

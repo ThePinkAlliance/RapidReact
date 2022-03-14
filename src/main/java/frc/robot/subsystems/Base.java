@@ -12,6 +12,7 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.Num;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -29,7 +30,9 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.BaseConstants;
 import frc.robot.Constants;
+import java.util.function.Supplier;
 
 public class Base extends SubsystemBase {
 
@@ -153,8 +156,6 @@ public class Base extends SubsystemBase {
     .getDefault()
     .getTable("debug")
     .getEntry("yaw_diff");
-
-  // private final SwerveDrivePoseEstimator estimator = new SwerveDrivePoseEstimator(Rotation2d.fromDegrees(gyro.getYaw()), new Pose2d(), kinematics, , localMeasurementStdDevs, visionMeasurementStdDevs)
 
   private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(
     kinematics,
@@ -397,8 +398,8 @@ public class Base extends SubsystemBase {
   /**
    * Returns the current odometry pose of the robot.
    */
-  public Pose2d getPose() {
-    return odometry.getPoseMeters();
+  public Supplier<Pose2d> getPose() {
+    return () -> odometry.getPoseMeters();
   }
 
   /**
