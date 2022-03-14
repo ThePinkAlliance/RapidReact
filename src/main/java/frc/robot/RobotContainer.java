@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -115,10 +116,12 @@ public class RobotContainer {
   private final TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
     Base.MAX_VELOCITY_METERS_PER_SECOND,
     Base.MAX_ACCELERATION_METERS_PER_SECOND
-  );
+  )
+    .setKinematics(m_base.kinematics)
+    .setStartVelocity(Base.MAX_VELOCITY_METERS_PER_SECOND / 3);
 
   private final Trajectory testTrajectory = TrajectoryGenerator.generateTrajectory(
-    new Pose2d(),
+    new Pose2d(0, 0, new Rotation2d()),
     List.of(),
     new Pose2d(10, 0, new Rotation2d()),
     trajectoryConfig
