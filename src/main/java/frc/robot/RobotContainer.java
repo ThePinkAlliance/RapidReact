@@ -4,10 +4,8 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -15,8 +13,10 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,6 +36,7 @@ import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Dashboard;
+import frc.robot.subsystems.RobotHealth;
 import frc.robot.subsystems.Shooter;
 import java.util.List;
 
@@ -50,6 +51,8 @@ import java.util.List;
  */
 public class RobotContainer {
 
+  private final PowerDistribution pdp = new PowerDistribution();
+
   private final Joystick gamepad_base = new Joystick(0);
   private final Joystick gamepad_tower = new Joystick(1);
   private final Base m_base = new Base();
@@ -60,8 +63,10 @@ public class RobotContainer {
   //DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
   //private final Dashboard m_dashboard = new Dashboard(m_base, m_collector, m_shooter, null);
 
+  // this subsystem will report brownout's and pdp resets to the driverstation, working on channel faults.
+  private final RobotHealth robotHealth = new RobotHealth(pdp);
+
   Trajectory trajectory = new Trajectory();
-  //ShuffleboardTab driverDashboard = Shuffleboard.getTab("Dashboard");
   SendableChooser<SelectableTrajectory> selectedPath = new SendableChooser<SelectableTrajectory>();
 
   private final SelectableTrajectory LeaveTarmac = new SelectableTrajectory(
