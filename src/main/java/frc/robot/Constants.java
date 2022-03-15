@@ -21,6 +21,8 @@ public final class Constants {
 
   public static boolean isRed = true;
 
+  public static double climbAngleOffset = 45;
+
   public static int JOYSTICK_BUTTON_X = 3;
   public static int JOYSTICK_BUTTON_A = 1;
   public static int JOYSTICK_BUTTON_B = 2;

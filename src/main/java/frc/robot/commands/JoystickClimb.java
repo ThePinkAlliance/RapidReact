@@ -18,7 +18,7 @@ public class JoystickClimb extends CommandBase {
   private Joystick joystick;
 
   private final double BUMPER_DEADZONE = 0.5;
-  private final double MIN_SHORT_CLIMBER_POSITION = 6240;
+  private final double MIN_SHORT_CLIMBER_POSITION = 1200;
   private final double MAX_SHORT_CLIMBER_POSITION = 213077.3;
 
   enum engagedSides {
@@ -68,6 +68,7 @@ public class JoystickClimb extends CommandBase {
     if (joystick.getRawButton(Constants.JOYSTICK_LEFT_BUMPER)) {
       climbers.openShortArms();
     }
+
     if (
       joystick.getRawAxis(Constants.JOYSTICK_LEFT_TRIGGER) >
       Math.abs(BUMPER_DEADZONE)

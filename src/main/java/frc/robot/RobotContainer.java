@@ -198,22 +198,24 @@ public class RobotContainer {
         )
       );
     //Climbers
-    // new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
-    // .whenPressed(
-    //     new MoveShortArms(
-    //       m_climbers,
-    //       ClimberModule.SHORT_ARM_MID_CLIMB_START,
-    //       MoveShortArms.ARM_MOVE_UP
-    //     )
-    //     // .andThen(
-    //     //     new MoveLongArms(
-    //     //       m_climbers,
-    //     //       ClimberModule.LONG_ARM_MID_CLIMB_START,s
-    //     //       MoveLongArms.ARM_MOVE_UP
-    //     //     )
-    //     //   )
-    //     //new ClimbDrive(m_base, m_climbers, 0, 0.7, false)
-    //   );
+    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
+    .whenPressed(
+        new MoveShortArms(
+          m_climbers,
+          ClimberModule.SHORT_ARM_MID_CLIMB_START,
+          MoveShortArms.ARM_MOVE_UP
+        )
+        .andThen(
+            // .andThen(
+            //     new MoveLongArms(
+            //       m_climbers,
+            //       ClimberModule.LONG_ARM_MID_CLIMB_START,
+            //       MoveLongArms.ARM_MOVE_UP
+            //     )
+            //   )
+            new ClimbDrive(m_base, m_climbers, 0, 0.6, false)
+          )
+      );
   }
 
   public void selectTrajectory(SelectableTrajectory selectableTrajectory) {
