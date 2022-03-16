@@ -100,7 +100,14 @@ public class ClimbDrive extends CommandBase {
     }
 
     System.out.println(
-      "POWER LEFT: " + powerLeft + ", POWER RIGHT: " + powerRight
+      "POWER LEFT: " +
+      powerLeft +
+      ", POWER RIGHT: " +
+      powerRight +
+      ", RIGHT POLE: " +
+      this.climbers.shortClimberModule.contactedRightPole() +
+      ", LEFT POLE: " +
+      this.climbers.shortClimberModule.contactedLeftPole()
     );
 
     drive(this.powerLeft, this.powerRight);

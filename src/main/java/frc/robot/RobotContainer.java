@@ -213,7 +213,7 @@ public class RobotContainer {
             //       MoveLongArms.ARM_MOVE_UP
             //     )
             //   )
-            new ClimbDrive(m_base, m_climbers, 0, 0.6, false)
+            new ClimbDrive(m_base, m_climbers, 0, 0.4, false)
           )
       );
   }
