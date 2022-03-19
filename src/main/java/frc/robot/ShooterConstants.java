@@ -34,14 +34,7 @@ public class ShooterConstants {
    * Gains used in Positon Closed Loop, to be adjusted accordingly
    * Gains(kp, ki, kd, kf, izone, peak output);
    */
-  public static final ShooterGains kGains = new ShooterGains(
-    0.2,
-    0.0,
-    0.0,
-    0.046,
-    0,
-    1.0
-  );
+  public static final Gains kGains = new Gains(0.2, 0.0, 0.0, 0.046, 0, 1.0);
   // public static final ShooterGains kGains = new ShooterGains(0.2, 0.0, 0.0, 0.046, 0, 1.0);
   public static double ALLOWABLE_CLOSELOOP_ERROR = 0;
 }

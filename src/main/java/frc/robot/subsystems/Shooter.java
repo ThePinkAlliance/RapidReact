@@ -95,6 +95,14 @@ public class Shooter extends SubsystemBase {
     );
   }
 
+  public void commandHood(double power) {
+    this.hoodMotor.set(power);
+  }
+
+  public double getHoodTicks() {
+    return hoodEncoder.getPosition();
+  }
+
   public double getHoodAngle() {
     double currentHeight =
       MIN_HOOD_HEIGHT +

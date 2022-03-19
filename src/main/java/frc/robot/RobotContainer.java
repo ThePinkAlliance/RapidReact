@@ -19,6 +19,7 @@ import frc.robot.commands.ClimbDrive;
 import frc.robot.commands.CollectGroup;
 import frc.robot.commands.DashboardPublish;
 import frc.robot.commands.Drive;
+import frc.robot.commands.HoodTest;
 import frc.robot.commands.JoystickClimb;
 import frc.robot.commands.LeaveTarmack;
 import frc.robot.commands.MoveLongArms;
@@ -168,6 +169,8 @@ public class RobotContainer {
           true
         )
       );
+    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
+    .whenPressed(new HoodTest(m_shooter, 45));
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_A)
     .whenPressed(
         new SpinUpShooter(
