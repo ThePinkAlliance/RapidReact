@@ -4,7 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -38,6 +43,7 @@ import frc.robot.subsystems.Dashboard;
 //import frc.robot.subsystems.Limelight;
 //import frc.robot.subsystems.LimelightLedMode;
 import frc.robot.subsystems.Shooter;
+import java.util.List;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -81,6 +87,25 @@ public class RobotContainer {
     List.of(),
     new Pose2d(10, 0, new Rotation2d()),
     trajectoryConfig
+  );
+
+  private PIDController XController = new PIDController(
+    BaseConstants.XControllerGains.kP,
+    BaseConstants.XControllerGains.kI,
+    BaseConstants.XControllerGains.kD
+  );
+
+  private PIDController YController = new PIDController(
+    BaseConstants.YControllerGains.kP,
+    BaseConstants.YControllerGains.kI,
+    BaseConstants.YControllerGains.kD
+  );
+
+  private ProfiledPIDController ThetaController = new ProfiledPIDController(
+    BaseConstants.ThetaControllerGains.kP,
+    BaseConstants.ThetaControllerGains.kI,
+    BaseConstants.ThetaControllerGains.kD,
+    new TrapezoidProfile.Constraints(0, 0)
   );
 
   // private final SelectableTrajectory ShootLeaveTarmac = new SelectableTrajectory(
