@@ -252,6 +252,10 @@ public class Base extends SubsystemBase {
     return this.states;
   }
 
+  public double getRoll() {
+    return gyro.getRoll();
+  }
+
   public void setPodAngles(double angle) {
     for (int i = 0; i < states.length; i++) {
       SwerveModuleState state = states[i];

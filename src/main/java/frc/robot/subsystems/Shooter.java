@@ -4,12 +4,16 @@
 
 package frc.robot.subsystems;
 
+import com.ThePinkAlliance.core.math.Projectile;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.ctre.phoenix.platform.DeviceType;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.ShooterConstants;
 
@@ -21,6 +25,17 @@ public class Shooter extends SubsystemBase {
   public static final double SHOOTER_POWER_CLOSE_DEFAULT =
     SHOOTER_POWER_CLOSE_HIGH_V2;
 
+  public double CURRENT_HOOD_ANGLE = 45;
+
+  public final double REV_TICKS_PER_REV = 42;
+  public final double MAX_HOOD_WIDTH_INCHES = 5.582;
+  public final double MIN_HOOD_HEIGHT = 2.935020;
+  public final double MAX_HOOD_HEIGHT_INCHES = 7.159;
+  public final double HOOD_LENGTH_INCHES = 6.4;
+  public final double HOOD_WHEEL_CIRCUMFERENCE = 2.5132741229;
+
+  public double CURRENT_HOOD_HEIGHT = MAX_HOOD_HEIGHT_INCHES;
+
   private double RAMP_RATE = 0;
   private double NOMINAL_FORWARD = 0;
   private double NOMINAL_REVERSE = 0;
@@ -28,12 +43,17 @@ public class Shooter extends SubsystemBase {
   private double PEAK_FORWARD = 1;
   private double PEAK_REVERSE = -1;
   private final int SHOOTER_MOTOR = 30;
+  private final int HOOD_MOTOR = 30;
   private boolean isActivated = false;
   private TalonFX motor;
+  private CANSparkMax hoodMotor;
+  private RelativeEncoder hoodEncoder;
 
   /** Creates a new Shooter. */
   public Shooter() {
     motor = new TalonFX(SHOOTER_MOTOR);
+    hoodMotor = new CANSparkMax(HOOD_MOTOR, MotorType.kBrushless);
+
     configureMotor();
   }
 
@@ -56,9 +76,39 @@ public class Shooter extends SubsystemBase {
     return Math.abs(velocity);
   }
 
+  public double calculateOptimalTrajectory(double distance) {
+    return Projectile.calculateRange(CURRENT_HOOD_ANGLE, distance);
+  }
+
   public boolean readyToShoot(double max, double threshold) {
     double velocity = getMotorRpms();
     return Math.abs(velocity - max) <= threshold;
+  }
+
+  public double hoodDesiredTicks(double angle) {
+    return (
+      (
+        (Math.tan(angle) * (MAX_HOOD_WIDTH_INCHES - MIN_HOOD_HEIGHT)) /
+        HOOD_WHEEL_CIRCUMFERENCE
+      ) *
+      REV_TICKS_PER_REV
+    );
+  }
+
+  public double getHoodAngle() {
+    double currentHeight =
+      MIN_HOOD_HEIGHT +
+      (
+        HOOD_WHEEL_CIRCUMFERENCE *
+        (hoodEncoder.getPosition() / REV_TICKS_PER_REV)
+      );
+
+    CURRENT_HOOD_HEIGHT = currentHeight;
+
+    return (
+      (Math.cos(currentHeight) / Math.sin(MAX_HOOD_WIDTH_INCHES)) *
+      (180 / Math.PI)
+    );
   }
 
   public double getMotorOutputPercent() {
@@ -85,6 +135,8 @@ public class Shooter extends SubsystemBase {
   }
 
   private void configureMotor() {
+    hoodEncoder = hoodMotor.getEncoder();
+
     this.motor.setNeutralMode(NeutralMode.Coast);
     this.motor.configSelectedFeedbackSensor(
         TalonFXFeedbackDevice.IntegratedSensor,

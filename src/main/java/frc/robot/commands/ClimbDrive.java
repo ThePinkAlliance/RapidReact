@@ -20,6 +20,8 @@ public class ClimbDrive extends CommandBase {
   Climbers climbers;
   Timer timer;
 
+  double MAX_ALLOWABLE_ROLL_BEFORE_CLIMB = 30;
+
   double align_kP = 3.7;
   double align_kI = 0.5;
   double align_kD = 0.003;
@@ -80,22 +82,17 @@ public class ClimbDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    boolean latchClimbers = base.getRoll() >= MAX_ALLOWABLE_ROLL_BEFORE_CLIMB;
+
     if (bBackwards) power *= -1;
 
-    if (
-      this.climbers.shortClimberModule.contactedRightPole() &&
-      this.climbers.shortClimberModule.contactedLeftPole()
-    ) this.climbers.closeShortArms();
+    if (latchClimbers) this.climbers.closeShortArms();
 
-    if (!this.climbers.shortClimberModule.contactedLeftPole()) {
+    if (!latchClimbers) {
       this.powerLeft = power * Base.MAX_VELOCITY_METERS_PER_SECOND;
-    } else {
-      this.powerLeft = 0;
-    }
-
-    if (!this.climbers.shortClimberModule.contactedRightPole()) {
       this.powerRight = power * Base.MAX_VELOCITY_METERS_PER_SECOND;
     } else {
+      this.powerLeft = 0;
       this.powerRight = 0;
     }
 
