@@ -11,8 +11,10 @@ import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.platform.DeviceType;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.ShooterConstants;
@@ -42,8 +44,8 @@ public class Shooter extends SubsystemBase {
   public static double GEAR_MULTIPLYER = 1.6;
   private double PEAK_FORWARD = 1;
   private double PEAK_REVERSE = -1;
-  private final int SHOOTER_MOTOR = 30;
-  private final int HOOD_MOTOR = 30;
+  private final int SHOOTER_MOTOR = 11;
+  private final int HOOD_MOTOR = 12;
   private boolean isActivated = false;
   private TalonFX motor;
   private CANSparkMax hoodMotor;
@@ -95,6 +97,10 @@ public class Shooter extends SubsystemBase {
     );
   }
 
+  public SparkMaxPIDController hoodPidController() {
+    return hoodMotor.getPIDController();
+  }
+
   public void commandHood(double power) {
     this.hoodMotor.set(power);
   }
@@ -144,6 +150,11 @@ public class Shooter extends SubsystemBase {
 
   private void configureMotor() {
     hoodEncoder = hoodMotor.getEncoder();
+
+    hoodMotor.setSmartCurrentLimit(20);
+
+    hoodMotor.setSoftLimit(SoftLimitDirection.kReverse, 3);
+    hoodMotor.setSoftLimit(SoftLimitDirection.kReverse, 3);
 
     this.motor.setNeutralMode(NeutralMode.Coast);
     this.motor.configSelectedFeedbackSensor(
