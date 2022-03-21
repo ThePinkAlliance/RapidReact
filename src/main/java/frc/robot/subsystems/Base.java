@@ -285,7 +285,7 @@ public class Base extends SubsystemBase {
   /**
    * Set the robot's states to the given states.
    */
-  public void setStates(SwerveModuleState[] states) {
+  public void setStates(SwerveModuleState... states) {
     odometry.update(getRotation(), states);
 
     SwerveDriveKinematics.desaturateWheelSpeeds(
@@ -320,6 +320,10 @@ public class Base extends SubsystemBase {
         Base.MAX_VOLTAGE,
         states[3].angle.getRadians()
       );
+  }
+
+  public double getRoll() {
+    return gyro.getRoll();
   }
 
   /**

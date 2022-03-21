@@ -8,8 +8,6 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,25 +15,19 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.AutoMidClimb;
 import frc.robot.commands.ClimbDrive;
 import frc.robot.commands.CollectGroup;
-import frc.robot.commands.DashboardPublish;
 import frc.robot.commands.Drive;
 import frc.robot.commands.JoystickClimb;
 import frc.robot.commands.LeaveTarmack;
-import frc.robot.commands.MoveLongArms;
 import frc.robot.commands.MoveShortArms;
 import frc.robot.commands.MoveTower;
-import frc.robot.commands.Shoot;
+import frc.robot.commands.PrimitiveShooter;
 import frc.robot.commands.ShootLeaveTarmac;
 import frc.robot.commands.ShootLeaveTarmacCollectShoot;
 import frc.robot.commands.SpinUpShooter;
-import frc.robot.commands.TestAutoSequential;
-import frc.robot.commands.turnTest;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Dashboard;
-//import frc.robot.subsystems.Limelight;
-//import frc.robot.subsystems.LimelightLedMode;
 import frc.robot.subsystems.Shooter;
 
 /**
@@ -177,6 +169,15 @@ public class RobotContainer {
           gamepad_tower
         )
       );
+    // the shooter with the hood
+    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
+    .whenPressed(
+        new PrimitiveShooter(
+          m_shooter,
+          gamepad_tower,
+          Constants.JOYSTICK_BUTTON_B
+        )
+      );
     //Collector Intake
     new JoystickButton(gamepad_base, Constants.JOYSTICK_RIGHT_BUMPER)
     .whenPressed(
@@ -198,22 +199,24 @@ public class RobotContainer {
         )
       );
     //Climbers
-    // new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
-    // .whenPressed(
-    //     new MoveShortArms(
-    //       m_climbers,
-    //       ClimberModule.SHORT_ARM_MID_CLIMB_START,
-    //       MoveShortArms.ARM_MOVE_UP
-    //     )
-    //     // .andThen(
-    //     //     new MoveLongArms(
-    //     //       m_climbers,
-    //     //       ClimberModule.LONG_ARM_MID_CLIMB_START,s
-    //     //       MoveLongArms.ARM_MOVE_UP
-    //     //     )
-    //     //   )
-    //     //new ClimbDrive(m_base, m_climbers, 0, 0.7, false)
-    //   );
+    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
+    .whenPressed(
+        new MoveShortArms(
+          m_climbers,
+          ClimberModule.SHORT_ARM_MID_CLIMB_START,
+          MoveShortArms.ARM_MOVE_UP
+        )
+        .andThen(
+            // .andThen(
+            //     new MoveLongArms(
+            //       m_climbers,
+            //       ClimberModule.LONG_ARM_MID_CLIMB_START,s
+            //       MoveLongArms.ARM_MOVE_UP
+            //     )
+            //   )
+            new ClimbDrive(m_base, m_climbers, 0, 0.4, false)
+          )
+      );
   }
 
   public void selectTrajectory(SelectableTrajectory selectableTrajectory) {
