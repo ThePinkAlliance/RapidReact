@@ -99,10 +99,9 @@ public class Shooter extends SubsystemBase {
 
     CURRENT_HOOD_HEIGHT = currentHeight;
 
-    return (
-      (Math.cos(currentHeight) / Math.sin(MAX_HOOD_WIDTH_INCHES)) *
-      (180 / Math.PI)
-    );
+    // * to properly calculate angle of the hood its opposite / adjacent
+    // ? Make sure to rework the hood distance system and PLEASE measure from the inner circular area of the flywheel shaft in the cad
+    return (Math.tan(currentHeight / MAX_HOOD_WIDTH_INCHES) * (180 / Math.PI));
   }
 
   public double getMotorRpms() {
