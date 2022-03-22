@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Shooter;
 
@@ -34,8 +35,36 @@ public class PrimitiveShooter extends CommandBase {
   public void execute() {
     double pwr = joystick.getRawAxis(5);
 
+    double cargoIncommingAngle = -69;
+    double shooterFromGround = 22.27;
+    double currentDistance = 108;
+
+    SmartDashboard.putNumber("currentAngle", shooter.getHoodAngle());
+
+    double angle = Math.atan(
+      (
+        Math.tan(cargoIncommingAngle) * currentDistance - 2 * shooterFromGround
+      ) /
+      -currentDistance
+    );
+    double velocity = Math.sqrt(
+      (
+        Math.pow(9.8 * currentDistance, 2) *
+        (1 + Math.pow(Math.tan(angle), 2)) /
+        2 *
+        shooterFromGround -
+        2 *
+        currentDistance *
+        Math.tan(angle)
+      )
+    );
+
+    SmartDashboard.putNumber("encoder ticks", shooter.getHoodTicks());
+    SmartDashboard.putNumber("shooter velocity", velocity);
+    SmartDashboard.putNumber("shooter angle", angle);
+
     shooter.command(-1);
-    shooter.commandHood(MathUtil.clamp(pwr, -0.4, 0.4));
+    shooter.commandHood(MathUtil.clamp(pwr, -0.2, 0.2));
   }
 
   // Called once the command ends or is interrupted.

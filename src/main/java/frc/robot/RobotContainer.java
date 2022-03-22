@@ -47,7 +47,7 @@ public class RobotContainer {
   //private final Limelight m_limelight = new Limelight();
   private final Collector m_collector = new Collector();
   private final Shooter m_shooter = new Shooter();
-  private final Climbers m_climbers = new Climbers();
+  // private final Climbers m_climbers = new Climbers();
   //DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
   //private final Dashboard m_dashboard = new Dashboard(m_base, m_collector, m_shooter, null);
 
@@ -70,10 +70,10 @@ public class RobotContainer {
     new ShootLeaveTarmacCollectShoot(m_base, m_shooter, m_collector)
   );
 
-  private final SelectableTrajectory autoMidClimb = new SelectableTrajectory(
-    "AutoMidClimb",
-    new AutoMidClimb(m_base, m_climbers)
-  );
+  // private final SelectableTrajectory autoMidClimb = new SelectableTrajectory(
+  //   "AutoMidClimb",
+  //   new AutoMidClimb(m_base, m_climbers)
+  // );
 
   /**
    * This contains all the trajectories that can be selected from the dashboard.
@@ -82,7 +82,7 @@ public class RobotContainer {
     LeaveTarmac,
     ShootLeaveTarmac,
     ShootLeaveTarmacCollectShoot,
-    autoMidClimb,
+    // autoMidClimb,
   };
 
   /**
@@ -121,14 +121,14 @@ public class RobotContainer {
       m_shooter.getMotorRpms()
     );
     SmartDashboard.putBoolean(Dashboard.DASH_SHOOTER_READY, false);
-    SmartDashboard.putNumber(
-      Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
-      m_climbers.longClimberModule.getPosition()
-    );
-    SmartDashboard.putNumber(
-      Dashboard.DASH_CLIMBER_SHORT_ARM_POSITION,
-      m_climbers.shortClimberModule.getPosition()
-    );
+    // SmartDashboard.putNumber(
+    //   Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
+    //   m_climbers.longClimberModule.getPosition()
+    // );
+    // SmartDashboard.putNumber(
+    //   Dashboard.DASH_CLIMBER_SHORT_ARM_POSITION,
+    //   m_climbers.shortClimberModule.getPosition()
+    // );
   }
 
   /**
@@ -144,9 +144,9 @@ public class RobotContainer {
     //left joystick
 
     this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
-    this.m_climbers.setDefaultCommand(
-        new JoystickClimb(m_climbers, this.gamepad_tower)
-      );
+    // this.m_climbers.setDefaultCommand(
+    //     new JoystickClimb(m_climbers, this.gamepad_tower)
+    //   );
     //this.m_dashboard.setDefaultCommand(new DashboardPublish(m_dashboard));
 
     //Shooter - Shoot - move tower to push ball up to shooter
@@ -160,15 +160,15 @@ public class RobotContainer {
           true
         )
       );
-    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_A)
-    .whenPressed(
-        new SpinUpShooter(
-          m_shooter,
-          Shooter.SHOOTER_POWER_CLOSE_HIGH_V2,
-          Constants.JOYSTICK_BUTTON_A,
-          gamepad_tower
-        )
-      );
+    // new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_A)
+    // .whenPressed(
+    //     new SpinUpShooter(
+    //       m_shooter,
+    //       Shooter.SHOOTER_POWER_CLOSE_HIGH_V2,
+    //       Constants.JOYSTICK_BUTTON_A,
+    //       gamepad_tower
+    //     )
+    //   );
     // the shooter with the hood
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
     .whenPressed(
@@ -199,28 +199,32 @@ public class RobotContainer {
         )
       );
     //Climbers
-    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
-    .whenPressed(
-        new MoveShortArms(
-          m_climbers,
-          ClimberModule.SHORT_ARM_MID_CLIMB_START,
-          MoveShortArms.ARM_MOVE_UP
-        )
-        .andThen(
-            // .andThen(
-            //     new MoveLongArms(
-            //       m_climbers,
-            //       ClimberModule.LONG_ARM_MID_CLIMB_START,s
-            //       MoveLongArms.ARM_MOVE_UP
-            //     )
-            //   )
-            new ClimbDrive(m_base, m_climbers, 0, 0.4, false)
-          )
-      );
+    // new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
+    // .whenPressed(
+    //     new MoveShortArms(
+    //       m_climbers,
+    //       ClimberModule.SHORT_ARM_MID_CLIMB_START,
+    //       MoveShortArms.ARM_MOVE_UP
+    //     )
+    //     .andThen(
+    //         // .andThen(
+    //         //     new MoveLongArms(
+    //         //       m_climbers,
+    //         //       ClimberModule.LONG_ARM_MID_CLIMB_START,s
+    //         //       MoveLongArms.ARM_MOVE_UP
+    //         //     )
+    //         //   )
+    //         new ClimbDrive(m_base, m_climbers, 0, 0.4, false)
+    //       )
+    //   );
   }
 
   public void selectTrajectory(SelectableTrajectory selectableTrajectory) {
     this.trajectory = selectableTrajectory.trajectory;
+  }
+
+  public void resetHoodEncoder() {
+    m_shooter.resetHoodEncoder();
   }
 
   /**

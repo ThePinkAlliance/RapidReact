@@ -100,6 +100,7 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     if (m_robotContainer != null) {
       //m_robotContainer.enableLimelight();
+      m_robotContainer.resetHoodEncoder();
     }
 
     if (m_autonomousCommand != null) {
