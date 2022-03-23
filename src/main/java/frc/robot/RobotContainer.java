@@ -8,20 +8,28 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.AutoMidClimb;
+import frc.robot.commands.ClimbDrive;
+import frc.robot.commands.CollectGroup;
 import frc.robot.commands.Drive;
-import frc.robot.commands.LeaveBlueLeft;
-import frc.robot.commands.LeaveBlueLeft_;
-import frc.robot.commands.turnTest;
+import frc.robot.commands.JoystickClimb;
+import frc.robot.commands.LeaveTarmack;
+import frc.robot.commands.MoveShortArms;
+import frc.robot.commands.MoveTower;
+import frc.robot.commands.PrimitiveShooter;
+import frc.robot.commands.ShootLeaveTarmac;
+import frc.robot.commands.ShootLeaveTarmacCollectShoot;
+import frc.robot.commands.SpinUpShooter;
 import frc.robot.subsystems.Base;
-import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.LimelightLedMode;
-import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.Climbers;
+import frc.robot.subsystems.Collector;
+import frc.robot.subsystems.Dashboard;
+import frc.robot.subsystems.Hood;
+import frc.robot.subsystems.Shooter;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -35,45 +43,48 @@ import frc.robot.subsystems.Turret;
 public class RobotContainer {
 
   private final Joystick gamepad_base = new Joystick(0);
+  private final Joystick gamepad_tower = new Joystick(1);
   private final Base m_base = new Base();
-  private final Limelight m_limelight = new Limelight();
-  // private final Turret m_turret = new Turret();
-  // private final Shooter m_shooter = new Shooter();
-  // private final TempTower tower = new TempTower();
-
-  // these values are filler's
-  double kP_X = 0;
-  double kD_X = 0;
-  double kI_X = 0;
-
-  double kP_Y = 0;
-  double kD_Y = 0;
-  double kI_Y = 0;
-
-  double kP_T = 0;
-  double kI_T = 0;
-  double kD_T = 0;
+  //private final Limelight m_limelight = new Limelight();
+  private final Collector m_collector = new Collector();
+  private final Shooter m_shooter = new Shooter();
+  private final Hood m_hood = new Hood();
+  private final Climbers m_climbers = new Climbers();
+  //DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
+  //private final Dashboard m_dashboard = new Dashboard(m_base, m_collector, m_shooter, null);
 
   Trajectory trajectory = new Trajectory();
-  ShuffleboardTab driverDashboard = Shuffleboard.getTab("Dashboard");
+  //ShuffleboardTab driverDashboard = Shuffleboard.getTab("Dashboard");
   SendableChooser<SelectableTrajectory> selectedPath = new SendableChooser<SelectableTrajectory>();
 
-  private final SelectableTrajectory leaveBlueLeft = new SelectableTrajectory(
-    "Leave Blue Left",
-    new LeaveBlueLeft(m_base)
+  private final SelectableTrajectory LeaveTarmac = new SelectableTrajectory(
+    "Leave Tarmac",
+    new LeaveTarmack(m_base)
   );
 
-  private final SelectableTrajectory turnTest = new SelectableTrajectory(
-    "Turn test",
-    new turnTest(m_base)
+  private final SelectableTrajectory ShootLeaveTarmac = new SelectableTrajectory(
+    "Shoot Leave Tarmac",
+    new ShootLeaveTarmac(m_base, m_shooter, m_collector)
+  );
+
+  private final SelectableTrajectory ShootLeaveTarmacCollectShoot = new SelectableTrajectory(
+    "Shoot Leave Tarmac Collect And Shoot",
+    new ShootLeaveTarmacCollectShoot(m_base, m_shooter, m_collector)
+  );
+
+  private final SelectableTrajectory autoMidClimb = new SelectableTrajectory(
+    "AutoMidClimb",
+    new AutoMidClimb(m_base, m_climbers)
   );
 
   /**
    * This contains all the trajectories that can be selected from the dashboard.
    */
   private final SelectableTrajectory[] trajectories = {
-    leaveBlueLeft,
-    turnTest,
+    LeaveTarmac,
+    ShootLeaveTarmac,
+    ShootLeaveTarmacCollectShoot,
+    // autoMidClimb,
   };
 
   /**
@@ -83,20 +94,43 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
-    SmartDashboard.putNumber(
-      Turret.TURRET_NAME + " power",
-      Turret.TURRET_DEFAULT_POWER
-    );
-
     for (SelectableTrajectory t : trajectories) {
-      if (t.location == leaveBlueLeft.name) {
+      if (t.location == ShootLeaveTarmac.name) {
         selectedPath.setDefaultOption(t.name, t);
       } else {
         selectedPath.addOption(t.name, t);
       }
     }
-    driverDashboard.add(selectedPath);
+
+    //driverDashboard.add(selectedPath);
+    SmartDashboard.putData(selectedPath);
+
     // for now select leave blue 1 for testing
+
+    //Initialize and publish for the first time.  Default command of dashboard handles thereafter.
+    //m_dashboard.initialize();
+    //m_dashboard.publishDashboard();
+    SmartDashboard.putNumber(
+      Dashboard.DASH_SHOOTER_VELOCITY,
+      this.m_shooter.getMotorOutputPercent()
+    );
+    SmartDashboard.putNumber(
+      Dashboard.DASH_SHOOTER_TARGET_RPMS,
+      Shooter.SHOOTER_POWER_CLOSE_HIGH_V2
+    );
+    SmartDashboard.putNumber(
+      Dashboard.DASH_SHOOTER_RPMS,
+      m_shooter.getMotorRpms()
+    );
+    SmartDashboard.putBoolean(Dashboard.DASH_SHOOTER_READY, false);
+    SmartDashboard.putNumber(
+      Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
+      m_climbers.longClimberModule.getPosition()
+    );
+    SmartDashboard.putNumber(
+      Dashboard.DASH_CLIMBER_SHORT_ARM_POSITION,
+      m_climbers.shortClimberModule.getPosition()
+    );
   }
 
   /**
@@ -108,37 +142,93 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    //base controller
-    //left joystick
-    this.m_base.setDefaultCommand(
-        new Drive(
-          m_base,
-          () -> gamepad_base.getRawAxis(0),
-          () -> gamepad_base.getRawAxis(1),
-          () -> gamepad_base.getRawAxis(4),
-          this.gamepad_base
+    // base controller
+    // left joystick
+
+    this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
+    this.m_climbers.setDefaultCommand(
+        new JoystickClimb(m_climbers, this.gamepad_tower)
+      );
+    //this.m_dashboard.setDefaultCommand(new DashboardPublish(m_dashboard));
+
+    //Shooter - Shoot - move tower to push ball up to shooter
+    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_X)
+    .whenPressed(
+        new MoveTower(
+          m_collector,
+          Shooter.SHOOTER_POWER_CLOSE_HIGH_V2,
+          Constants.JOYSTICK_BUTTON_X,
+          gamepad_tower,
+          true
         )
       );
-    // this.m_shooter.setDefaultCommand(
-    //     new Shoot(m_shooter, () -> gamepad_base.getRawAxis(2))
-    //   );
-    new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_A)
-    .whenPressed(m_base::zeroGyro);
-    // new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_X)
+    // new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_A)
     // .whenPressed(
-    //     new TurretRotate(
-    //       m_turret,
-    //       gamepad_base,
-    //       SmartDashboard.getNumber(
-    //         Turret.TURRET_NAME + " power",
-    //         Turret.TURRET_DEFAULT_POWER
-    //       )
+    //     new SpinUpShooter(
+    //       m_shooter,
+    //       Shooter.SHOOTER_POWER_CLOSE_HIGH_V2,
+    //       Constants.JOYSTICK_BUTTON_A,
+    //       gamepad_tower
     //     )
+    //   );
+    // the shooter with the hood
+    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
+    .whenPressed(
+        new PrimitiveShooter(
+          m_shooter,
+          m_hood,
+          gamepad_tower,
+          Shooter.SHOOTER_POWER_CLOSE_HIGH_V2,
+          Constants.JOYSTICK_BUTTON_B
+        )
+      );
+    //Collector Intake
+    new JoystickButton(gamepad_base, Constants.JOYSTICK_RIGHT_BUMPER)
+    .whenPressed(
+        new CollectGroup(
+          m_collector,
+          gamepad_base,
+          Constants.JOYSTICK_RIGHT_BUMPER,
+          true
+        )
+      );
+    //Collector Outtake
+    new JoystickButton(gamepad_base, Constants.JOYSTICK_LEFT_BUMPER)
+    .whenPressed(
+        new CollectGroup(
+          m_collector,
+          gamepad_base,
+          Constants.JOYSTICK_LEFT_BUMPER,
+          false
+        )
+      );
+    //Climbers
+    // new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
+    // .whenPressed(
+    //     new MoveShortArms(
+    //       m_climbers,
+    //       ClimberModule.SHORT_ARM_MID_CLIMB_START,
+    //       MoveShortArms.ARM_MOVE_UP
+    //     )
+    //     .andThen(
+    //         // .andThen(
+    //         //     new MoveLongArms(
+    //         //       m_climbers,
+    //         //       ClimberModule.LONG_ARM_MID_CLIMB_START,s
+    //         //       MoveLongArms.ARM_MOVE_UP
+    //         //     )
+    //         //   )
+    //         new ClimbDrive(m_base, m_climbers, 0, 0.4, false)
+    //       )
     //   );
   }
 
   public void selectTrajectory(SelectableTrajectory selectableTrajectory) {
     this.trajectory = selectableTrajectory.trajectory;
+  }
+
+  public void resetHoodEncoder() {
+    m_hood.resetHoodEncoder();
   }
 
   /**
@@ -147,28 +237,26 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // // set the current trajectory to execute
-    // selectTrajectory(selectedPath.getSelected());
-
-    // set the initial pose of the robot to the starting pose of the trajectory
-    // m_base.resetOdometry(trajectory.getInitialPose());
-
     if (selectedPath.getSelected() == null) {
-      selectedPath.setDefaultOption("Leave Blue Left", leaveBlueLeft);
+      selectedPath.setDefaultOption(ShootLeaveTarmac.name, ShootLeaveTarmac);
     }
 
     return selectedPath.getSelected().getDefualtCommand();
   }
 
-  public void enableLimelight() {
-    if (m_limelight != null) {
-      m_limelight.setLedState(LimelightLedMode.FORCE_ON);
-    }
-  }
+  // public void enableLimelight() {
+  //   if (m_limelight != null) {
+  //     m_limelight.setLedState(LimelightLedMode.FORCE_ON);
+  //   }
+  // }
 
-  public void disableLimelight() {
-    if (m_limelight != null) {
-      m_limelight.setLedState(LimelightLedMode.FORCE_OFF);
-    }
+  // public void disableLimelight() {
+  //   if (m_limelight != null) {
+  //     m_limelight.setLedState(LimelightLedMode.FORCE_OFF);
+  //   }
+  // }
+
+  public void testInit() {
+    m_base.setPodAngles(0);
   }
 }

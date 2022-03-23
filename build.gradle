@@ -67,6 +67,8 @@ dependencies {
     nativeRelease wpi.java.vendor.jniRelease(wpi.platforms.desktop)
     simulationRelease wpi.sim.enableRelease()
 
+    implementation 'edu.wpi.first.tools:DataLogTool:2022.4.1'
+
     testImplementation 'junit:junit:4.12'
 }
 

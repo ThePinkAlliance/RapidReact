@@ -4,38 +4,22 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Base;
-import java.util.function.DoubleSupplier;
 
 public class Drive extends CommandBase {
 
   private Base base;
-  private DoubleSupplier x;
-  private DoubleSupplier y;
-  private DoubleSupplier rot;
   private Joystick js;
 
   /** Creates a new Drive. */
-  public Drive(
-    Base base,
-    DoubleSupplier x,
-    DoubleSupplier y,
-    DoubleSupplier rot,
-    Joystick js
-  ) {
+  public Drive(Base base, Joystick js) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.base = base;
 
-    // Gamepad input to the drivetrain ->
-    // realtime using DoubleSuppliers which values update
-    this.x = x;
-    this.y = y;
-    this.rot = rot;
     this.js = js;
 
     addRequirements(base);
@@ -68,7 +52,8 @@ public class Drive extends CommandBase {
       modifyAxisLimited(axis4rot) * Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     );
 
-    if (js.getRawButton(Constants.JOYSTICK_LEFT_BUMPER)) {
+    // Turbo
+    if (js.getRawButton(Constants.JOYSTICK_LEFT_Y_AXIS_BUTTON)) {
       speedObject =
         new ChassisSpeeds(
           modifyAxis(axis1y) * Base.MAX_VELOCITY_METERS_PER_SECOND,
@@ -99,8 +84,8 @@ public class Drive extends CommandBase {
     // Cubing due to raw power until robot reaches competition weight.
     value = Math.copySign(value * value * value, value);
 
-    // Limit the speed to 60%
-    value = value / 1.5;
+    // Limit the speed to 75%
+    value = value / 1.33;
 
     return value;
   }

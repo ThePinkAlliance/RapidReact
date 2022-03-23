@@ -1,6 +1,5 @@
-<<<<<<< HEAD
+
 <!-- ## Controller Layout -->
-=======
 RAWR!!!!!!!
 
 # DInput
@@ -21,4 +20,3 @@ RAWR!!!!!!!
 
 
 *note that LSD is Left Stick Down
->>>>>>> 8b44f0bed74cfb5122a991593db77d1119644541

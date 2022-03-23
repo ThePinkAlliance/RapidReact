@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import frc.robot.subsystems.LimelightLedMode;
 
 // ADDRESS FOR THE LIMELIGHT FEED: http://limelight.local:5801/
 
@@ -70,10 +69,10 @@ public class Limelight extends SubsystemBase {
 
 
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    NetworkTableEntry tx = table.getEntry("tx");
+    //NetworkTableEntry tx = table.getEntry("tx");
     NetworkTableEntry ty = table.getEntry("ty");
-    NetworkTableEntry ta = table.getEntry("ta");
-    NetworkTableEntry ts = table.getEntry("ts");
+    //NetworkTableEntry ta = table.getEntry("ta");
+    //NetworkTableEntry ts = table.getEntry("ts");
 
     double offsetX = tx.getDouble(0.0);
     double objectArea = ta.getDouble(0.0);

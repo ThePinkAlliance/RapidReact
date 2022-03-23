@@ -4,58 +4,61 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Shooter;
 
-public class Shoot extends CommandBase {
+public class AutoShoot extends CommandBase {
+
+  private double MAX_TIMER_SECS = 3;
 
   private Shooter m_shooter;
-  private Joystick joystick;
   private Collector m_collector;
-  private double rpm;
-  private int buttonId;
 
-  public Shoot(
-    Shooter m_shooter,
-    Collector m_collector,
-    double rpm,
-    int buttonId,
-    Joystick joystick
-  ) {
+  private double rpm;
+
+  private int ballsShot = 0;
+  private boolean shotBefore = false;
+
+  private Timer timer;
+
+  public AutoShoot(Shooter m_shooter, Collector m_collector, double rpm) {
     // Use addRequirements() here to declare subsystem dependencies.
 
     this.m_collector = m_collector;
     this.m_shooter = m_shooter;
     this.rpm = rpm;
-    this.buttonId = buttonId;
-    this.joystick = joystick;
+
+    this.timer = new Timer();
 
     addRequirements(this.m_shooter, this.m_collector);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    timer.reset();
+    timer.start();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     rpm = SmartDashboard.getNumber(Dashboard.DASH_SHOOTER_TARGET_RPMS, rpm);
-    boolean boost = joystick.getRawButtonPressed(Constants.JOYSTICK_BUTTON_B);
-    boolean ready = m_shooter.readyToShoot(rpm, 60);
-
-    if (boost) {
-      rpm = rpm + 250;
-    }
+    boolean ready = m_shooter.readyToShoot(rpm, 100);
+    //double currentRPM = m_shooter.getMotorRpms();
 
     if (ready) {
       this.m_collector.enableTowerOverride();
+      // this.shotBefore = true;
     } else {
+      // if (currentRPM <= Math.abs(currentRPM - (rpm - 120)) && shotBefore) {
+      //   this.ballsShot = ballsShot++;
+      //   this.shotBefore = false;
+      // }
       this.m_collector.disableTowerOverride();
     }
 
@@ -77,11 +80,12 @@ public class Shoot extends CommandBase {
     this.m_shooter.command(0);
     this.m_collector.disableTowerOverride();
     this.m_collector.SetSpeedTowerForOverride(0);
+    this.timer.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return joystick.getRawButtonReleased(this.buttonId);
+    return timer.get() > MAX_TIMER_SECS;
   }
 }
