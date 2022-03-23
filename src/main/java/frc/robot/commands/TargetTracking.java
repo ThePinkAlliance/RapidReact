@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -24,8 +23,7 @@ public class TargetTracking extends CommandBase {
     base = baseSubsystem;
     limelight = limelightSubsystem;
 
-    addRequirements(baseSubsystem);
-    addRequirements(limelightSubsystem);
+    addRequirements(baseSubsystem, limelightSubsystem);
 
     this.setpoint = targetAngle;
     this.base = baseSubsystem;
