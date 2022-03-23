@@ -28,6 +28,7 @@ import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Dashboard;
+import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Shooter;
 
 /**
@@ -47,6 +48,7 @@ public class RobotContainer {
   //private final Limelight m_limelight = new Limelight();
   private final Collector m_collector = new Collector();
   private final Shooter m_shooter = new Shooter();
+  private final Hood m_hood = new Hood();
   // private final Climbers m_climbers = new Climbers();
   //DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
   //private final Dashboard m_dashboard = new Dashboard(m_base, m_collector, m_shooter, null);
@@ -140,8 +142,8 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    //base controller
-    //left joystick
+    // base controller
+    // left joystick
 
     this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
     // this.m_climbers.setDefaultCommand(
@@ -174,6 +176,7 @@ public class RobotContainer {
     .whenPressed(
         new PrimitiveShooter(
           m_shooter,
+          m_hood,
           gamepad_tower,
           Constants.JOYSTICK_BUTTON_B
         )
@@ -224,7 +227,7 @@ public class RobotContainer {
   }
 
   public void resetHoodEncoder() {
-    m_shooter.resetHoodEncoder();
+    m_hood.resetHoodEncoder();
   }
 
   /**

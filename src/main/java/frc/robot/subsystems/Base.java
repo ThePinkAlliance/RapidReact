@@ -43,7 +43,7 @@ public class Base extends SubsystemBase {
   );
 
   public static final double MAX_VELOCITY_METERS_PER_SECOND =
-    //6380 is the theoretical max rpm (e.g. NO LOAD RPM)
+    // 6380 is the theoretical max rpm (e.g. NO LOAD RPM)
     5000.0 /
     60.0 *
     SdsModuleConfigurations.MK4I_L1.getDriveReduction() *

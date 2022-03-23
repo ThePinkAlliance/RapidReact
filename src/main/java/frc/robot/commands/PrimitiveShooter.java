@@ -8,18 +8,26 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Shooter;
 
 public class PrimitiveShooter extends CommandBase {
 
   private Shooter shooter;
+  private Hood hood;
   private Joystick joystick;
   private int button_id;
 
   /** Creates a new PrimimitveShooter. */
-  public PrimitiveShooter(Shooter shooter, Joystick joystick, int button_id) {
+  public PrimitiveShooter(
+    Shooter shooter,
+    Hood hood,
+    Joystick joystick,
+    int button_id
+  ) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.shooter = shooter;
+    this.hood = hood;
     this.button_id = button_id;
     this.joystick = joystick;
 
@@ -39,32 +47,37 @@ public class PrimitiveShooter extends CommandBase {
     double shooterFromGround = 22.27;
     double currentDistance = 108;
 
-    SmartDashboard.putNumber("currentAngle", shooter.getHoodAngle());
+    SmartDashboard.putNumber("hood angle", hood.getHoodAngle());
 
     double angle = Math.atan(
-      (
-        Math.tan(cargoIncommingAngle) * currentDistance - 2 * shooterFromGround
-      ) /
-      -currentDistance
+      Math.toRadians(
+        (
+          Math.tan(Math.toRadians(cargoIncommingAngle)) *
+          currentDistance -
+          2 *
+          shooterFromGround
+        ) /
+        -currentDistance
+      )
     );
     double velocity = Math.sqrt(
       (
         Math.pow(9.8 * currentDistance, 2) *
-        (1 + Math.pow(Math.tan(angle), 2)) /
+        (1 + Math.pow(Math.tan(Math.toRadians(angle)), 2)) /
         2 *
         shooterFromGround -
         2 *
         currentDistance *
-        Math.tan(angle)
+        Math.tan(Math.toRadians(angle))
       )
     );
 
-    SmartDashboard.putNumber("encoder ticks", shooter.getHoodTicks());
-    SmartDashboard.putNumber("shooter velocity", velocity);
-    SmartDashboard.putNumber("shooter angle", angle);
+    SmartDashboard.putNumber("encoder ticks", hood.getHoodTicks());
+    SmartDashboard.putNumber("shooter trajectory velocity", velocity);
+    SmartDashboard.putNumber("shooter trajectory angle", angle);
 
     shooter.command(-1);
-    shooter.commandHood(MathUtil.clamp(pwr, -0.2, 0.2));
+    hood.commandHood(MathUtil.clamp(pwr, -0.2, 0.2));
   }
 
   // Called once the command ends or is interrupted.

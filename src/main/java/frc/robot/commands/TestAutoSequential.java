@@ -10,6 +10,7 @@ import frc.robot.subsystems.Base;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
+@Deprecated
 public class TestAutoSequential extends SequentialCommandGroup {
 
   /** Creates a new LeaveBlueLeft. */
