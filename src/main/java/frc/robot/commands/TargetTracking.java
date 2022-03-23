@@ -67,7 +67,6 @@ public class TargetTracking extends CommandBase {
       base.drive(speeds);
     } else {
         double currentAngle = base.getSensorYaw();
-        setpoint = currentAngle + 90;
         double error = alignController.calculate(currentAngle, setpoint);
         double power = (error / -180) * Base.MAX_VELOCITY_METERS_PER_SECOND;
 
@@ -84,7 +83,7 @@ public class TargetTracking extends CommandBase {
           .getEntry("angle error")
           .setNumber(alignController.calculate(currentAngle, setpoint));
 
-        ChassisSpeeds speeds = new ChassisSpeeds(0, 0, power);
+        ChassisSpeeds speeds = new ChassisSpeeds(0, 0, 0.5);
         base.drive(speeds);
     }
 
