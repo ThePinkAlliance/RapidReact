@@ -43,10 +43,10 @@ public class Limelight extends SubsystemBase {
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     NetworkTableEntry tv = table.getEntry("tv");
     double availableTargets = tv.getDouble(0.0);
-    if (availableTargets >= 1) {
+    if (availableTargets == 1) {
       targets = true;
     } else {
-      targets = false;
+      targets = false; //not necessary but for safety
     }
     return targets;
 
@@ -79,10 +79,10 @@ public class Limelight extends SubsystemBase {
     double objectArea = ta.getDouble(0.0);
     double robotSkew = ts.getDouble(0.0);
 
-    double limelightMountedAngle = 45; //this can change
-    double limelightLensHeight = 24; //this can change (in)
+    double limelightMountedAngle = 45; //this can change a static number though once we have found it
+    double limelightLensHeight = 24; //this can change (in) will be static, should NEVER change
     double reflectiveTapeHeight = 102.375; //this is static (in) to CENTER of reflective tape
-    double verticalOffsetAngle = ty.getDouble(0.0);
+    double verticalOffsetAngle = ty.getDouble(0.0); //angle calculated by the limelight.
 
     double angleToGoalDeg = (limelightMountedAngle + verticalOffsetAngle);
     double angleToGoalRad = angleToGoalDeg * (Math.PI / 180.0);
@@ -104,14 +104,11 @@ public class Limelight extends SubsystemBase {
     NetworkTableEntry ty = table.getEntry("ty");
     NetworkTableEntry ta = table.getEntry("ta");
     NetworkTableEntry ts = table.getEntry("ts");
-    //NetworkTableEntry tv = table.getEntry("tv");
 
     double offsetX = tx.getDouble(0.0);
     double offsetY = ty.getDouble(0.0);
     double objectArea = ta.getDouble(0.0);
     double robotSkew = ts.getDouble(0.0);
-    //double availableTargets = tv.getDouble(0.0); //I would revisit this so the robot does not 
-                                                 //run crazy if there are no available targets
     
     SmartDashboard.putNumber("Object Offset X: ", offsetX);
     SmartDashboard.putNumber("Object Offset Y: ", offsetY);
