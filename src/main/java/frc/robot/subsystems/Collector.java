@@ -7,28 +7,29 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.Rev2mDistanceSensor;
 import com.revrobotics.Rev2mDistanceSensor.Port;
 import com.revrobotics.Rev2mDistanceSensor.Unit;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import javax.lang.model.util.ElementScanner6;
 
 public class Collector extends SubsystemBase {
 
   public static int COLLECTOR_MOTOR_PORT = 10;
   public static double COLLECTOR_MOTOR_FULL_SPEED = 1;
   public static double TOWER_MOTOR_FULL_SPEED = 1;
-  public static final double TOWER_SENSOR_TRIGGER_DISTANCE = 150.0; //millimeters
+  public static final double TOWER_SENSOR_TRIGGER_DISTANCE = 150.0; // millimeters
   private final int TOWER_MOTOR_PORT = 20;
   private final int SOLENOID_ID = 0;
 
-  //Collector
-  private TalonFX collectorMotor;
+  // Collector
+  private CANSparkMax collectorMotor;
   private Solenoid solenoid;
   private boolean collectorRunning = false;
-  //Tower
+  // Tower
   private TalonFX towerMotor;
   private Rev2mDistanceSensor ballSensor;
   private boolean towerOverride = false;
@@ -37,7 +38,8 @@ public class Collector extends SubsystemBase {
   /** Creates a new Collector. */
   public Collector() {
     //Collector
-    this.collectorMotor = new TalonFX(Collector.COLLECTOR_MOTOR_PORT);
+    this.collectorMotor =
+      new CANSparkMax(Collector.COLLECTOR_MOTOR_PORT, MotorType.kBrushless);
     this.solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID_ID);
     this.collectorMotor.setInverted(true);
     //Tower
@@ -60,7 +62,7 @@ public class Collector extends SubsystemBase {
   }
 
   public void dropCollector() {
-    this.collectorMotor.set(ControlMode.PercentOutput, 1);
+    this.collectorMotor.set(1);
     this.solenoid.set(true);
   }
 
@@ -69,7 +71,7 @@ public class Collector extends SubsystemBase {
   }
 
   public void SetSpeedCollector(double speed) {
-    collectorMotor.set(ControlMode.PercentOutput, speed);
+    collectorMotor.set(speed);
     if (speed != 0) collectorRunning = true; else collectorRunning = false;
   }
 

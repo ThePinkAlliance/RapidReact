@@ -20,13 +20,13 @@ public class Hood extends SubsystemBase {
   public final double HOOD_LENGTH_INCHES = 5.9;
   public final double HOOD_WHEEL_CIRCUMFERENCE = 2.5132741229;
 
-  private final double HOOD_LENGTH_X = 2.536;
-  private final double HOOD_LENGTH_Y = 5.9;
+  private final double HOOD_LENGTH_X = 2.5;
+  private final double HOOD_LENGTH_Y = 4.25;
   private final double MAX_HOOD_POSITION = 119.635974948;
-  private final double MAX_HOOD_SHOOTER_DIFF_X = 7.526915;
+  private final double MAX_HOOD_SHOOTER_DIFF_X = 10.5;
   private final double HOOD_DIFF_WIDTH_INCHES_PER_TICK =
     HOOD_LENGTH_X / MAX_HOOD_POSITION;
-  private final int HOOD_MOTOR = 12;
+  private final int HOOD_MOTOR = 31;
 
   private CANSparkMax hoodMotor;
   private RelativeEncoder hoodEncoder;
@@ -38,7 +38,7 @@ public class Hood extends SubsystemBase {
     // configure the hood motor and the encoder
     this.hoodEncoder = this.hoodMotor.getEncoder();
 
-    this.hoodMotor.setSmartCurrentLimit(20);
+    this.hoodMotor.setSmartCurrentLimit(10);
 
     this.hoodMotor.setSoftLimit(SoftLimitDirection.kReverse, 3);
     this.hoodMotor.setSoftLimit(SoftLimitDirection.kReverse, 3);
@@ -47,7 +47,7 @@ public class Hood extends SubsystemBase {
   public double hoodDesiredTicks(double angle) {
     return (
       (
-        (Math.tan(angle) * (MAX_HOOD_WIDTH_INCHES - HOOD_PARREL_SHOOTER)) /
+        (Math.tan(angle) * (HOOD_LENGTH_X - HOOD_PARREL_SHOOTER)) /
         HOOD_WHEEL_CIRCUMFERENCE
       ) *
       REV_TICKS_PER_REV

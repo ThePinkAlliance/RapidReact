@@ -14,8 +14,8 @@ import frc.robot.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
 
-  public static final double SHOOTER_POWER_CLOSE_HIGH = 3800; // 3800, 3425
-  public static final double SHOOTER_POWER_CLOSE_HIGH_V2 = 3800;
+  public static final double SHOOTER_POWER_CLOSE_HIGH = 3500; // 3800, 3425
+  public static final double SHOOTER_POWER_CLOSE_HIGH_V2 = 3500;
   public static final double SHOOTER_POWER_CLOSE_LOW = 3800;
   public static final double SHOOTER_POWER_CLOSE_DEFAULT =
     SHOOTER_POWER_CLOSE_HIGH_V2;
@@ -28,7 +28,7 @@ public class Shooter extends SubsystemBase {
   public static double GEAR_MULTIPLYER = 1.6;
   private double PEAK_FORWARD = 1;
   private double PEAK_REVERSE = -1;
-  private final int SHOOTER_MOTOR = 11;
+  private final int SHOOTER_MOTOR = 30;
   private boolean isActivated = false;
 
   private TalonFX motor;
@@ -91,6 +91,8 @@ public class Shooter extends SubsystemBase {
   }
 
   private void configureMotor() {
+    this.motor.setInverted(true);
+
     this.motor.setNeutralMode(NeutralMode.Coast);
     this.motor.configSelectedFeedbackSensor(
         TalonFXFeedbackDevice.IntegratedSensor,

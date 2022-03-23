@@ -8,8 +8,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.ClimberModule;
 import frc.robot.ClimberModule.SOLENOID_STATE;
 
-
-
 public class Climbers extends SubsystemBase {
 
   private final int LONG_PNEUMATIC_ID_1 = 1;
@@ -18,16 +16,19 @@ public class Climbers extends SubsystemBase {
   private final int SHORT_PNEUMATIC_ID_1 = 3;
   private final int SHORT_PNEUMATIC_ID_2 = 4;
 
-  private final int LONG_MOTOR_LEFT_ID = 50;
-  // private final int LONG_MOTOR_CENTER_ID = 0;
-  private final int LONG_MOTOR_RIGHT_ID = 51;
+  // Long Climber Motor Id's
+  private final int LONG_MOTOR_ONE_ID = 50;
+  private final int LONG_MOTOR_TWO_ID = 51;
 
-  private final int LONG_LIMIT_LEFT_ID = 1;
-  private final int LONG_LIMIT_RIGHT_ID = 3;
+  // Long Climber Limit Switch Id's
+  private final int LONG_LIMIT_LEFT_ID = 3;
+  private final int LONG_LIMIT_RIGHT_ID = 1;
 
-  //private final int SHORT_MOTOR_CENTER_ID = 0;
-  private final int SHORT_MOTOR_LEFT_ID = 52;
-  private final int SHORT_MOTOR_RIGHT_ID = 53;
+  // Short Climber Motor Id's
+  private final int SHORT_MOTOR_ONE_ID = 53;
+  private final int SHORT_MOTOR_TWO_ID = 52;
+
+  // Short Climber Limit Switch Id's
   private final int SHORT_LIMIT_LEFT_ID = 0;
   private final int SHORT_LIMIT_RIGHT_ID = 2;
 
@@ -42,10 +43,10 @@ public class Climbers extends SubsystemBase {
       new ClimberModule(
         LONG_PNEUMATIC_ID_1,
         LONG_PNEUMATIC_ID_2,
-        LONG_MOTOR_LEFT_ID,
+        LONG_MOTOR_ONE_ID,
         //LONG_MOTOR_CENTER_ID,
-        LONG_MOTOR_RIGHT_ID,
-        true,
+        LONG_MOTOR_TWO_ID,
+        false,
         LONG_LIMIT_LEFT_ID,
         LONG_LIMIT_RIGHT_ID
       );
@@ -54,10 +55,10 @@ public class Climbers extends SubsystemBase {
       new ClimberModule(
         SHORT_PNEUMATIC_ID_1,
         SHORT_PNEUMATIC_ID_2,
-        SHORT_MOTOR_LEFT_ID,
+        SHORT_MOTOR_ONE_ID,
         //SHORT_MOTOR_CENTER_ID,
-        SHORT_MOTOR_RIGHT_ID,
-        false,
+        SHORT_MOTOR_TWO_ID,
+        true,
         SHORT_LIMIT_LEFT_ID,
         SHORT_LIMIT_RIGHT_ID
       );

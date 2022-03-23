@@ -22,8 +22,6 @@ public class Dashboard extends SubsystemBase {
   public static String DASH_SHOOTER_READY = "Shooter Ready";
   public static String DASH_CLIMBER_LONG_ARM_POSITION = "Climber Long Arm";
   public static String DASH_CLIMBER_SHORT_ARM_POSITION = "Climber Short Arm";
-  
-
 
   private Base base;
   private Collector collector;
@@ -46,8 +44,8 @@ public class Dashboard extends SubsystemBase {
   public void initialize() {
     //Values that are init once, user changes for testing or ops, robot reads them when needed
     SmartDashboard.putNumber(
-      DASH_SHOOTER_POWER,
-      Shooter.SHOOTER_POWER_CLOSE_DEFAULT
+      DASH_SHOOTER_RPMS,
+      Shooter.SHOOTER_POWER_CLOSE_HIGH_V2
     );
   }
 
