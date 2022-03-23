@@ -37,6 +37,28 @@ public class Limelight extends SubsystemBase {
     initLimelight(mode); //Off or On
   }
 
+  public boolean isTarget() {
+    boolean targets = false;
+    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    NetworkTableEntry tv = table.getEntry("tv");
+    double availableTargets = tv.getDouble(0.0);
+    if (availableTargets == 1) {
+      targets = true;
+    } else {
+      targets = false; //not necessary but for safety
+    }
+    return targets;
+
+  }
+
+  public double getOffset() {
+    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    NetworkTableEntry tx = table.getEntry("tx");
+    double offsetX = tx.getDouble(0.0);
+    
+    return offsetX;
+  }
+
   public void getDistance() {
     //from documentation, the distance can be found using a fixed camera angle
     //distance = (height2 - height1) / tan(angle1 + angle2)
@@ -52,38 +74,25 @@ public class Limelight extends SubsystemBase {
     //NetworkTableEntry ta = table.getEntry("ta");
     //NetworkTableEntry ts = table.getEntry("ts");
 
-    double targetAngle = ty.getDouble(0.0); //offset of target
-    //double offsetX = tx.getDouble(0.0);
-    //double objectArea = ta.getDouble(0.0);
-    //double robotSkew = ts.getDouble(0.0);
+    double offsetX = tx.getDouble(0.0);
+    double objectArea = ta.getDouble(0.0);
+    double robotSkew = ts.getDouble(0.0);
 
-    double limelightAngle = 48; //Angle the limelight is positioned at
-    double limelightElevation = 23.5; //How far the limelight is above the ground
-    double targetHeight = 104; //How tall is the target from above the ground
+    double limelightMountedAngle = 45; //this can change a static number though once we have found it
+    double limelightLensHeight = 24; //this can change (in) will be static, should NEVER change
+    double reflectiveTapeHeight = 102.375; //this is static (in) to CENTER of reflective tape
+    double verticalOffsetAngle = ty.getDouble(0.0); //angle calculated by the limelight.
 
-    //This code gives distance relative from the ground to target, not hypotenuse length
-    double angleDegrees = limelightAngle + targetAngle;
-    double angleRadians = angleDegrees * (Math.PI / 180.0);
-    double distance = (targetHeight - limelightElevation) / Math.tan(angleRadians);
-    SmartDashboard.putNumber("Robot Distance: ", distance);
+    double angleToGoalDeg = (limelightMountedAngle + verticalOffsetAngle);
+    double angleToGoalRad = angleToGoalDeg * (Math.PI / 180.0);
 
-    //Experimentation to get distance to the target, for example the top of the shipping hub
-    //cos theta = adj / hyp, where adj is the distance above, and hypotenuse is the distance we want to find
-    //cos theta, where theta is the Target angle, relative to the abgle of the camera
-    //So the distance to target = distance / cos theta
-    //This would be the hypotenuse length
-    double angleHyp = targetAngle;
-    double distanceFromTarget = (distance / Math.cos(angleHyp));
-    SmartDashboard.putNumber("Experimental distance: ", distanceFromTarget);
-
-
-    //double availableTargets = tv.getDouble(0.0); //I would revisit this so the robot does not 
-                                                 //run crazy if there are no available targets
+    double distance = (reflectiveTapeHeight - limelightLensHeight) / Math.tan(angleToGoalRad);
+    SmartDashboard.putNumber("Distance: ", distance);
     
-    //SmartDashboard.putNumber("Object Offset X: ", offsetX);
-    //SmartDashboard.putNumber("Object Offset Y: ", targetAngle);
-    //SmartDashboard.putNumber("Limelight Area: ", objectArea);
-    //SmartDashboard.putNumber("Limelight Skew: ", robotSkew);
+    SmartDashboard.putNumber("Object Offset X: ", offsetX);
+    SmartDashboard.putNumber("Object Offset Y: ", verticalOffsetAngle);
+    SmartDashboard.putNumber("Limelight Area: ", objectArea);
+    SmartDashboard.putNumber("Limelight Skew: ", robotSkew);
   }
 
   @Override
@@ -94,14 +103,11 @@ public class Limelight extends SubsystemBase {
     NetworkTableEntry ty = table.getEntry("ty");
     NetworkTableEntry ta = table.getEntry("ta");
     NetworkTableEntry ts = table.getEntry("ts");
-    //NetworkTableEntry tv = table.getEntry("tv");
 
     double offsetX = tx.getDouble(0.0);
     double offsetY = ty.getDouble(0.0);
     double objectArea = ta.getDouble(0.0);
     double robotSkew = ts.getDouble(0.0);
-    //double availableTargets = tv.getDouble(0.0); //I would revisit this so the robot does not 
-                                                 //run crazy if there are no available targets
     
     SmartDashboard.putNumber("Object Offset X: ", offsetX);
     SmartDashboard.putNumber("Object Offset Y: ", offsetY);
