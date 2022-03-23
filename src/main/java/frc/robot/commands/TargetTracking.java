@@ -50,11 +50,8 @@ public class TargetTracking extends CommandBase {
     if (availableTarget == true) {
       setpoint = rotationAngle;
       double currentAngle = base.getSensorYaw();
-      double power = MathUtil.clamp(
-        alignController.calculate(currentAngle, setpoint),
-        -0.7,
-        0.7
-      );
+      double error = alignController.calculate(currentAngle, setpoint);
+      double power = (error / -180) * Base.MAX_VELOCITY_METERS_PER_SECOND;
 
       NetworkTableInstance
         .getDefault()
@@ -73,11 +70,9 @@ public class TargetTracking extends CommandBase {
     } else {
         double currentAngle = base.getSensorYaw();
         setpoint = currentAngle + 90;
-        double power = MathUtil.clamp(
-          alignController.calculate(currentAngle, setpoint),
-          -0.7,
-          0.7
-        );
+        double error = alignController.calculate(currentAngle, setpoint);
+        double power = (error / -180) * Base.MAX_VELOCITY_METERS_PER_SECOND;
+
 
         NetworkTableInstance
           .getDefault()
