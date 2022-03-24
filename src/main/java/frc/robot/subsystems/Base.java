@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import java.util.function.Supplier;
 
 public class Base extends SubsystemBase {
 
@@ -390,6 +391,13 @@ public class Base extends SubsystemBase {
    */
   public Pose2d getPose() {
     return odometry.getPoseMeters();
+  }
+
+  /**
+   * Returns the current odometry pose of the robot as a supplier.
+   */
+  public Supplier<Pose2d> getPoseSupplier() {
+    return () -> odometry.getPoseMeters();
   }
 
   /**

@@ -19,11 +19,17 @@ public class AutoMidClimb extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new MoveShortArms(climbers, ClimberModule.SHORT_ARM_MID_CLIMB_START, MoveShortArms.ARM_MOVE_UP),
-      new ClimbDrive(base, climbers, 0, 0.8, false),
-      new MoveShortArms(climbers, ClimberModule.SHORT_ARM_MID_CLIMB_FINISH, MoveShortArms.ARM_MOVE_DOWN)
+      new MoveShortArms(
+        climbers,
+        ClimberModule.SHORT_ARM_MID_CLIMB_START,
+        MoveShortArms.ARM_MOVE_UP
+      ),
+      new ClimbDrive(base, climbers, 0, 0.4, false),
+      new MoveShortArms(
+        climbers,
+        ClimberModule.SHORT_ARM_MID_CLIMB_FINISH,
+        MoveShortArms.ARM_MOVE_DOWN
+      )
     );
-
-   
   }
 }
