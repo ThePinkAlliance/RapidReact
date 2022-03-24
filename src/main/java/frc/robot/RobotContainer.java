@@ -50,8 +50,8 @@ public class RobotContainer {
   private final Shooter m_shooter = new Shooter();
   private final Hood m_hood = new Hood();
   private final Climbers m_climbers = new Climbers();
-  //DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
-  //private final Dashboard m_dashboard = new Dashboard(m_base, m_collector, m_shooter, null);
+  // DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
+  // private final Dashboard m_dashboard = new Dashboard(m_base, m_collector, m_shooter, null);
 
   Trajectory trajectory = new Trajectory();
   //ShuffleboardTab driverDashboard = Shuffleboard.getTab("Dashboard");
@@ -70,6 +70,11 @@ public class RobotContainer {
   private final SelectableTrajectory ShootLeaveTarmacCollectShoot = new SelectableTrajectory(
     "Shoot Leave Tarmac Collect And Shoot",
     new ShootLeaveTarmacCollectShoot(m_base, m_shooter, m_collector)
+  );
+
+  private final SelectableTrajectory TwoBallBlue = new SelectableTrajectory(
+    "Two Ball Blue",
+    "output/2 Ball Blue.wpilib.json"
   );
 
   private final SelectableTrajectory autoMidClimb = new SelectableTrajectory(
@@ -102,7 +107,6 @@ public class RobotContainer {
       }
     }
 
-    //driverDashboard.add(selectedPath);
     SmartDashboard.putData(selectedPath);
 
     // for now select leave blue 1 for testing

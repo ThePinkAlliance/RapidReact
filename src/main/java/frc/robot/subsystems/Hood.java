@@ -38,7 +38,7 @@ public class Hood extends SubsystemBase {
     // configure the hood motor and the encoder
     this.hoodEncoder = this.hoodMotor.getEncoder();
 
-    this.hoodMotor.setSmartCurrentLimit(10);
+    this.hoodMotor.setSmartCurrentLimit(20);
 
     this.hoodMotor.setSoftLimit(SoftLimitDirection.kReverse, 3);
     this.hoodMotor.setSoftLimit(SoftLimitDirection.kReverse, 3);

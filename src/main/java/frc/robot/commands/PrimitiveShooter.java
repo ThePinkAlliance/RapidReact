@@ -49,6 +49,8 @@ public class PrimitiveShooter extends CommandBase {
     // double pwr = joystick.getRawAxis(5);
 
     double cargoIncommingAngle = -69;
+
+    // remeasure this
     double shooterFromGround = 22.27;
     double currentDistance = 108;
 
