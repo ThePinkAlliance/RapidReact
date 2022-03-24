@@ -104,9 +104,9 @@ public class JoystickClimb extends CommandBase {
     double shortPosition = Math.abs(climbers.shortClimberModule.getPosition());
     /* Deadband gamepad, short climbers */
     if (
-      Math.abs(leftYstick) < 0.10 ||
-      (shortPosition <= MIN_SHORT_CLIMBER_POSITION && leftYstick > 0) ||
-      (shortPosition >= MAX_SHORT_CLIMBER_POSITION && leftYstick < -0)
+      Math.abs(leftYstick) < 0.10
+      // (shortPosition <= MIN_SHORT_CLIMBER_POSITION && leftYstick > 0) ||
+      // (shortPosition >= MAX_SHORT_CLIMBER_POSITION && leftYstick < -0)
     ) {
       /* Within 10% of zero */
       leftYstick = 0;

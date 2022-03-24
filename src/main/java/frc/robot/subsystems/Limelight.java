@@ -4,11 +4,11 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 // ADDRESS FOR THE LIMELIGHT FEED: http://limelight.local:5801/
 
@@ -19,13 +19,24 @@ public class Limelight extends SubsystemBase {
   /** Creates a new Limelight. */
   public Limelight() {
     initLimelight(LimelightLedMode.FORCE_OFF);
-
   }
 
   public void initLimelight(LimelightLedMode mode) {
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(mode.get());
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
+    NetworkTableInstance
+      .getDefault()
+      .getTable("limelight")
+      .getEntry("ledMode")
+      .setNumber(mode.get());
+    NetworkTableInstance
+      .getDefault()
+      .getTable("limelight")
+      .getEntry("camMode")
+      .setNumber(0);
+    NetworkTableInstance
+      .getDefault()
+      .getTable("limelight")
+      .getEntry("pipeline")
+      .setNumber(0);
   }
 
   public void setLedState(LimelightLedMode mode) {
@@ -39,7 +50,9 @@ public class Limelight extends SubsystemBase {
 
   public boolean isTarget() {
     boolean targets = false;
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    NetworkTable table = NetworkTableInstance
+      .getDefault()
+      .getTable("limelight");
     NetworkTableEntry tv = table.getEntry("tv");
     double availableTargets = tv.getDouble(0.0);
     if (availableTargets == 1) {
@@ -48,14 +61,15 @@ public class Limelight extends SubsystemBase {
       targets = false; //not necessary but for safety
     }
     return targets;
-
   }
 
   public double getOffset() {
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    NetworkTable table = NetworkTableInstance
+      .getDefault()
+      .getTable("limelight");
     NetworkTableEntry tx = table.getEntry("tx");
     double offsetX = tx.getDouble(0.0);
-    
+
     return offsetX;
   }
 
@@ -67,12 +81,13 @@ public class Limelight extends SubsystemBase {
     //What we need: limelight angle on the robot, distance from center of limelight lens to ground,
     //distance from height of the target to the floor
 
-
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    //NetworkTableEntry tx = table.getEntry("tx");
+    NetworkTable table = NetworkTableInstance
+      .getDefault()
+      .getTable("limelight");
+    NetworkTableEntry tx = table.getEntry("tx");
     NetworkTableEntry ty = table.getEntry("ty");
-    //NetworkTableEntry ta = table.getEntry("ta");
-    //NetworkTableEntry ts = table.getEntry("ts");
+    NetworkTableEntry ta = table.getEntry("ta");
+    NetworkTableEntry ts = table.getEntry("ts");
 
     double offsetX = tx.getDouble(0.0);
     double objectArea = ta.getDouble(0.0);
@@ -86,9 +101,10 @@ public class Limelight extends SubsystemBase {
     double angleToGoalDeg = (limelightMountedAngle + verticalOffsetAngle);
     double angleToGoalRad = angleToGoalDeg * (Math.PI / 180.0);
 
-    double distance = (reflectiveTapeHeight - limelightLensHeight) / Math.tan(angleToGoalRad);
+    double distance =
+      (reflectiveTapeHeight - limelightLensHeight) / Math.tan(angleToGoalRad);
     SmartDashboard.putNumber("Distance: ", distance);
-    
+
     SmartDashboard.putNumber("Object Offset X: ", offsetX);
     SmartDashboard.putNumber("Object Offset Y: ", verticalOffsetAngle);
     SmartDashboard.putNumber("Limelight Area: ", objectArea);
@@ -97,8 +113,9 @@ public class Limelight extends SubsystemBase {
 
   @Override
   public void periodic() {
-
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    NetworkTable table = NetworkTableInstance
+      .getDefault()
+      .getTable("limelight");
     NetworkTableEntry tx = table.getEntry("tx");
     NetworkTableEntry ty = table.getEntry("ty");
     NetworkTableEntry ta = table.getEntry("ta");
@@ -108,7 +125,7 @@ public class Limelight extends SubsystemBase {
     double offsetY = ty.getDouble(0.0);
     double objectArea = ta.getDouble(0.0);
     double robotSkew = ts.getDouble(0.0);
-    
+
     SmartDashboard.putNumber("Object Offset X: ", offsetX);
     SmartDashboard.putNumber("Object Offset Y: ", offsetY);
     SmartDashboard.putNumber("Limelight Area: ", objectArea);
