@@ -54,19 +54,19 @@ public class ThreeballRightBlue extends SequentialCommandGroup {
     this.navCollect =
       new Navigate(
         m_base,
-        0,
-        LeaveTarmack.TARMAC_WIDTH / 2 + (LeaveTarmack.ROBOT_WIDTH / 2)
+        LeaveTarmack.TARMAC_WIDTH / 2 + (LeaveTarmack.ROBOT_WIDTH / 2),
+        0
       );
 
     // Add your commands in the addCommands() call, e.g.
     addCommands(
       new Navigate(m_base, (LeaveTarmack.TARMAC_WIDTH / 2), false),
-      new Navigate(m_base, 0, -15),
+      new Navigate(m_base, 0, 15),
       navCollect.alongWith(
         new CollectorOn(m_collector, () -> this.navCollect.isFinished())
       ),
-      new Navigate(m_base, 30, true),
-      new Navigate(m_base, 0, 15),
+      new Navigate(m_base, 15, true),
+      new Navigate(m_base, 0, -15),
       // the 10 is distance in inches this is a placeholder not intended for comp use
       new AutoShootHood(m_shooter, m_collector, m_hood, 100)
     );

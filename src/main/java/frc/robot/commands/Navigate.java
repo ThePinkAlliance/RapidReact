@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import com.ThePinkAlliance.swervelib.SdsModuleConfigurations;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -91,7 +92,6 @@ public class Navigate extends CommandBase {
 
     alignController.setTolerance(0.5, 1.0);
     straightController.setTolerance(1.5);
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -180,8 +180,7 @@ public class Navigate extends CommandBase {
       .getTable("debug")
       .getEntry("yaw")
       .setNumber(base.getSensorYaw());
-    if (bBackwards)
-       x_power *= -1;
+    if (bBackwards) x_power *= -1;
     ChassisSpeeds speeds = new ChassisSpeeds(x_power, 0, theta_power);
 
     base.drive(speeds);
