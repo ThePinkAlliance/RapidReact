@@ -2,84 +2,98 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Shooter;
 
-public class PrimitiveShooter extends CommandBase {
+public class AutoShootHood extends CommandBase {
+
+  private double MAX_TIMER_SECS = 3;
 
   private Shooter m_shooter;
+  private Collector m_collector;
   private Hood m_hood;
-  private Joystick joystick;
-  private double rpm;
 
-  private int button_id;
+  private double distance;
 
-  /** Creates a new PrimimitveShooter. */
-  public PrimitiveShooter(
+  private int ballsShot = 0;
+  private boolean shotBefore = false;
+
+  private Timer timer;
+
+  public AutoShootHood(
     Shooter m_shooter,
+    Collector m_collector,
     Hood m_hood,
-    Joystick joystick,
-    double rpm,
-    int button_id
+    double distance
   ) {
     // Use addRequirements() here to declare subsystem dependencies.
+
+    this.m_collector = m_collector;
     this.m_shooter = m_shooter;
     this.m_hood = m_hood;
-    this.button_id = button_id;
-    this.rpm = rpm;
-    this.joystick = joystick;
+    this.distance = distance;
 
-    addRequirements(m_shooter);
+    this.timer = new Timer();
+
+    addRequirements(this.m_shooter, this.m_collector);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    timer.reset();
+    timer.start();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double currentDistance = 108;
-
-    SmartDashboard.putNumber("hood angle", m_hood.getHoodAngle());
-
     double angle = Math.atan(
       Math.toRadians(
         (
           Math.tan(Math.toRadians(Shooter.CARGO_INCOMMING_ANGLE)) *
-          currentDistance -
+          distance -
           2 *
           Shooter.SHOOTER_FROM_GROUND
         ) /
-        -currentDistance
+        -distance
       )
     );
     double velocity = Math.sqrt(
       (
-        Math.pow(9.8 * currentDistance, 2) *
+        Math.pow(9.8 * distance, 2) *
         (1 + Math.pow(Math.tan(Math.toRadians(angle)), 2)) /
         2 *
         Shooter.SHOOTER_FROM_GROUND -
         2 *
-        currentDistance *
+        distance *
         Math.tan(Math.toRadians(angle))
       )
     );
+
+    // ? this might need the gear ratio added however I don't know that right now
+    double rpm = velocity / Shooter.SHOOTER_FLYWHEEL_CIRCUMFRENCE * 60;
 
     SmartDashboard.putNumber("encoder ticks", m_hood.getHoodTicks());
     SmartDashboard.putNumber("shooter trajectory velocity", velocity);
     SmartDashboard.putNumber("shooter trajectory angle", angle);
 
-    rpm = SmartDashboard.getNumber(Dashboard.DASH_SHOOTER_TARGET_RPMS, rpm);
     boolean ready = m_shooter.readyToShoot(rpm, 100);
-    SmartDashboard.putBoolean(Dashboard.DASH_SHOOTER_READY, ready);
+
+    if (ready) {
+      this.m_collector.enableTowerOverride();
+    } else {
+      this.m_collector.disableTowerOverride();
+    }
+
+    this.m_collector.SetSpeedTowerForOverride(Collector.TOWER_MOTOR_FULL_SPEED);
     this.m_shooter.commandRpm(rpm);
     SmartDashboard.putNumber(
       Dashboard.DASH_SHOOTER_VELOCITY,
@@ -89,18 +103,20 @@ public class PrimitiveShooter extends CommandBase {
       Dashboard.DASH_SHOOTER_RPMS,
       this.m_shooter.getMotorRpms()
     );
-    // hood.commandHood(MathUtil.clamp(pwr, -0.2, 0.2));
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_shooter.command(0);
+    this.m_shooter.command(0);
+    this.m_collector.disableTowerOverride();
+    this.m_collector.SetSpeedTowerForOverride(0);
+    this.timer.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return joystick.getRawButtonReleased(button_id);
+    return timer.get() > MAX_TIMER_SECS;
   }
 }

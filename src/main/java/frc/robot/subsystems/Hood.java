@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Hood extends SubsystemBase {
@@ -90,5 +91,16 @@ public class Hood extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    SmartDashboard.putNumber("hood power", this.hoodMotor.get());
+    SmartDashboard.putNumber(
+      "hood position",
+      this.hoodEncoder.getPosition() * REV_TICKS_PER_REV
+    );
+    SmartDashboard.putNumber(
+      "hood position raw",
+      this.hoodEncoder.getPosition()
+    );
+    SmartDashboard.putNumber("hood velocity", this.hoodEncoder.getVelocity());
   }
 }

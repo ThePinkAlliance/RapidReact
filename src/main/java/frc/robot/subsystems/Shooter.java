@@ -22,6 +22,10 @@ public class Shooter extends SubsystemBase {
 
   public double CURRENT_HOOD_ANGLE = 45;
 
+  public static final double SHOOTER_FLYWHEEL_DIAMETER = 4.063;
+  public static final double SHOOTER_FLYWHEEL_CIRCUMFRENCE =
+    (SHOOTER_FLYWHEEL_DIAMETER / 2) * Math.PI;
+
   private double RAMP_RATE = 0;
   private double NOMINAL_FORWARD = 0;
   private double NOMINAL_REVERSE = 0;
@@ -30,6 +34,11 @@ public class Shooter extends SubsystemBase {
   private double PEAK_REVERSE = -1;
   private final int SHOOTER_MOTOR = 30;
   private boolean isActivated = false;
+
+  public static final double CARGO_INCOMMING_ANGLE = -69;
+
+  // remeasure this
+  public static final double SHOOTER_FROM_GROUND = 22.27;
 
   private TalonFX motor;
 
