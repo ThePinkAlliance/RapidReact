@@ -63,7 +63,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     if (m_robotContainer != null) {
-      //m_robotContainer.disableLimelight();
+      m_robotContainer.disableLimelight();
     }
   }
 
@@ -77,7 +77,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     if (m_robotContainer != null) {
-      //m_robotContainer.enableLimelight();
+      m_robotContainer.enableLimelight();
     }
 
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
@@ -99,7 +99,7 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     if (m_robotContainer != null) {
-      //m_robotContainer.enableLimelight();
+      m_robotContainer.enableLimelight();
       m_robotContainer.resetHoodEncoder();
     }
 
@@ -116,7 +116,7 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     if (m_robotContainer != null) {
-      //m_robotContainer.enableLimelight();
+      m_robotContainer.enableLimelight();
       m_robotContainer.testInit();
     }
     CommandScheduler.getInstance().cancelAll();

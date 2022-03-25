@@ -92,15 +92,17 @@ public class Hood extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("hood power", this.hoodMotor.get());
-    SmartDashboard.putNumber(
-      "hood position",
-      this.hoodEncoder.getPosition() * REV_TICKS_PER_REV
-    );
-    SmartDashboard.putNumber(
-      "hood position raw",
-      this.hoodEncoder.getPosition()
-    );
-    SmartDashboard.putNumber("hood velocity", this.hoodEncoder.getVelocity());
+    if (this.hoodMotor != null && this.hoodEncoder != null) {
+      SmartDashboard.putNumber("hood power", this.hoodMotor.get());
+      SmartDashboard.putNumber(
+        "hood position",
+        this.hoodEncoder.getPosition() * REV_TICKS_PER_REV
+      );
+      SmartDashboard.putNumber(
+        "hood position raw",
+        this.hoodEncoder.getPosition()
+      );
+      SmartDashboard.putNumber("hood velocity", this.hoodEncoder.getVelocity());
+    }
   }
 }

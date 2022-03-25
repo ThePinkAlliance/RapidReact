@@ -26,6 +26,8 @@ import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Hood;
+import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.LimelightLedMode;
 import frc.robot.subsystems.Shooter;
 
 /**
@@ -42,7 +44,7 @@ public class RobotContainer {
   private final Joystick gamepad_base = new Joystick(0);
   private final Joystick gamepad_tower = new Joystick(1);
   private final Base m_base = new Base();
-  //private final Limelight m_limelight = new Limelight();
+  private final Limelight m_limelight = new Limelight();
   private final Collector m_collector = new Collector();
   private final Shooter m_shooter = new Shooter();
   private final Hood m_hood = new Hood();
@@ -245,17 +247,17 @@ public class RobotContainer {
     return selectedPath.getSelected().getDefualtCommand();
   }
 
-  // public void enableLimelight() {
-  //   if (m_limelight != null) {
-  //     m_limelight.setLedState(LimelightLedMode.FORCE_ON);
-  //   }
-  // }
+  public void enableLimelight() {
+    if (m_limelight != null) {
+      m_limelight.setLedState(LimelightLedMode.FORCE_ON);
+    }
+  }
 
-  // public void disableLimelight() {
-  //   if (m_limelight != null) {
-  //     m_limelight.setLedState(LimelightLedMode.FORCE_OFF);
-  //   }
-  // }
+  public void disableLimelight() {
+    if (m_limelight != null) {
+      m_limelight.setLedState(LimelightLedMode.FORCE_OFF);
+    }
+  }
 
   public void testInit() {
     m_base.setPodAngles(0);
