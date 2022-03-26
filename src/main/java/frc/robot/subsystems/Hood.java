@@ -6,11 +6,9 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
-import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -19,7 +17,7 @@ public class Hood extends SubsystemBase {
   // public final double
   public final double REV_TICKS_PER_REV = 4096;
   public final double MAX_HOOD_WIDTH_INCHES = 5.582;
-  public final double HOOD_PARREL_SHOOTER = 3.11024;
+  public final double HOOD_PARREL_SHOOTER = 2.4;
   public final double MAX_HOOD_HEIGHT_INCHES = 7.159;
   public final double HOOD_LENGTH_INCHES = 5.9;
   public final double HOOD_WHEEL_CIRCUMFERENCE = 2.5132741229;

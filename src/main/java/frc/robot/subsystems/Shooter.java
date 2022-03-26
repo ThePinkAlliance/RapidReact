@@ -38,7 +38,7 @@ public class Shooter extends SubsystemBase {
   public static final double CARGO_INCOMMING_ANGLE = -69;
 
   // remeasure this
-  public static final double SHOOTER_FROM_GROUND = 22.27;
+  public static final double SHOOTER_FROM_GROUND = 23.27;
 
   private TalonFX motor;
 
