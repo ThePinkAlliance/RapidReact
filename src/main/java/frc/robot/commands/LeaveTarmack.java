@@ -5,18 +5,21 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.Climb.SIDE;
-import frc.robot.subsystems.Climbers;
+import frc.robot.subsystems.Base;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AutoClimb extends SequentialCommandGroup {
+public class LeaveTarmack extends SequentialCommandGroup {
 
-  /** Creates a new AutoClimb. */
-  public AutoClimb(Climbers climbers) {
+  private static double TARMAC_WIDTH = 93;
+  private static double ROBOT_WIDTH = 24;
+  public static double TRAVEL_DISTANCE = TARMAC_WIDTH + ROBOT_WIDTH;
+
+  /** Creates a new LeaveTarmack. */
+  public LeaveTarmack(Base base) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new Climb(climbers, 10, SIDE.IN));
+    addCommands(new Navigate(base, TRAVEL_DISTANCE));
   }
 }
