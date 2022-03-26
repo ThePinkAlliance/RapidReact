@@ -16,9 +16,14 @@ public class Shooter extends SubsystemBase {
 
   public static final double SHOOTER_POWER_HUB_HIGH = 2450;
   public static final double SHOOTER_POWER_TARMAC_HIGH = 2730;
+  public static final double SHOOTER_POWER_THREE_BALL = 2730;
   public static final double SHOOTER_POWER_AUTO_TWO_BALL = 2750;
   public static final double SHOOTER_Kp_AUTO_TWO_BALL = 0.4;
   public static final double SHOOTER_FF_AUTO_TWO_BALL = 0.047;
+  public static final double SHOOTER_POWER_HUB_LOW = 1800;
+
+  public static final double SHOOTER_Kp_AUTO_THREE_BALL = 0.4;
+  public static final double SHOOTER_FF_AUTO_THREE_BALL = 0.047;
 
   public double CURRENT_HOOD_ANGLE = 45;
 
@@ -154,9 +159,18 @@ public class Shooter extends SubsystemBase {
   }
 
   public void configFeedForward(double ff) {
-    this.motor.config_kF(ShooterConstants.kPIDLoopIdx, ff, ShooterConstants.kTimeoutMs);
+    this.motor.config_kF(
+        ShooterConstants.kPIDLoopIdx,
+        ff,
+        ShooterConstants.kTimeoutMs
+      );
   }
+
   public void configKp(double Kp) {
-    this.motor.config_kP(ShooterConstants.kPIDLoopIdx, Kp, ShooterConstants.kTimeoutMs);
+    this.motor.config_kP(
+        ShooterConstants.kPIDLoopIdx,
+        Kp,
+        ShooterConstants.kTimeoutMs
+      );
   }
 }

@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.AutoHood;
 import frc.robot.commands.AutoMidClimb;
+import frc.robot.commands.AutoShootLeaveTarmac;
+import frc.robot.commands.AutoTwoBall;
 import frc.robot.commands.CollectGroup;
 import frc.robot.commands.CommandHood;
 import frc.robot.commands.Drive;
@@ -21,8 +23,7 @@ import frc.robot.commands.JoystickClimb;
 import frc.robot.commands.LeaveTarmack;
 import frc.robot.commands.MoveTower;
 import frc.robot.commands.PrimitiveShooter;
-import frc.robot.commands.AutoShootLeaveTarmac;
-import frc.robot.commands.AutoTwoBall;
+import frc.robot.commands.paths.Threeball;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Collector;
@@ -46,7 +47,7 @@ public class RobotContainer {
   private final Joystick gamepad_base = new Joystick(0);
   private final Joystick gamepad_tower = new Joystick(1);
   private final Base m_base = new Base();
-  //private final Limelight m_limelight = new Limelight();
+  private final Limelight m_limelight = new Limelight();
   private final Collector m_collector = new Collector();
   private final Shooter m_shooter = new Shooter();
   private final Hood m_hood = new Hood();
@@ -73,6 +74,11 @@ public class RobotContainer {
     new AutoTwoBall(m_base, m_shooter, m_collector, m_hood)
   );
 
+  private final SelectableTrajectory ThreeBallAuto = new SelectableTrajectory(
+    "Auto Three Ball",
+    new Threeball(m_base, m_shooter, m_collector, m_limelight, m_hood)
+  );
+
   private final SelectableTrajectory TwoBallBlue = new SelectableTrajectory(
     "Two Ball Blue",
     "output/2 Ball Blue.wpilib.json"
@@ -90,6 +96,7 @@ public class RobotContainer {
     LeaveTarmac,
     ShootLeaveTarmac,
     ShootLeaveTarmacCollectShoot,
+    ThreeBallAuto,
     // autoMidClimb,
   };
 
@@ -128,9 +135,14 @@ public class RobotContainer {
       m_shooter.getMotorRpms()
     );
     SmartDashboard.putBoolean(Dashboard.DASH_SHOOTER_READY, false);
-    SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_P, ShooterConstants.kGains.kP);
-    SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_FF, ShooterConstants.kGains.kF);
-
+    SmartDashboard.putNumber(
+      Dashboard.DASH_SHOOTER_P,
+      ShooterConstants.kGains.kP
+    );
+    SmartDashboard.putNumber(
+      Dashboard.DASH_SHOOTER_FF,
+      ShooterConstants.kGains.kF
+    );
     // SmartDashboard.putNumber(
     //   Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
     //   m_climbers.longClimberModule.getPosition()
@@ -164,7 +176,20 @@ public class RobotContainer {
     SmartDashboard.putNumber(Dashboard.DASH_HOOD_D, Hood.HOOD_Kd);
     SmartDashboard.putNumber(Dashboard.DASH_HOOD_FF, Hood.HOOD_FF);
 
-    SmartDashboard.putNumber(Dashboard.DASH_HOOD_TICKS, Hood.IDLE_TICK_COUNT );
+    SmartDashboard.putNumber(
+      Dashboard.DASH_TARGET_TRACKER_KP,
+      BaseConstants.targetTrackerGains.kP
+    );
+    SmartDashboard.putNumber(
+      Dashboard.DASH_TARGET_TRACKER_KI,
+      BaseConstants.targetTrackerGains.kI
+    );
+    SmartDashboard.putNumber(
+      Dashboard.DASH_TARGET_TRACKER_KD,
+      BaseConstants.targetTrackerGains.kD
+    );
+
+    SmartDashboard.putNumber(Dashboard.DASH_HOOD_TICKS, Hood.IDLE_TICK_COUNT);
     SmartDashboard.putNumber(Dashboard.DASH_HOOD_OUTPUT, 0);
     SmartDashboard.putNumber(Dashboard.DASH_HOOD_DRAW, 0);
 
@@ -179,16 +204,6 @@ public class RobotContainer {
           true
         )
       );
-    // new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_A)
-    // .whenPressed(
-    //     new SpinUpShooter(
-    //       m_shooter,
-    //       Shooter.SHOOTER_POWER_CLOSE_HIGH_V2,
-    //       Constants.JOYSTICK_BUTTON_A,
-    //       gamepad_tower
-    //     )
-    //   );
-    // the shooter with the hood
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
     .whenPressed(
         new PrimitiveShooter(
@@ -207,7 +222,7 @@ public class RobotContainer {
           gamepad_tower
         )
       );
-    //Collector Intake
+    // Collector Intake
     new JoystickButton(gamepad_base, Constants.JOYSTICK_RIGHT_BUMPER)
     .whenPressed(
         new CollectGroup(
@@ -217,7 +232,7 @@ public class RobotContainer {
           true
         )
       );
-    //Collector Outtake
+    // Collector Outtake
     new JoystickButton(gamepad_base, Constants.JOYSTICK_LEFT_BUMPER)
     .whenPressed(
         new CollectGroup(
@@ -227,7 +242,7 @@ public class RobotContainer {
           false
         )
       );
-    //Climbers
+    // Climbers
     // new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
     // .whenPressed(
     //     new MoveShortArms(
@@ -270,15 +285,15 @@ public class RobotContainer {
   }
 
   public void enableLimelight() {
-    // if (m_limelight != null) {
-    //   m_limelight.setLedState(LimelightLedMode.FORCE_ON);
-    // }
+    if (m_limelight != null) {
+      m_limelight.setLedState(LimelightLedMode.FORCE_ON);
+    }
   }
 
   public void disableLimelight() {
-    // if (m_limelight != null) {
-    //   m_limelight.setLedState(LimelightLedMode.FORCE_OFF);
-    // }
+    if (m_limelight != null) {
+      m_limelight.setLedState(LimelightLedMode.FORCE_OFF);
+    }
   }
 
   public void testInit() {

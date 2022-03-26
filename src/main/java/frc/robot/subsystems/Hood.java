@@ -19,8 +19,10 @@ public class Hood extends SubsystemBase {
   public static final double HOOD_Kd = 0.0;
   public static final double HOOD_FF = 0.0;
   public static final double HUB_SHOT_TICK_COUNT = -22000;
+  public static final double HUB_LOW_SHOT_COUNT = -70000;
   public static final double TARMAC_SHOT_TICK_COUNT = -55000;
   public static final double AUTO_SHOT_TWOBALL_TICK_COUNT = -55000;
+  public static final double AUTO_SHOT_THREEBALL_TICK_COUNT = -55000;
   public static final double IDLE_TICK_COUNT = -1000;
 
   // public final double
