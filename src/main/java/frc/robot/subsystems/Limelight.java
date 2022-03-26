@@ -70,6 +70,9 @@ public class Limelight extends SubsystemBase {
 
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     NetworkTableEntry ty = table.getEntry("ty");
+    NetworkTableEntry tx = table.getEntry("tx");
+
+    double offsetX = tx.getDouble(0.0);
 
     double limelightMountedAngle = 50; //this can change a static number though once we have found it
     double limelightLensHeight = 33.5; //this can change (in) will be static, should NEVER change
@@ -112,8 +115,6 @@ public class Limelight extends SubsystemBase {
 
     SmartDashboard.putNumber("Object Offset X: ", offsetX);
     SmartDashboard.putNumber("Object Offset Y: ", verticalOffsetAngle);
-    SmartDashboard.putNumber("Limelight Area: ", objectArea);
-    SmartDashboard.putNumber("Limelight Skew: ", robotSkew);
   }
 
   @Override
