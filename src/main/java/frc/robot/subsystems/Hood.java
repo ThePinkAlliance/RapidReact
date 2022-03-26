@@ -111,6 +111,10 @@ public class Hood extends SubsystemBase {
     return (Math.tan(currentHeight / currentWidth) * (180 / Math.PI));
   }
 
+  public void resetPID() {
+    this.hoodPid.setReference(0, ControlType.kCurrent);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

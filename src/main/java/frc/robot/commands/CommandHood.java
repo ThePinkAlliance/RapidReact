@@ -40,8 +40,6 @@ public class CommandHood extends CommandBase {
     double d = SmartDashboard.getNumber("hood d", 0);
     double ff = SmartDashboard.getNumber("hood ff", 0);
 
-    SmartDashboard.putNumber("hood ticks", position);
-
     System.out.println("p: " + p + ", i: " + i + ", d: " + d + ", ff: " + ff);
 
     this.m_hood.setPID(p, i, d, ff);
@@ -57,7 +55,9 @@ public class CommandHood extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_hood.resetPID();
+  }
 
   // Returns true when the command should end.
   @Override
