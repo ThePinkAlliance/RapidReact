@@ -65,28 +65,7 @@ public class TargetTracking extends CommandBase {
 
       ChassisSpeeds speeds = new ChassisSpeeds(0, 0, power);
       base.drive(speeds);
-    } else {
-        double currentAngle = base.getSensorYaw();
-        double error = alignController.calculate(currentAngle, setpoint);
-        double power = (error / -180) * Base.MAX_VELOCITY_METERS_PER_SECOND;
-
-
-        NetworkTableInstance
-          .getDefault()
-          .getTable("debug")
-          .getEntry("power")
-          .setNumber(power);
-
-        NetworkTableInstance
-          .getDefault()
-          .getTable("debug")
-          .getEntry("angle error")
-          .setNumber(alignController.calculate(currentAngle, setpoint));
-
-        ChassisSpeeds speeds = new ChassisSpeeds(0, 0, 0.5);
-        base.drive(speeds);
-    }
-
+    } 
   }
 
   // Called once the command ends or is interrupted.
