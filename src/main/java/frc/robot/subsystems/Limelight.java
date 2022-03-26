@@ -69,14 +69,7 @@ public class Limelight extends SubsystemBase {
 
 
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    //NetworkTableEntry tx = table.getEntry("tx");
     NetworkTableEntry ty = table.getEntry("ty");
-    //NetworkTableEntry ta = table.getEntry("ta");
-    //NetworkTableEntry ts = table.getEntry("ts");
-
-    double offsetX = tx.getDouble(0.0);
-    double objectArea = ta.getDouble(0.0);
-    double robotSkew = ts.getDouble(0.0);
 
     double limelightMountedAngle = 50; //this can change a static number though once we have found it
     double limelightLensHeight = 33.5; //this can change (in) will be static, should NEVER change
