@@ -84,31 +84,70 @@ public class Limelight extends SubsystemBase {
     NetworkTable table = NetworkTableInstance
       .getDefault()
       .getTable("limelight");
-    NetworkTableEntry tx = table.getEntry("tx");
     NetworkTableEntry ty = table.getEntry("ty");
-    NetworkTableEntry ta = table.getEntry("ta");
-    NetworkTableEntry ts = table.getEntry("ts");
+    NetworkTableEntry tx = table.getEntry("tx");
 
     double offsetX = tx.getDouble(0.0);
-    double objectArea = ta.getDouble(0.0);
-    double robotSkew = ts.getDouble(0.0);
 
-    double limelightMountedAngle = 45; //this can change a static number though once we have found it
-    double limelightLensHeight = 24.5; //this can change (in) will be static, should NEVER change
+    double limelightMountedAngle = 49.7; //this can change a static number though once we have found it
+    double limelightLensHeight = 24.75; //this can change (in) will be static, should NEVER change
     double reflectiveTapeHeight = 102.375; //this is static (in) to CENTER of reflective tape
     double verticalOffsetAngle = ty.getDouble(0.0); //angle calculated by the limelight.
 
     double angleToGoalDeg = (limelightMountedAngle + verticalOffsetAngle);
-    double angleToGoalRad = angleToGoalDeg * (Math.PI / 180.0);
+    double angleToGoalRad = angleToGoalDeg * (3.14159 / 180.0);
+    double error = 0.612649568;
 
     double distance =
-      (reflectiveTapeHeight - limelightLensHeight) / Math.tan(angleToGoalRad);
-    SmartDashboard.putNumber("Distance: ", distance);
+      (
+        (reflectiveTapeHeight - limelightLensHeight) /
+        (Math.tan(angleToGoalRad))
+      );
 
+    //The following statements were used as ways to account for error that the limelight gives from distance
+    //There are a bunch of different statements to be more prescise at every distance
+    if (32.905 <= distance && distance <= 37.6) {
+      error = 0.685521;
+    }
+    if (37.7 <= distance && distance <= 43.4) {
+      error = 0.64395;
+    }
+    if (43.5 <= distance && distance <= 48.5) {
+      error = 0.6303;
+    }
+    if (48.6 <= distance && distance <= 54.5) {
+      error = 0.641166666666667;
+    }
+    if (54.6 <= distance && distance <= 62.5) {
+      error = 0.609114583333333;
+    }
+    if (62.6 <= distance && distance <= 69.40) {
+      error = 0.610555555555556;
+    }
+    if (69.41 <= distance && distance <= 76.43) {
+      error = 0.611683333333333;
+    }
+    if (79.44 <= distance && distance <= 89.4) {
+      error = 0.674242424242424;
+    }
+    if (89.41 <= distance && distance <= 91.2) {
+      error = 0.623541666666667;
+    }
+    if (91.21 <= distance && distance <= 98.416) {
+      error = 0.589606456;
+    }
+    if (98.417 <= distance) {
+      error = 0.555793264;
+    } else {
+      error = 0.612649568;
+    }
+
+    double errorAccDistance = (distance / error);
+    double distanceInFeet = errorAccDistance / 12;
+    SmartDashboard.putNumber("Distance: ", errorAccDistance);
+    SmartDashboard.putNumber("Distance in feet: ", distanceInFeet);
     SmartDashboard.putNumber("Object Offset X: ", offsetX);
     SmartDashboard.putNumber("Object Offset Y: ", verticalOffsetAngle);
-    SmartDashboard.putNumber("Limelight Area: ", objectArea);
-    SmartDashboard.putNumber("Limelight Skew: ", robotSkew);
   }
 
   @Override

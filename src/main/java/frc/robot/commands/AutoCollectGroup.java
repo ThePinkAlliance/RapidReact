@@ -4,7 +4,6 @@ package frc.robot.commands;
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Collector;
@@ -43,6 +42,7 @@ public class AutoCollectGroup extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    this.timer.reset();
     this.timer.start();
   }
 
@@ -51,10 +51,14 @@ public class AutoCollectGroup extends CommandBase {
   public void execute() {
     if (bIntake == false) {
       this.m_collector.SetSpeedCollector(-Collector.COLLECTOR_MOTOR_FULL_SPEED);
-      this.m_collector.SetSpeedTowerForOverride(-Collector.TOWER_MOTOR_FULL_SPEED);
+      this.m_collector.SetSpeedTowerForOverride(
+          -Collector.TOWER_MOTOR_FULL_SPEED
+        );
     } else {
       this.m_collector.SetSpeedCollector(Collector.COLLECTOR_MOTOR_FULL_SPEED);
-      this.m_collector.SetSpeedTowerForOverride(Collector.TOWER_MOTOR_FULL_SPEED);
+      this.m_collector.SetSpeedTowerForOverride(
+          Collector.TOWER_MOTOR_FULL_SPEED
+        );
     }
     this.m_collector.setSolenoid(true);
   }
@@ -65,6 +69,7 @@ public class AutoCollectGroup extends CommandBase {
     this.m_collector.SetSpeedCollector(0);
     this.m_collector.SetSpeedTowerForOverride(0);
     this.m_collector.setSolenoid(false);
+    this.timer.stop();
   }
 
   // Returns true when the command should end.

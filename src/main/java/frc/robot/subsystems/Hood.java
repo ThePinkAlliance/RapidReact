@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
-
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -20,14 +19,16 @@ public class Hood extends SubsystemBase {
   public static final double HOOD_Kd = 0.0;
   public static final double HOOD_FF = 0.0;
   public static final double HUB_SHOT_TICK_COUNT = -22000;
+  public static final double HUB_LOW_SHOT_COUNT = -70000;
   public static final double TARMAC_SHOT_TICK_COUNT = -55000;
-  public static final double AUTO_SHOT_TWOBALL_TICK_COUNT = -55000; 
+  public static final double AUTO_SHOT_TWOBALL_TICK_COUNT = -55000;
+  public static final double AUTO_SHOT_THREEBALL_TICK_COUNT = -55000;
   public static final double IDLE_TICK_COUNT = -1000;
 
   // public final double
   public final double REV_TICKS_PER_REV = 4096;
   public final double MAX_HOOD_WIDTH_INCHES = 5.582;
-  public final double HOOD_PARREL_SHOOTER = 3.11024;
+  public final double HOOD_PARREL_SHOOTER = 2.4;
   public final double MAX_HOOD_HEIGHT_INCHES = 7.159;
   public final double HOOD_LENGTH_INCHES = 5.9;
   public final double HOOD_WHEEL_CIRCUMFERENCE = 2.5132741229;
@@ -148,7 +149,10 @@ public class Hood extends SubsystemBase {
         this.hoodEncoder.getPosition()
       );
       SmartDashboard.putNumber(Dashboard.DASH_HOOD_ANGLE, getHoodAngle());
-      SmartDashboard.putNumber(Dashboard.DASH_HOOD_VELOCITY, this.hoodEncoder.getVelocity());
+      SmartDashboard.putNumber(
+        Dashboard.DASH_HOOD_VELOCITY,
+        this.hoodEncoder.getVelocity()
+      );
     }
   }
 }

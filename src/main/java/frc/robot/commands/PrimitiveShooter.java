@@ -43,6 +43,7 @@ public class PrimitiveShooter extends CommandBase {
   @Override
   public void execute() {
     double currentDistance = 108;
+    boolean low = joystick.getPOV() == 90;
 
     double angle = Math.atan(
       Math.toRadians(
@@ -71,8 +72,19 @@ public class PrimitiveShooter extends CommandBase {
     SmartDashboard.putNumber("shooter trajectory angle", angle);
 
     rpm = SmartDashboard.getNumber(Dashboard.DASH_SHOOTER_TARGET_RPMS, rpm);
-    double shooterKp = SmartDashboard.getNumber(Dashboard.DASH_SHOOTER_P, ShooterConstants.kGains.kP);
-    double shooterFf = SmartDashboard.getNumber(Dashboard.DASH_SHOOTER_FF, ShooterConstants.kGains.kF);
+
+    if (low) {
+      rpm = Shooter.SHOOTER_POWER_HUB_LOW;
+    }
+
+    double shooterKp = SmartDashboard.getNumber(
+      Dashboard.DASH_SHOOTER_P,
+      ShooterConstants.kGains.kP
+    );
+    double shooterFf = SmartDashboard.getNumber(
+      Dashboard.DASH_SHOOTER_FF,
+      ShooterConstants.kGains.kF
+    );
     boolean ready = m_shooter.readyToShoot(rpm, 100);
     SmartDashboard.putBoolean(Dashboard.DASH_SHOOTER_READY, ready);
     this.m_shooter.configKp(shooterKp);
@@ -86,15 +98,8 @@ public class PrimitiveShooter extends CommandBase {
       Dashboard.DASH_SHOOTER_RPMS,
       this.m_shooter.getMotorRpms()
     );
-    SmartDashboard.putNumber(
-      Dashboard.DASH_SHOOTER_P,
-      shooterKp
-    );
-    SmartDashboard.putNumber(
-      Dashboard.DASH_SHOOTER_FF,
-      shooterFf
-    );
-
+    SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_P, shooterKp);
+    SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_FF, shooterFf);
     // hood.commandHood(MathUtil.clamp(pwr, -0.2, 0.2));
   }
 

@@ -12,6 +12,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Base;
+import frc.robot.subsystems.Dashboard;
 
 public class Navigate extends CommandBase {
 
@@ -58,6 +59,14 @@ public class Navigate extends CommandBase {
     this.targetInches = targetInches;
     this.targetAngle = targetAngle;
 
+    SmartDashboard.putNumber(Dashboard.BASE_NAVIGATE_KP, drive_kP);
+    SmartDashboard.putNumber(Dashboard.BASE_NAVIGATE_KI, drive_kI);
+    SmartDashboard.putNumber(Dashboard.BASE_NAVIGATE_KD, drive_kD);
+
+    SmartDashboard.putNumber(Dashboard.BASE_ALIGN_NAVIGATE_KP, align_kP);
+    SmartDashboard.putNumber(Dashboard.BASE_ALIGN_NAVIGATE_KI, align_kI);
+    SmartDashboard.putNumber(Dashboard.BASE_ALIGN_NAVIGATE_KD, align_kD);
+
     addRequirements(base);
   }
 
@@ -65,6 +74,14 @@ public class Navigate extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     this.base = base;
     this.targetInches = targetInches;
+
+    SmartDashboard.putNumber(Dashboard.BASE_NAVIGATE_KP, drive_kP);
+    SmartDashboard.putNumber(Dashboard.BASE_NAVIGATE_KI, drive_kI);
+    SmartDashboard.putNumber(Dashboard.BASE_NAVIGATE_KD, drive_kD);
+
+    SmartDashboard.putNumber(Dashboard.BASE_ALIGN_NAVIGATE_KP, align_kP);
+    SmartDashboard.putNumber(Dashboard.BASE_ALIGN_NAVIGATE_KI, align_kI);
+    SmartDashboard.putNumber(Dashboard.BASE_ALIGN_NAVIGATE_KD, align_kD);
 
     addRequirements(base);
   }
@@ -74,6 +91,15 @@ public class Navigate extends CommandBase {
     this.base = base;
     this.targetInches = targetInches;
     this.bBackwards = bBackwards;
+
+    SmartDashboard.putNumber(Dashboard.BASE_NAVIGATE_KP, drive_kP);
+    SmartDashboard.putNumber(Dashboard.BASE_NAVIGATE_KI, drive_kI);
+    SmartDashboard.putNumber(Dashboard.BASE_NAVIGATE_KD, drive_kD);
+
+    SmartDashboard.putNumber(Dashboard.BASE_ALIGN_NAVIGATE_KP, align_kP);
+    SmartDashboard.putNumber(Dashboard.BASE_ALIGN_NAVIGATE_KI, align_kI);
+    SmartDashboard.putNumber(Dashboard.BASE_ALIGN_NAVIGATE_KD, align_kD);
+
     addRequirements(base);
   }
 
@@ -81,6 +107,26 @@ public class Navigate extends CommandBase {
   @Override
   public void initialize() {
     base.drive(new ChassisSpeeds());
+
+    straightController.setP(
+      SmartDashboard.getNumber(Dashboard.BASE_NAVIGATE_KP, drive_kP)
+    );
+    straightController.setI(
+      SmartDashboard.getNumber(Dashboard.BASE_NAVIGATE_KI, drive_kI)
+    );
+    straightController.setD(
+      SmartDashboard.getNumber(Dashboard.BASE_NAVIGATE_KD, drive_kD)
+    );
+
+    alignController.setP(
+      SmartDashboard.getNumber(Dashboard.BASE_ALIGN_NAVIGATE_KP, align_kP)
+    );
+    alignController.setI(
+      SmartDashboard.getNumber(Dashboard.BASE_ALIGN_NAVIGATE_KI, align_kI)
+    );
+    alignController.setD(
+      SmartDashboard.getNumber(Dashboard.BASE_ALIGN_NAVIGATE_KD, align_kD)
+    );
 
     alignController.reset();
     straightController.reset();
@@ -215,7 +261,9 @@ public class Navigate extends CommandBase {
   public boolean isFinished() {
     boolean straightMet = straightController.atSetpoint();
     boolean turnMet = alignController.atSetpoint();
-    System.out.println("Straight Met: " + straightMet + "; turnMet: " + turnMet);
+    System.out.println(
+      "Straight Met: " + straightMet + "; turnMet: " + turnMet
+    );
     return straightMet && turnMet;
   }
 }

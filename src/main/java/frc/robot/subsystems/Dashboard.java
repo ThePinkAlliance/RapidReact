@@ -35,8 +35,17 @@ public class Dashboard extends SubsystemBase {
   public static String DASH_HOOD_TICKS = "Hood Requested Ticks";
   public static String DASH_SHOOTER_P = "Shooter Kp";
   public static String DASH_SHOOTER_FF = "Shooter ff";
+  public static String DASH_TARGET_TRACKER_KP = "Target Tracker Kp";
+  public static String DASH_TARGET_TRACKER_KI = "Target Tracker Ki";
+  public static String DASH_TARGET_TRACKER_KD = "Target Tracker Kd";
 
+  public static String BASE_NAVIGATE_KP = "Target Tracker Kp";
+  public static String BASE_NAVIGATE_KI = "Target Tracker Ki";
+  public static String BASE_NAVIGATE_KD = "Target Tracker Kd";
 
+  public static String BASE_ALIGN_NAVIGATE_KP = "Target Tracker Kp";
+  public static String BASE_ALIGN_NAVIGATE_KI = "Target Tracker Ki";
+  public static String BASE_ALIGN_NAVIGATE_KD = "Target Tracker Kd";
 
   private Base base;
   private Collector collector;
@@ -58,10 +67,7 @@ public class Dashboard extends SubsystemBase {
 
   public void initialize() {
     //Values that are init once, user changes for testing or ops, robot reads them when needed
-    SmartDashboard.putNumber(
-      DASH_SHOOTER_RPMS,
-      Shooter.SHOOTER_POWER_HUB_HIGH
-    );
+    SmartDashboard.putNumber(DASH_SHOOTER_RPMS, Shooter.SHOOTER_POWER_HUB_HIGH);
   }
 
   public void publishDashboard() {
