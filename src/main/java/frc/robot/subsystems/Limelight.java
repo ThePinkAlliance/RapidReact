@@ -81,7 +81,7 @@ public class Limelight extends SubsystemBase {
 
     double angleToGoalDeg = (limelightMountedAngle + verticalOffsetAngle);
     double angleToGoalRad = angleToGoalDeg * (3.14159 / 180.0);
-    double error = 0.610546;
+    double error = 0.612649568;
 
     double distance = ((reflectiveTapeHeight - limelightLensHeight) / (Math.tan(angleToGoalRad)));
 
@@ -109,10 +109,14 @@ public class Limelight extends SubsystemBase {
       error = 0.589606456;
     } if (98.417 <= distance) {
       error = 0.555793264;
-    } 
+    } else {
+      error = 0.612649568;
+    }
+    
     double errorAccDistance = (distance / error);
+    double distanceInFeet = errorAccDistance / 12;
     SmartDashboard.putNumber("Distance: ", errorAccDistance);
-
+    SmartDashboard.putNumber("Distance in feet: ", distanceInFeet);
     SmartDashboard.putNumber("Object Offset X: ", offsetX);
     SmartDashboard.putNumber("Object Offset Y: ", verticalOffsetAngle);
   }
