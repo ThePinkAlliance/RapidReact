@@ -57,11 +57,7 @@ public class CommandHood extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    // double ticks = SmartDashboard.getNumber("hood ticks", position);
-
-    this.m_hood.setPosition(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
