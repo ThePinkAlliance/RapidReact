@@ -4,9 +4,12 @@
 
 package frc.robot.commands;
 
+
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.TargetPackage;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Shooter;
@@ -18,52 +21,61 @@ public class AutoShoot extends CommandBase {
   private Shooter m_shooter;
   private Collector m_collector;
 
-  private double rpm;
-
   private int ballsShot = 0;
   private boolean shotBefore = false;
 
   private Timer timer;
+  private TargetPackage tp;
 
-  public AutoShoot(Shooter m_shooter, Collector m_collector, double rpm) {
+  public static final double ONE_BALL_MAX_TIME = 1.5;
+
+  public AutoShoot(Shooter m_shooter, Collector m_collector, TargetPackage tp) {
     // Use addRequirements() here to declare subsystem dependencies.
 
     this.m_collector = m_collector;
     this.m_shooter = m_shooter;
-    this.rpm = rpm;
+    this.tp = tp;
 
     this.timer = new Timer();
+    addRequirements(this.m_shooter, this.m_collector);
+  }
 
+  public AutoShoot(Shooter m_shooter, Collector m_collector, TargetPackage tp, double maxTime) {
+    // Use addRequirements() here to declare subsystem dependencies.
+
+    this.m_collector = m_collector;
+    this.m_shooter = m_shooter;
+    this.tp = tp;
+
+    this.timer = new Timer();
+    this.MAX_TIMER_SECS = maxTime;
     addRequirements(this.m_shooter, this.m_collector);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    timer.reset();
+        timer.reset();
+    this.m_shooter.configKp(tp.Kp);
+    this.m_shooter.configFeedForward(tp.Kf);
     timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    rpm = SmartDashboard.getNumber(Dashboard.DASH_SHOOTER_TARGET_RPMS, rpm);
-    boolean ready = m_shooter.readyToShoot(rpm, 100);
+    boolean ready = m_shooter.readyToShoot(tp.rpm, 100);
+
     //double currentRPM = m_shooter.getMotorRpms();
 
     if (ready) {
       this.m_collector.enableTowerOverride();
-      // this.shotBefore = true;
     } else {
-      // if (currentRPM <= Math.abs(currentRPM - (rpm - 120)) && shotBefore) {
-      //   this.ballsShot = ballsShot++;
-      //   this.shotBefore = false;
-      // }
       this.m_collector.disableTowerOverride();
     }
-
+    System.out.println("RPM: " + tp.rpm);
     this.m_collector.SetSpeedTowerForOverride(Collector.TOWER_MOTOR_FULL_SPEED);
-    this.m_shooter.commandRpm(rpm);
+    this.m_shooter.commandRpm(tp.rpm);
     SmartDashboard.putNumber(
       Dashboard.DASH_SHOOTER_VELOCITY,
       this.m_shooter.getMotorOutputPercent()

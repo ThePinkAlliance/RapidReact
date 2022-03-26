@@ -48,8 +48,8 @@ public class ThreeballRightBlue extends SequentialCommandGroup {
   public ThreeballRightBlue(
     Base m_base,
     Shooter m_shooter,
-    Collector m_collector,
-    Hood m_hood
+    Collector m_collector//,
+    //Hood m_hood
   ) {
     this.navCollect =
       new Navigate(
@@ -68,7 +68,7 @@ public class ThreeballRightBlue extends SequentialCommandGroup {
       new Navigate(m_base, 15, true),
       new Navigate(m_base, 0, -15),
       // the 10 is distance in inches this is a placeholder not intended for comp use
-      new AutoShootHood(m_shooter, m_collector, m_hood, 100)
+      new AutoShootHood(m_shooter, m_collector, null, 100)
     );
   }
 }

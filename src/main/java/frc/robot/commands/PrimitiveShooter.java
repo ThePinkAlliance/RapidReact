@@ -8,14 +8,13 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.ShooterConstants;
 import frc.robot.subsystems.Dashboard;
-import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Shooter;
 
 public class PrimitiveShooter extends CommandBase {
 
   private Shooter m_shooter;
-  private Hood m_hood;
   private Joystick joystick;
   private double rpm;
 
@@ -24,18 +23,15 @@ public class PrimitiveShooter extends CommandBase {
   /** Creates a new PrimimitveShooter. */
   public PrimitiveShooter(
     Shooter m_shooter,
-    Hood m_hood,
     Joystick joystick,
     double rpm,
     int button_id
   ) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_shooter = m_shooter;
-    this.m_hood = m_hood;
     this.button_id = button_id;
     this.rpm = rpm;
     this.joystick = joystick;
-
     addRequirements(m_shooter);
   }
 
@@ -47,8 +43,6 @@ public class PrimitiveShooter extends CommandBase {
   @Override
   public void execute() {
     double currentDistance = 108;
-
-    SmartDashboard.putNumber("hood angle", m_hood.getHoodAngle());
 
     double angle = Math.atan(
       Math.toRadians(
@@ -73,13 +67,16 @@ public class PrimitiveShooter extends CommandBase {
       )
     );
 
-    SmartDashboard.putNumber("encoder ticks", m_hood.getHoodTicks());
     SmartDashboard.putNumber("shooter trajectory velocity", velocity);
     SmartDashboard.putNumber("shooter trajectory angle", angle);
 
     rpm = SmartDashboard.getNumber(Dashboard.DASH_SHOOTER_TARGET_RPMS, rpm);
+    double shooterKp = SmartDashboard.getNumber(Dashboard.DASH_SHOOTER_P, ShooterConstants.kGains.kP);
+    double shooterFf = SmartDashboard.getNumber(Dashboard.DASH_SHOOTER_FF, ShooterConstants.kGains.kF);
     boolean ready = m_shooter.readyToShoot(rpm, 100);
     SmartDashboard.putBoolean(Dashboard.DASH_SHOOTER_READY, ready);
+    this.m_shooter.configKp(shooterKp);
+    this.m_shooter.configFeedForward(shooterFf);
     this.m_shooter.commandRpm(rpm);
     SmartDashboard.putNumber(
       Dashboard.DASH_SHOOTER_VELOCITY,
@@ -89,6 +86,15 @@ public class PrimitiveShooter extends CommandBase {
       Dashboard.DASH_SHOOTER_RPMS,
       this.m_shooter.getMotorRpms()
     );
+    SmartDashboard.putNumber(
+      Dashboard.DASH_SHOOTER_P,
+      shooterKp
+    );
+    SmartDashboard.putNumber(
+      Dashboard.DASH_SHOOTER_FF,
+      shooterFf
+    );
+
     // hood.commandHood(MathUtil.clamp(pwr, -0.2, 0.2));
   }
 

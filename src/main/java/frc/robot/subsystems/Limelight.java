@@ -94,7 +94,7 @@ public class Limelight extends SubsystemBase {
     double robotSkew = ts.getDouble(0.0);
 
     double limelightMountedAngle = 45; //this can change a static number though once we have found it
-    double limelightLensHeight = 24; //this can change (in) will be static, should NEVER change
+    double limelightLensHeight = 24.5; //this can change (in) will be static, should NEVER change
     double reflectiveTapeHeight = 102.375; //this is static (in) to CENTER of reflective tape
     double verticalOffsetAngle = ty.getDouble(0.0); //angle calculated by the limelight.
 

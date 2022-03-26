@@ -22,6 +22,21 @@ public class Dashboard extends SubsystemBase {
   public static String DASH_SHOOTER_READY = "Shooter Ready";
   public static String DASH_CLIMBER_LONG_ARM_POSITION = "Climber Long Arm";
   public static String DASH_CLIMBER_SHORT_ARM_POSITION = "Climber Short Arm";
+  public static String DASH_HOOD_ANGLE = "Hood Angle";
+  public static String DASH_HOOD_VELOCITY = "Hood Velocity";
+  public static String DASH_HOOD_POSITION = "Hood Position";
+  public static String DASH_HOOD_POSITION_RAW = "Hood Position Raw";
+  public static String DASH_HOOD_P = "Hood Kp";
+  public static String DASH_HOOD_I = "Hood Ki";
+  public static String DASH_HOOD_D = "Hood Kd";
+  public static String DASH_HOOD_FF = "Hood ff";
+  public static String DASH_HOOD_OUTPUT = "Hood Output";
+  public static String DASH_HOOD_DRAW = "Hood Draw";
+  public static String DASH_HOOD_TICKS = "Hood Requested Ticks";
+  public static String DASH_SHOOTER_P = "Shooter Kp";
+  public static String DASH_SHOOTER_FF = "Shooter ff";
+
+
 
   private Base base;
   private Collector collector;
@@ -45,7 +60,7 @@ public class Dashboard extends SubsystemBase {
     //Values that are init once, user changes for testing or ops, robot reads them when needed
     SmartDashboard.putNumber(
       DASH_SHOOTER_RPMS,
-      Shooter.SHOOTER_POWER_CLOSE_HIGH_V2
+      Shooter.SHOOTER_POWER_HUB_HIGH
     );
   }
 
