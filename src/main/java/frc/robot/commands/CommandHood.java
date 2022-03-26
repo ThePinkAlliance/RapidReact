@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Hood;
 
 public class CommandHood extends CommandBase {
@@ -38,10 +39,11 @@ public class CommandHood extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    double p = SmartDashboard.getNumber("hood p", 1);
-    double i = SmartDashboard.getNumber("hood i", 0);
-    double d = SmartDashboard.getNumber("hood d", 0);
-    double ff = SmartDashboard.getNumber("hood ff", 0);
+    //Get dashboard value if overriden otherwise use defaults.
+    double p = SmartDashboard.getNumber(Dashboard.DASH_HOOD_P, Hood.HOOD_Kp);
+    double i = SmartDashboard.getNumber(Dashboard.DASH_HOOD_I, Hood.HOOD_Ki);
+    double d = SmartDashboard.getNumber(Dashboard.DASH_HOOD_D, Hood.HOOD_Kd);
+    double ff = SmartDashboard.getNumber(Dashboard.DASH_HOOD_FF, Hood.HOOD_FF);
 
     System.out.println("p: " + p + ", i: " + i + ", d: " + d + ", ff: " + ff);
 
@@ -51,24 +53,23 @@ public class CommandHood extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double ticks = SmartDashboard.getNumber("hood ticks", position);
-    SmartDashboard.putNumber("hood output", this.m_hood.getHoodPower());
-    SmartDashboard.putNumber("hood draw", this.m_hood.getCurrentDraw());
-
+    double ticks = SmartDashboard.getNumber(Dashboard.DASH_HOOD_TICKS, position);
+    SmartDashboard.putNumber(Dashboard.DASH_HOOD_OUTPUT, this.m_hood.getHoodPower());
+    SmartDashboard.putNumber(Dashboard.DASH_HOOD_DRAW, this.m_hood.getCurrentDraw());
     this.m_hood.setPosition(ticks);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    SmartDashboard.putNumber("hood output", this.m_hood.getHoodPower());
-    SmartDashboard.putNumber("hood draw", this.m_hood.getCurrentDraw());
-    m_hood.resetPID();
+    SmartDashboard.putNumber(Dashboard.DASH_HOOD_OUTPUT, this.m_hood.getHoodPower());
+    SmartDashboard.putNumber(Dashboard.DASH_HOOD_DRAW, this.m_hood.getCurrentDraw());
+    this.m_hood.disableCloseLoopControl();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return joystick.getRawButtonReleased(this.buttonId);
+    return this.joystick.getRawButtonReleased(buttonId);
   }
 }

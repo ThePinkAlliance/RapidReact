@@ -14,12 +14,11 @@ import frc.robot.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
 
-  public static final double SHOOTER_POWER_CLOSE_HIGH = 2450; //3500 // 3800, 3425
-  public static final double SHOOTER_POWER_TARMAC_HIGH = 2590;
-  public static final double SHOOTER_POWER_CLOSE_HIGH_V2 = 2450;
-  public static final double SHOOTER_POWER_CLOSE_LOW = 3800;
-  public static final double SHOOTER_POWER_CLOSE_DEFAULT =
-    SHOOTER_POWER_CLOSE_HIGH_V2;
+  public static final double SHOOTER_POWER_HUB_HIGH = 2450;
+  public static final double SHOOTER_POWER_TARMAC_HIGH = 2730;
+  public static final double SHOOTER_POWER_AUTO_TWO_BALL = 2750;
+  public static final double SHOOTER_Kp_AUTO_TWO_BALL = 0.4;
+  public static final double SHOOTER_FF_AUTO_TWO_BALL = 0.047;
 
   public double CURRENT_HOOD_ANGLE = 45;
 
@@ -152,5 +151,12 @@ public class Shooter extends SubsystemBase {
         ShooterConstants.kGains.kD,
         ShooterConstants.kTimeoutMs
       );
+  }
+
+  public void configFeedForward(double ff) {
+    this.motor.config_kF(ShooterConstants.kPIDLoopIdx, ff, ShooterConstants.kTimeoutMs);
+  }
+  public void configKp(double Kp) {
+    this.motor.config_kP(ShooterConstants.kPIDLoopIdx, Kp, ShooterConstants.kTimeoutMs);
   }
 }

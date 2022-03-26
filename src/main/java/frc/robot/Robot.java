@@ -64,6 +64,7 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     if (m_robotContainer != null) {
       m_robotContainer.disableLimelight();
+      m_robotContainer.resetHood();
     }
   }
 
@@ -78,6 +79,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     if (m_robotContainer != null) {
       m_robotContainer.enableLimelight();
+      m_robotContainer.resetHoodEncoder();
     }
 
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
