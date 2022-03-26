@@ -69,7 +69,7 @@ public class RobotContainer {
 
   private final SelectableTrajectory ShootLeaveTarmacCollectShoot = new SelectableTrajectory(
     "Shoot Leave Tarmac Collect And Shoot",
-    new ShootLeaveTarmacCollectShoot(m_base, m_shooter, m_collector)
+    new ShootLeaveTarmacCollectShoot(m_base, m_shooter, m_collector, m_hood)
   );
 
   private final SelectableTrajectory TwoBallBlue = new SelectableTrajectory(
@@ -160,7 +160,9 @@ public class RobotContainer {
     SmartDashboard.putNumber("hood d", 0);
     SmartDashboard.putNumber("hood ff", 0);
 
-    SmartDashboard.putNumber("hood ticks", -100);
+    SmartDashboard.putNumber("hood ticks", -10000);
+    SmartDashboard.putNumber("hood output", 0);
+    SmartDashboard.putNumber("hood draw", 0);
 
     //Shooter - Shoot - move tower to push ball up to shooter
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_X)

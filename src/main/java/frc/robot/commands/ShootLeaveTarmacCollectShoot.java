@@ -5,8 +5,10 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.AutoShootHood;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Collector;
+import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Shooter;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -18,18 +20,20 @@ public class ShootLeaveTarmacCollectShoot extends SequentialCommandGroup {
   public ShootLeaveTarmacCollectShoot(
     Base m_base,
     Shooter m_shooter,
-    Collector m_collector
+    Collector m_collector,
+    Hood m_hood
   ) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new AutoShoot(m_shooter, m_collector, Shooter.SHOOTER_POWER_CLOSE_HIGH),
-      new Navigate(m_base, LeaveTarmack.TRAVEL_DISTANCE / 2, true),
-      new Navigate(m_base, 0, 180),
-      new Navigate(m_base, LeaveTarmack.TRAVEL_DISTANCE / 2)
-      .alongWith(new AutoCollectGroup(m_collector, 12, true)),
-      new Navigate(m_base, 0, 180),
-      new Navigate(m_base, LeaveTarmack.TRAVEL_DISTANCE)
+      //new AutoShoot(m_shooter, m_collector, Shooter.SHOOTER_POWER_CLOSE_HIGH),
+      new Navigate(m_base, 70 , false).alongWith(new AutoCollectGroup(m_collector, 1.6, true)),
+      new AutoShootHood(m_shooter, m_collector, m_hood, 0)
+      //new Navigate(m_base, 0, 180),
+      //new Navigate(m_base, LeaveTarmack.TRAVEL_DISTANCE / 2)
+      //.alongWith(new AutoCollectGroup(m_collector, 12, true)),
+      //new Navigate(m_base, 0, 180),
+      //new Navigate(m_base, LeaveTarmack.TRAVEL_DISTANCE)
     );
   }
 }

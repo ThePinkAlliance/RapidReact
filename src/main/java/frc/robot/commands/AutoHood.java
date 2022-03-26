@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Hood;
 
-public class CommandHood extends CommandBase {
+public class AutoHood extends CommandBase {
 
   Hood m_hood;
   Joystick joystick;
@@ -20,17 +20,13 @@ public class CommandHood extends CommandBase {
 
 
   /** Creates a new CommandHood. */
-  public CommandHood(
+  public AutoHood(
     Hood m_hood,
-    double position,
-    int buttonId,
-    Joystick joystick
+    double position
   ) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_hood = m_hood;
     this.position = position;
-    this.buttonId = buttonId;
-    this.joystick = joystick;
 
     addRequirements(m_hood);
   }
@@ -69,6 +65,6 @@ public class CommandHood extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return joystick.getRawButtonReleased(this.buttonId);
+    return true; //NEED CONDITION
   }
 }

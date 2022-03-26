@@ -14,8 +14,9 @@ import frc.robot.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
 
-  public static final double SHOOTER_POWER_CLOSE_HIGH = 3500; // 3800, 3425
-  public static final double SHOOTER_POWER_CLOSE_HIGH_V2 = 3500;
+  public static final double SHOOTER_POWER_CLOSE_HIGH = 2450; //3500 // 3800, 3425
+  public static final double SHOOTER_POWER_TARMAC_HIGH = 2590;
+  public static final double SHOOTER_POWER_CLOSE_HIGH_V2 = 2450;
   public static final double SHOOTER_POWER_CLOSE_LOW = 3800;
   public static final double SHOOTER_POWER_CLOSE_DEFAULT =
     SHOOTER_POWER_CLOSE_HIGH_V2;

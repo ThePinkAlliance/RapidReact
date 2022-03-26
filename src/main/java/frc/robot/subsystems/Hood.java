@@ -45,7 +45,7 @@ public class Hood extends SubsystemBase {
 
     this.hoodPid = this.hoodMotor.getPIDController();
 
-    this.hoodPid.setOutputRange(-0.5, 0.5);
+    this.hoodPid.setOutputRange(-0.15, 0.15);
 
     // this.hoodPid.setP(0);
     // this.hoodPid.setI(0);
@@ -53,6 +53,10 @@ public class Hood extends SubsystemBase {
     // this.hoodPid.setFF(0);
 
     this.hoodMotor.setSmartCurrentLimit(30);
+  }
+
+  public double getCurrentDraw() {
+    return this.hoodMotor.getOutputCurrent();
   }
 
   public double hoodDesiredTicks(double angle) {
@@ -115,12 +119,16 @@ public class Hood extends SubsystemBase {
     this.hoodPid.setReference(0, ControlType.kCurrent);
   }
 
+  public double getHoodPower() {
+    return this.hoodMotor.get();
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
 
     if (this.hoodMotor != null && this.hoodEncoder != null) {
-      SmartDashboard.putNumber("hood power", this.hoodMotor.get());
+      //SmartDashboard.putNumber("hood power", this.hoodMotor.get());
       SmartDashboard.putNumber(
         "hood position",
         this.hoodEncoder.getPosition() * REV_TICKS_PER_REV

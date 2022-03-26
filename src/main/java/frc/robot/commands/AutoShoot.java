@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Dashboard;
+import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Shooter;
 
 public class AutoShoot extends CommandBase {
@@ -17,6 +18,7 @@ public class AutoShoot extends CommandBase {
 
   private Shooter m_shooter;
   private Collector m_collector;
+  private Hood m_hood;
 
   private double rpm;
 
@@ -25,22 +27,22 @@ public class AutoShoot extends CommandBase {
 
   private Timer timer;
 
-  public AutoShoot(Shooter m_shooter, Collector m_collector, double rpm) {
+  public AutoShoot(Shooter m_shooter, Collector m_collector, Hood m_hood, double rpm) {
     // Use addRequirements() here to declare subsystem dependencies.
 
     this.m_collector = m_collector;
     this.m_shooter = m_shooter;
+    this.m_hood = m_hood;
     this.rpm = rpm;
 
     this.timer = new Timer();
-
-    addRequirements(this.m_shooter, this.m_collector);
+    addRequirements(this.m_shooter, this.m_collector, this.m_hood);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    timer.reset();
+        timer.reset();
     timer.start();
   }
 

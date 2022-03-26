@@ -213,6 +213,9 @@ public class Navigate extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return straightController.atSetpoint() && alignController.atSetpoint();
+    boolean straightMet = straightController.atSetpoint();
+    boolean turnMet = alignController.atSetpoint();
+    System.out.println("Straight Met: " + straightMet + "; turnMet: " + turnMet);
+    return straightMet && turnMet;
   }
 }

@@ -35,13 +35,16 @@ public class AutoCollectGroup extends CommandBase {
     this.bIntake = bIntake;
 
     this.timer = new Timer();
+    this.timer.reset();
 
     addRequirements(m_collector);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    this.timer.start();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
