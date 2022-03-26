@@ -5,16 +5,19 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Hood extends SubsystemBase {
 
-  public final double REV_TICKS_PER_REV = 42;
+  // public final double
+  public final double REV_TICKS_PER_REV = 4096;
   public final double MAX_HOOD_WIDTH_INCHES = 5.582;
   public final double HOOD_PARREL_SHOOTER = 3.11024;
   public final double MAX_HOOD_HEIGHT_INCHES = 7.159;
@@ -23,13 +26,14 @@ public class Hood extends SubsystemBase {
 
   private final double HOOD_LENGTH_X = 2.5;
   private final double HOOD_LENGTH_Y = 4.25;
-  private final double MAX_HOOD_POSITION = 119.635974948;
+  private final double MAX_HOOD_POSITION = -795;
   private final double MAX_HOOD_SHOOTER_DIFF_X = 10.5;
   private final double HOOD_DIFF_WIDTH_INCHES_PER_TICK =
     HOOD_LENGTH_X / MAX_HOOD_POSITION;
   private final int HOOD_MOTOR = 31;
 
   private CANSparkMax hoodMotor;
+  private SparkMaxPIDController hoodPid;
   private RelativeEncoder hoodEncoder;
 
   /** Creates a new Hood. */
@@ -39,10 +43,16 @@ public class Hood extends SubsystemBase {
     // configure the hood motor and the encoder
     this.hoodEncoder = this.hoodMotor.getEncoder();
 
-    this.hoodMotor.setSmartCurrentLimit(20);
+    this.hoodPid = this.hoodMotor.getPIDController();
 
-    this.hoodMotor.setSoftLimit(SoftLimitDirection.kReverse, 3);
-    this.hoodMotor.setSoftLimit(SoftLimitDirection.kReverse, 3);
+    this.hoodPid.setOutputRange(-0.5, 0.5);
+
+    // this.hoodPid.setP(0);
+    // this.hoodPid.setI(0);
+    // this.hoodPid.setD(0);
+    // this.hoodPid.setFF(0);
+
+    this.hoodMotor.setSmartCurrentLimit(30);
   }
 
   public double hoodDesiredTicks(double angle) {
@@ -53,6 +63,13 @@ public class Hood extends SubsystemBase {
       ) *
       REV_TICKS_PER_REV
     );
+  }
+
+  public void setPID(double p, double i, double d, double ff) {
+    this.hoodPid.setP(p);
+    this.hoodPid.setI(i);
+    this.hoodPid.setD(d);
+    this.hoodPid.setFF(ff);
   }
 
   public SparkMaxPIDController hoodPidController() {
@@ -69,6 +86,12 @@ public class Hood extends SubsystemBase {
 
   public void resetHoodEncoder() {
     this.hoodEncoder.setPosition(0);
+  }
+
+  public void setPosition(double ticks) {
+    double rotations = ticks / REV_TICKS_PER_REV;
+
+    this.hoodPid.setReference(rotations, ControlType.kPosition);
   }
 
   public double getHoodAngle() {
@@ -102,6 +125,7 @@ public class Hood extends SubsystemBase {
         "hood position raw",
         this.hoodEncoder.getPosition()
       );
+      SmartDashboard.putNumber("hood angle", getHoodAngle());
       SmartDashboard.putNumber("hood velocity", this.hoodEncoder.getVelocity());
     }
   }
