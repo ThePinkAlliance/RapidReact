@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.AutoMidClimb;
 import frc.robot.commands.CollectGroup;
+import frc.robot.commands.CommandHood;
 import frc.robot.commands.Drive;
 import frc.robot.commands.JoystickClimb;
 import frc.robot.commands.LeaveTarmack;
@@ -154,6 +155,13 @@ public class RobotContainer {
     //   );
     //this.m_dashboard.setDefaultCommand(new DashboardPublish(m_dashboard));
 
+    SmartDashboard.putNumber("hood p", 0);
+    SmartDashboard.putNumber("hood i", 0);
+    SmartDashboard.putNumber("hood d", 0);
+    SmartDashboard.putNumber("hood ff", 0);
+
+    SmartDashboard.putNumber("hood ticks", -100);
+
     //Shooter - Shoot - move tower to push ball up to shooter
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_X)
     .whenPressed(
@@ -183,6 +191,15 @@ public class RobotContainer {
           gamepad_tower,
           Shooter.SHOOTER_POWER_CLOSE_HIGH_V2,
           Constants.JOYSTICK_BUTTON_B
+        )
+      );
+    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_A)
+    .whenPressed(
+        new CommandHood(
+          m_hood,
+          -100,
+          Constants.JOYSTICK_BUTTON_A,
+          gamepad_tower
         )
       );
     //Collector Intake
