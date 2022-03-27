@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import org.opencv.core.Mat;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -156,9 +158,13 @@ public class Limelight extends SubsystemBase {
         error = 0.612649568;
         errorAccDistance = distance / error;
     }
-    double distanceInFeet = errorAccDistance / 12;
+    double height = (reflectiveTapeHeight - limelightLensHeight);
+
+    double squared = ((height * height) + (errorAccDistance * errorAccDistance));
+
+    double hypotenuseDistance  = Math.sqrt(squared);
     SmartDashboard.putNumber("Distance: ", errorAccDistance);
-    SmartDashboard.putNumber("Distance in feet: ", distanceInFeet);
+    SmartDashboard.putNumber("Hypotenuse Distance: ", hypotenuseDistance);
     SmartDashboard.putNumber("Object Offset X: ", offsetX);
     SmartDashboard.putNumber("Object Offset Y: ", verticalOffsetAngle);
   }
