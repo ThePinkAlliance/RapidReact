@@ -123,6 +123,6 @@ public class CommandHood extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return this.joystick.getRawButtonReleased(buttonId);
+    return !this.joystick.getRawButton(buttonId);
   }
 }

@@ -138,6 +138,6 @@ public class PrimitiveShooter extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return joystick.getRawButtonReleased(button_id);
+    return !joystick.getRawButton(button_id);
   }
 }

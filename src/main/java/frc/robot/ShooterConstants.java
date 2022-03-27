@@ -58,7 +58,7 @@ public class ShooterConstants {
   public static final double SHOOTER_POWER_AUTO_TWO_BALL = 2750;
   public static final double SHOOTER_Kp_AUTO_TWO_BALL = 0.4;
   public static final double SHOOTER_FF_AUTO_TWO_BALL = 0.047;
-  public static final double SHOOTER_POWER_HUB_LOW = 1800;
+  public static final double SHOOTER_POWER_HUB_LOW = 1200;
 
   public static final double SHOOTER_Kp_AUTO_THREE_BALL = 0.4;
   public static final double SHOOTER_FF_AUTO_THREE_BALL = 0.047;
