@@ -34,7 +34,7 @@ public class MoveLongArms extends CommandBase {
   @Override
   public void execute() {
     SmartDashboard.putNumber(
-      Dashboard.DASH_CLIMBER_SHORT_ARM_POSITION,
+      Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
       climbers.longClimberModule.getPosition()
     );
     this.climbers.longClimberModule.moveArms(ARM_MOVE_UP);

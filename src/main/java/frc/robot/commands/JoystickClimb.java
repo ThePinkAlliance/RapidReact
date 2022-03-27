@@ -18,8 +18,10 @@ public class JoystickClimb extends CommandBase {
   private Joystick joystick;
 
   private final double BUMPER_DEADZONE = 0.5;
-  private final double MIN_SHORT_CLIMBER_POSITION = 6240;
-  private final double MAX_SHORT_CLIMBER_POSITION = 213077.3;
+  private final double MIN_SHORT_CLIMBER_POSITION = 6240;  //needs to be checkeda
+  private final double MAX_SHORT_CLIMBER_POSITION = 213077.3; //needs to be checked
+  private final double MIN_LONG_CLIMBER_POSITION = 6240; //needs to be checked
+  private final double MAX_LONG_CLIMBER_POSITION = 213077.3;  //needs to be checked
 
   enum engagedSides {
     IN,
@@ -47,45 +49,17 @@ public class JoystickClimb extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putBoolean(
-      "short left",
-      climbers.shortClimberModule.contactedLeftPole()
-    );
-    SmartDashboard.putBoolean(
-      "short right",
-      climbers.shortClimberModule.contactedRightPole()
-    );
-
-    SmartDashboard.putBoolean(
-      "long left",
-      climbers.longClimberModule.contactedLeftPole()
-    );
-    SmartDashboard.putBoolean(
-      "long right",
-      climbers.longClimberModule.contactedRightPole()
-    );
-
     if (joystick.getRawButton(Constants.JOYSTICK_LEFT_BUMPER)) {
       climbers.openShortArms();
     }
-    if (
-      joystick.getRawAxis(Constants.JOYSTICK_LEFT_TRIGGER) >
+    if (joystick.getRawAxis(Constants.JOYSTICK_LEFT_TRIGGER) >
       Math.abs(BUMPER_DEADZONE)
     ) {
       climbers.closeShortArms();
     }
-
-    // if (
-    //   climbers.shortClimberModule.contactedLeftPole() &&
-    //   climbers.shortClimberModule.contactedRightPole()
-    // ) {
-    //   climbers.shortClimberModule.setSolenoidState(SOLENOID_STATE.LOCKED);
-    // }
-
     if (joystick.getRawButton(Constants.JOYSTICK_RIGHT_BUMPER)) {
       climbers.openLongArms();
     }
-
     if (
       joystick.getRawAxis(Constants.JOYSTICK_RIGHT_TRIGGER) >
       Math.abs(BUMPER_DEADZONE)
@@ -116,6 +90,24 @@ public class JoystickClimb extends CommandBase {
     rightYstick = Math.copySign(rightYstick * rightYstick, rightYstick);
     rightYstick = rightYstick * Math.abs(limiter);
     climbers.longClimberModule.moveArms(rightYstick);
+
+    SmartDashboard.putBoolean(
+      "short left",
+      climbers.shortClimberModule.contactedLeftPole()
+    );
+    SmartDashboard.putBoolean(
+      "short right",
+      climbers.shortClimberModule.contactedRightPole()
+    );
+
+    SmartDashboard.putBoolean(
+      "long left",
+      climbers.longClimberModule.contactedLeftPole()
+    );
+    SmartDashboard.putBoolean(
+      "long right",
+      climbers.longClimberModule.contactedRightPole()
+    );
 
     SmartDashboard.putNumber(
       Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,

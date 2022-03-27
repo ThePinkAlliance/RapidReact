@@ -80,6 +80,7 @@ public class ClimbDrive extends CommandBase {
     alignController.enableContinuousInput(-180, 180);
 
     alignController.setTolerance(0.5, 1.0);
+    timer.reset();
     timer.start();
   }
 
@@ -132,7 +133,6 @@ public class ClimbDrive extends CommandBase {
 
     frontLeftModuleState.speedMetersPerSecond = left;
     backLeftModuleState.speedMetersPerSecond = left;
-
     frontRightModuleState.speedMetersPerSecond = right;
     backRightModuleState.speedMetersPerSecond = right;
 
