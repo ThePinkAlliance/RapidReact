@@ -14,8 +14,8 @@ import frc.robot.commands.AutoCollectGroup;
 import frc.robot.commands.AutoHood;
 import frc.robot.commands.AutoShoot;
 import frc.robot.commands.LeaveTarmack;
+import frc.robot.commands.LimelightAlign;
 import frc.robot.commands.Navigate;
-import frc.robot.commands.TargetTracking;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Hood;
@@ -58,7 +58,7 @@ public class Threeball extends SequentialCommandGroup {
       new Navigate(m_base, 110, 0)
       .alongWith(new AutoCollectGroup(m_collector, 2.6, true)),
       new Navigate(m_base, 0, 25),
-      new TargetTracking(m_base, m_limelight),
+      new LimelightAlign(m_base, m_limelight),
       new AutoShoot(m_shooter, m_collector, shooter_tp)
     );
   }

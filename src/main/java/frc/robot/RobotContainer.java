@@ -22,9 +22,9 @@ import frc.robot.commands.CommandShooter;
 import frc.robot.commands.Drive;
 import frc.robot.commands.JoystickClimb;
 import frc.robot.commands.LeaveTarmack;
+import frc.robot.commands.LimelightAlign;
 import frc.robot.commands.MoveTower;
 import frc.robot.commands.PrimitiveShooter;
-import frc.robot.commands.TargetTracking;
 import frc.robot.commands.paths.Threeball;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Climbers;
@@ -290,7 +290,14 @@ public class RobotContainer {
         )
       );
     new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_A)
-    .whenPressed(new TargetTracking(m_base, m_limelight));
+    .whenPressed(
+        new LimelightAlign(
+          m_base,
+          m_limelight,
+          gamepad_base,
+          Constants.JOYSTICK_BUTTON_A
+        )
+      );
     // Climbers
     // new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
     // .whenPressed(

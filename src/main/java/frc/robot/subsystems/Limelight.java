@@ -10,6 +10,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.Supplier;
+import org.opencv.core.Mat;
 
 // ADDRESS FOR THE LIMELIGHT FEED: http://limelight.local:5801/
 
@@ -20,6 +21,8 @@ public class Limelight extends SubsystemBase {
   private Supplier<Double> horzontalOffset = () -> 0.0;
   private Supplier<Double> distanceSupplier = () -> 0.0;
   private Supplier<Double> angleSupplier = () -> 0.0;
+
+  double errorAccDistance = 0;
 
   /** Creates a new Limelight. */
   public Limelight() {
@@ -141,20 +144,42 @@ public class Limelight extends SubsystemBase {
     if (91.21 <= distance && distance <= 98.416) {
       error = 0.589606456;
     }
-    if (98.417 <= distance) {
+    if (98.417 <= distance && distance <= 162.5) {
       error = 0.555793264;
-    } else {
-      error = 0.612649568;
     }
 
-    double errorAccDistance = (distance / error);
-    double distanceInFeet = errorAccDistance / 12;
+    errorAccDistance = (distance / error);
 
-    this.distanceSupplier = () -> distanceInFeet;
+    if (58.4 <= errorAccDistance && errorAccDistance <= 73.2) {
+      errorAccDistance = errorAccDistance * 0.926887142;
+    }
+    if (58.4 <= errorAccDistance && errorAccDistance <= 73.2) {
+      errorAccDistance = errorAccDistance * 0.926887142;
+    }
+    if (87.41 <= errorAccDistance && errorAccDistance <= 98.3) {
+      errorAccDistance = errorAccDistance * 0.952870388;
+    }
+    if (162.51 <= errorAccDistance && errorAccDistance <= 188.4) {
+      errorAccDistance = errorAccDistance * 0.908051108;
+    }
+    if (188.41 <= errorAccDistance && errorAccDistance <= 210.2) {
+      errorAccDistance = errorAccDistance * 0.94147961;
+    } else {
+      error = 0.612649568;
+      errorAccDistance = distance / error;
+    }
+    double height = (reflectiveTapeHeight - limelightLensHeight);
+
+    double squared =
+      ((height * height) + (errorAccDistance * errorAccDistance));
+
+    double hypotenuseDistance = Math.sqrt(squared);
+
+    this.distanceSupplier = () -> errorAccDistance;
     this.angleSupplier = () -> offsetX;
 
     SmartDashboard.putNumber("Distance: ", errorAccDistance);
-    SmartDashboard.putNumber("Distance in feet: ", distanceInFeet);
+    SmartDashboard.putNumber("Hypotenuse Distance: ", hypotenuseDistance);
     SmartDashboard.putNumber("Object Offset X: ", offsetX);
     SmartDashboard.putNumber("Object Offset Y: ", verticalOffsetAngle);
   }

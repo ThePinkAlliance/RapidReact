@@ -15,10 +15,11 @@ import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Limelight;
 
-public class TargetTracking extends CommandBase {
+public class LimelightAlign extends CommandBase {
 
   Base base;
   Limelight limelight;
+  Joystick joystick;
   Timer timer;
   PIDController alignController = new PIDController(
     BaseConstants.targetTrackerGains.kP,
@@ -26,10 +27,27 @@ public class TargetTracking extends CommandBase {
     BaseConstants.targetTrackerGains.kD
   );
 
-  private final double MAX_TIME = 3;
-  private final double ANGLE_TOLERANCE = 2;
+  private int buttonId;
 
-  public TargetTracking(Base baseSubsystem, Limelight limelightSubsystem) {
+  private final double MAX_TIME = 3;
+  private final double ANGLE_TOLERANCE = 1;
+
+  public LimelightAlign(
+    Base baseSubsystem,
+    Limelight limelightSubsystem,
+    Joystick joystick,
+    int buttonId
+  ) {
+    base = baseSubsystem;
+    limelight = limelightSubsystem;
+    this.joystick = joystick;
+    this.buttonId = buttonId;
+    timer = new Timer();
+
+    addRequirements(baseSubsystem, limelightSubsystem);
+  }
+
+  public LimelightAlign(Base baseSubsystem, Limelight limelightSubsystem) {
     base = baseSubsystem;
     limelight = limelightSubsystem;
     timer = new Timer();
@@ -46,6 +64,13 @@ public class TargetTracking extends CommandBase {
     timer.start();
     alignController.enableContinuousInput(-180.0, 180.0);
 
+    // alignController.i
+    alignController.setTolerance(this.ANGLE_TOLERANCE);
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
     alignController.setP(
       SmartDashboard.getNumber(
         Dashboard.DASH_TARGET_TRACKER_KP,
@@ -67,12 +92,6 @@ public class TargetTracking extends CommandBase {
       )
     );
 
-    alignController.setTolerance(this.ANGLE_TOLERANCE);
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
     boolean availableTarget = limelight.isTarget();
     double targetWithOffset = handleOverflow(
       limelight.getOffset() - base.getSensorYaw()
@@ -84,6 +103,15 @@ public class TargetTracking extends CommandBase {
         targetWithOffset
       );
       double power = (error / -180) * Base.MAX_VELOCITY_METERS_PER_SECOND;
+
+      System.out.println(
+        "p: " +
+        alignController.getP() +
+        ", i: " +
+        alignController.getI() +
+        ", d: " +
+        alignController.getD()
+      );
 
       SmartDashboard.putNumber("targetWithOffset", targetWithOffset);
       SmartDashboard.putNumber("power", power);
@@ -112,6 +140,12 @@ public class TargetTracking extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return alignController.atSetpoint() || timer.hasElapsed(MAX_TIME);
+    if (this.joystick != null) {
+      return (
+        alignController.atSetpoint() || !joystick.getRawButton(this.buttonId)
+      );
+    } else {
+      return alignController.atSetpoint() || timer.hasElapsed(MAX_TIME);
+    }
   }
 }
