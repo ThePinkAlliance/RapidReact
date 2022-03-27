@@ -94,7 +94,7 @@ public class TargetTracking extends CommandBase {
 
   public double handleOverflow(double angle) {
     if (angle > 180) {
-      return 180 - (angle - 180);
+      return (angle - 180);
     } else {
       return angle;
     }

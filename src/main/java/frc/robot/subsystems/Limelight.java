@@ -89,8 +89,8 @@ public class Limelight extends SubsystemBase {
 
     double offsetX = tx.getDouble(0.0);
 
-    double limelightMountedAngle = 49.7; //this can change a static number though once we have found it
-    double limelightLensHeight = 24.75; //this can change (in) will be static, should NEVER change
+    double limelightMountedAngle = 50; //this can change a static number though once we have found it
+    double limelightLensHeight = 33.5; //this can change (in) will be static, should NEVER change
     double reflectiveTapeHeight = 102.375; //this is static (in) to CENTER of reflective tape
     double verticalOffsetAngle = ty.getDouble(0.0); //angle calculated by the limelight.
 
