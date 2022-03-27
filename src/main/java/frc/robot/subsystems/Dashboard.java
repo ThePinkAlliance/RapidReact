@@ -50,6 +50,8 @@ public class Dashboard extends SubsystemBase {
   public static String BASE_ALIGN_NAVIGATE_KI = "Target Tracker Ki";
   public static String BASE_ALIGN_NAVIGATE_KD = "Target Tracker Kd";
 
+  public static String BASE_ALIGN_LIMIT = "Target Tracker Limit";
+
   public static String DASH_LIMELIGHT_ANGLE_OFFSET = "Limelight Angle Offset";
 
   private Base base;

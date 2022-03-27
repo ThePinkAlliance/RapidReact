@@ -18,7 +18,9 @@ import frc.robot.commands.AutoShootLeaveTarmac;
 import frc.robot.commands.AutoTwoBall;
 import frc.robot.commands.CollectGroup;
 import frc.robot.commands.CommandHood;
+import frc.robot.commands.CommandHoodTuning;
 import frc.robot.commands.CommandShooter;
+import frc.robot.commands.CommandShooterTuning;
 import frc.robot.commands.Drive;
 import frc.robot.commands.JoystickClimb;
 import frc.robot.commands.LeaveTarmack;
@@ -82,9 +84,9 @@ public class RobotContainer {
     ShooterConstants.SHOOTER_POWER_TARMAC_HIGH
   );
 
-  private final TargetPackage defualtPackage = new TargetPackage(
-    ShooterConstants.kGains.kP,
-    ShooterConstants.kGains.kF,
+  private final TargetPackage defaultPackage = new TargetPackage(
+    ShooterConstants.kGainsRange.kP,
+    ShooterConstants.kGainsRange.kF,
     HoodConstants.TARMAC_SHOT_TICK_COUNT,
     ShooterConstants.SHOOTER_POWER_TARMAC_HIGH
   );
@@ -242,6 +244,7 @@ public class RobotContainer {
       Dashboard.DASH_CLIMBER_LIMITER,
       ClimberModule.CLIMBER_LIMITER
     );
+    SmartDashboard.putNumber(Dashboard.BASE_ALIGN_LIMIT, LimelightAlign.TRACKER_LIMIT_DEFAULT);
 
     //Shooter - Shoot - move tower to push ball up to shooter
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_X)
@@ -256,18 +259,23 @@ public class RobotContainer {
       );
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
     .whenPressed(
-        new CommandShooter(
+        new CommandShooterTuning(
           m_shooter,
+          m_limelight,
           m_hood,
           gamepad_tower,
           highPackage,
           tarmacPackage,
           lowPackage,
-          defualtPackage,
+          defaultPackage,
           m_limelight.getDistanceSupplier(),
           m_limelight.getAngleSupplier(),
           Constants.JOYSTICK_BUTTON_B
         )
+      );
+      new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_A)
+    .whenPressed(
+        new CommandHoodTuning(m_hood, gamepad_tower, Constants.JOYSTICK_BUTTON_A)
       );
     // Collector Intake
     new JoystickButton(gamepad_base, Constants.JOYSTICK_RIGHT_BUMPER)

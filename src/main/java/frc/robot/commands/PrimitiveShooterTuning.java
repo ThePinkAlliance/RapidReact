@@ -10,12 +10,18 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.ShooterConstants;
 import frc.robot.TargetPackage;
 import frc.robot.subsystems.Dashboard;
+import frc.robot.subsystems.Hood;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 import java.util.function.Supplier;
 
-public class PrimitiveShooter extends CommandBase {
+import javax.lang.model.util.ElementScanner6;
+
+public class PrimitiveShooterTuning extends CommandBase {
 
   private Shooter m_shooter;
+  private Limelight m_limeLight;
+  private Hood m_hood;
   private Joystick joystick;
   private TargetPackage highPackage;
   private TargetPackage tarmacPackage;
@@ -28,8 +34,10 @@ public class PrimitiveShooter extends CommandBase {
   private int button_id;
 
   /** Creates a new PrimimitveShooter. */
-  public PrimitiveShooter(
+  public PrimitiveShooterTuning(
     Shooter m_shooter,
+    Limelight m_limeLight,
+    Hood m_hood,
     Joystick joystick,
     TargetPackage highPackage,
     TargetPackage tarmacPackage,
@@ -41,6 +49,8 @@ public class PrimitiveShooter extends CommandBase {
   ) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_shooter = m_shooter;
+    this.m_limeLight = m_limeLight;
+    this.m_hood = m_hood;
     this.button_id = button_id;
 
     this.lowPackage = lowPackage;
@@ -53,7 +63,7 @@ public class PrimitiveShooter extends CommandBase {
 
     this.joystick = joystick;
 
-    addRequirements(m_shooter);
+    addRequirements(m_shooter, m_limeLight, m_hood);
   }
 
   // Called when the command is initially scheduled.
@@ -116,14 +126,25 @@ public class PrimitiveShooter extends CommandBase {
       Dashboard.DASH_SHOOTER_TARGET_RPMS,
       currentPackage.rpm
     );
+
+    double distance = m_limeLight.getDistanceSupplier().get();
+    rpm = (8.456 * distance) + (2118);
+    double hoodTick = (-244.8 * distance) - 37634;
+    if (hoodTick <= -78000)
+       hoodTick = -78000;
+    else if (hoodTick > -200)
+       hoodTick = -200;
+  
+    m_hood.setPosition(hoodTick);
+
     boolean ready = m_shooter.readyToShoot(rpm, 100);
 
     SmartDashboard.putBoolean(Dashboard.DASH_SHOOTER_READY, ready);
 
     this.m_shooter.configKp(shooterKp);
     //SLF:  override feedforward:  distance/60000;
-    shooterFf = distanceSupplier.get() / ShooterConstants.SHOOTER_MAGIC_NUMBER;
-    System.out.println("Distance: " + distanceSupplier.get() + "; shooter ff: " + shooterFf);
+    shooterFf = rpm / ShooterConstants.SHOOTER_MAGIC_NUMBER;
+    System.out.println("RPM: " + rpm + "; shooter ff: " + shooterFf);
     this.m_shooter.configFeedForward(shooterFf);
     this.m_shooter.commandRpm(rpm);
 

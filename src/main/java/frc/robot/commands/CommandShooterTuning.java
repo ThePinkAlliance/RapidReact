@@ -15,10 +15,10 @@ import java.util.function.Supplier;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class CommandShooter extends ParallelCommandGroup {
+public class CommandShooterTuning extends ParallelCommandGroup {
 
   /** Creates a new CommandShooter. */
-  public CommandShooter(
+  public CommandShooterTuning(
     Shooter m_shooter,
     Limelight m_limeLight,
     Hood m_hood,
@@ -34,18 +34,9 @@ public class CommandShooter extends ParallelCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new PrimitiveShooter(
+      new PrimitiveShooterTuning(
         m_shooter,
-        joystick,
-        highPackage,
-        tarmacPackage,
-        lowPackage,
-        defualtPackage,
-        distanceSupplier,
-        angleSupplier,
-        button_id
-      ),
-      new CommandHood(
+        m_limeLight,
         m_hood,
         joystick,
         highPackage,
@@ -55,7 +46,7 @@ public class CommandShooter extends ParallelCommandGroup {
         distanceSupplier,
         angleSupplier,
         button_id
-      )
-    );
+      ));
+
   }
 }

@@ -52,6 +52,15 @@ public class ShooterConstants {
     0
   );
 
+  public static final ShooterGains kGainsRange = new ShooterGains(
+    0.4,
+    0,
+    0,
+    0.047,
+    0,
+    0
+  );
+
   public static final double SHOOTER_POWER_HUB_HIGH = 2450;
   public static final double SHOOTER_POWER_TARMAC_HIGH = 2730;
   public static final double SHOOTER_POWER_THREE_BALL = 2730;
@@ -62,6 +71,7 @@ public class ShooterConstants {
 
   public static final double SHOOTER_Kp_AUTO_THREE_BALL = 0.4;
   public static final double SHOOTER_FF_AUTO_THREE_BALL = 0.047;
+  public static final double SHOOTER_MAGIC_NUMBER = 70000;  //SLF: derived magic number for Feed Forward
 
   // public static final ShooterGains kGains = new ShooterGains(0.2, 0.0, 0.0, 0.046, 0, 1.0);
   public static double ALLOWABLE_CLOSELOOP_ERROR = 0;

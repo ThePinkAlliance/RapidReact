@@ -27,12 +27,15 @@ public class LimelightAlign extends CommandBase {
     BaseConstants.targetTrackerGains.kD
   );
 
+  /* Kp = 6, Limiter =  0.45, setpoint threshold = 0.5 */
+
   private int buttonId;
 
   private double setPoint;
 
-  private final double MAX_TIME = 3;
-  private final double ANGLE_TOLERANCE = 1;
+  private final double MAX_TIME = 3;  //Arbitrary
+  private final double ANGLE_TOLERANCE = 0.5; //Tuned at SLF
+  public static final double TRACKER_LIMIT_DEFAULT = 0.45; //Tuned at SLF
 
   public LimelightAlign(
     Base baseSubsystem,
@@ -101,8 +104,9 @@ public class LimelightAlign extends CommandBase {
     // );
 
     if (availableTarget == true) {
-      double error = alignController.calculate(limelight.getOffset(), 0);
-      double power = (error / -180) * Base.MAX_VELOCITY_METERS_PER_SECOND;
+      double output = alignController.calculate(limelight.getOffset(), 0);
+      output = limitAzimuthPower(output / 180);
+      double power = output * Base.MAX_VELOCITY_METERS_PER_SECOND;
 
       System.out.println(
         "p: " +
@@ -121,13 +125,16 @@ public class LimelightAlign extends CommandBase {
     }
   }
 
-  public double handleOverflow(double angle) {
-    if (angle > 180) {
-      return (angle - 180);
-    } else {
-      return angle;
-    }
+  private double limitAzimuthPower(double currentPower) {
+    double value = currentPower;
+    double limit = SmartDashboard.getNumber(Dashboard.BASE_ALIGN_LIMIT, LimelightAlign.TRACKER_LIMIT_DEFAULT);
+    if (Math.abs(currentPower) > limit)
+       value = Math.copySign(limit, currentPower);
+    System.out.println("limitAzimuthPower: " + value + "; Original: " + currentPower);
+    return value;
   }
+
+  
 
   // Called once the command ends or is interrupted.
   @Override
@@ -142,7 +149,7 @@ public class LimelightAlign extends CommandBase {
   public boolean isFinished() {
     if (this.joystick != null) {
       return (
-        alignController.atSetpoint() || !joystick.getRawButton(this.buttonId)
+        !joystick.getRawButton(this.buttonId)
       );
     } else {
       return alignController.atSetpoint() || timer.hasElapsed(MAX_TIME);

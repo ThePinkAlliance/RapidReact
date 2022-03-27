@@ -11,10 +11,11 @@ import frc.robot.ClimberModule.SOLENOID_STATE;
 public class Climbers extends SubsystemBase {
 
   private final int LONG_PNEUMATIC_ID_1 = 1;
-  private final int LONG_PNEUMATIC_ID_2 = 2;
+  private final int LONG_PNEUMATIC_ID_2 = 2; //
 
   private final int SHORT_PNEUMATIC_ID_1 = 3;
-  private final int SHORT_PNEUMATIC_ID_2 = 4;
+  private final int SHORT_PNEUMATIC_ID_2 = 5;  //@SLF, when switching to new pneumatic control module (PCM) 
+                                               //it was noted that port 4 has a loose connector so 5 was used instead.
 
   // Long Climber Motor Id's
   private final int LONG_MOTOR_ONE_ID = 50;
