@@ -17,7 +17,7 @@ public class Limelight extends SubsystemBase {
 
   private boolean limelightLedOn = false;
 
-  private double horzontalOffset = 0;
+  private Supplier<Double> horzontalOffset = () -> 0.0;
   private Supplier<Double> distanceSupplier = () -> 0.0;
   private Supplier<Double> angleSupplier = () -> 0.0;
 
@@ -92,7 +92,7 @@ public class Limelight extends SubsystemBase {
     NetworkTableEntry ty = table.getEntry("ty");
     NetworkTableEntry tx = table.getEntry("tx");
 
-    double offsetX = tx.getDouble(0.0) + horzontalOffset;
+    double offsetX = tx.getDouble(0.0) + horzontalOffset.get();
 
     double limelightMountedAngle = 50; //this can change a static number though once we have found it
     double limelightLensHeight = 33.5; //this can change (in) will be static, should NEVER change
@@ -163,6 +163,10 @@ public class Limelight extends SubsystemBase {
     return this.distanceSupplier;
   }
 
+  public Supplier<Double> getAngleOffsetSupplier() {
+    return this.horzontalOffset;
+  }
+
   public Supplier<Double> getAngleSupplier() {
     return this.angleSupplier;
   }
@@ -188,7 +192,7 @@ public class Limelight extends SubsystemBase {
     SmartDashboard.putNumber("Limelight Skew: ", robotSkew);
     SmartDashboard.putBoolean("Limelight On: ", limelightLedOn);
 
-    SmartDashboard.getNumber("limelight angle offset", horzontalOffset);
+    SmartDashboard.getNumber("limelight angle offset", horzontalOffset.get());
 
     if (limelightLedOn == true) {
       getDistance();
