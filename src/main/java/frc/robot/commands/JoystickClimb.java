@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.ClimberModule;
 import frc.robot.Constants;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Dashboard;
@@ -17,8 +18,10 @@ public class JoystickClimb extends CommandBase {
   private Joystick joystick;
 
   private final double BUMPER_DEADZONE = 0.5;
-  private final double MIN_SHORT_CLIMBER_POSITION = 6240;
-  private final double MAX_SHORT_CLIMBER_POSITION = 213077.3;
+  private final double MIN_SHORT_CLIMBER_POSITION = 6240;  //needs to be checkeda
+  private final double MAX_SHORT_CLIMBER_POSITION = 213077.3; //needs to be checked
+  private final double MIN_LONG_CLIMBER_POSITION = 6240; //needs to be checked
+  private final double MAX_LONG_CLIMBER_POSITION = 213077.3;  //needs to be checked
 
   enum engagedSides {
     IN,
@@ -46,6 +49,48 @@ public class JoystickClimb extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (joystick.getRawButton(Constants.JOYSTICK_LEFT_BUMPER)) {
+      climbers.openShortArms();
+    }
+    if (joystick.getRawAxis(Constants.JOYSTICK_LEFT_TRIGGER) >
+      Math.abs(BUMPER_DEADZONE)
+    ) {
+      climbers.closeShortArms();
+    }
+    if (joystick.getRawButton(Constants.JOYSTICK_RIGHT_BUMPER)) {
+      climbers.openLongArms();
+    }
+    if (
+      joystick.getRawAxis(Constants.JOYSTICK_RIGHT_TRIGGER) >
+      Math.abs(BUMPER_DEADZONE)
+    ) {
+      climbers.closeLongArms();
+    }
+
+    double leftYstick = joystick.getRawAxis(Constants.JOYSTICK_LEFT_Y_AXIS);
+    double shortPosition = Math.abs(climbers.shortClimberModule.getPosition());
+    /* Deadband gamepad, short climbers */
+    if (
+      Math.abs(leftYstick) < 0.10
+    ) {
+      /* Within 10% of zero */
+      leftYstick = 0;
+    }
+    leftYstick = Math.copySign(leftYstick * leftYstick, leftYstick);
+    double limiter = SmartDashboard.getNumber(Dashboard.DASH_CLIMBER_LIMITER, ClimberModule.CLIMBER_LIMITER);
+    leftYstick = leftYstick * Math.abs(limiter);
+    climbers.shortClimberModule.moveArms(leftYstick);
+
+    double rightYstick = joystick.getRawAxis(Constants.JOYSTICK_RIGHT_Y_AXIS);
+    /* Deadband gamepad, long climbers */
+    if (Math.abs(rightYstick) < 0.10) {
+      /* Within 10% of zero */
+      rightYstick = 0;
+    }
+    rightYstick = Math.copySign(rightYstick * rightYstick, rightYstick);
+    rightYstick = rightYstick * Math.abs(limiter);
+    climbers.longClimberModule.moveArms(rightYstick);
+
     SmartDashboard.putBoolean(
       "short left",
       climbers.shortClimberModule.contactedLeftPole()
@@ -64,73 +109,6 @@ public class JoystickClimb extends CommandBase {
       climbers.longClimberModule.contactedRightPole()
     );
 
-    if (joystick.getRawButton(Constants.JOYSTICK_LEFT_BUMPER)) {
-      climbers.openShortArms();
-    }
-    if (
-      joystick.getRawAxis(Constants.JOYSTICK_LEFT_TRIGGER) >
-      Math.abs(BUMPER_DEADZONE)
-    ) {
-      climbers.closeShortArms();
-    }
-
-    // if (
-    //   climbers.shortClimberModule.contactedLeftPole() &&
-    //   climbers.shortClimberModule.contactedRightPole()
-    // ) {
-    //   climbers.shortClimberModule.setSolenoidState(SOLENOID_STATE.LOCKED);
-    // }
-
-    if (joystick.getRawButton(Constants.JOYSTICK_RIGHT_BUMPER)) {
-      climbers.openLongArms();
-    }
-
-    if (
-      joystick.getRawAxis(Constants.JOYSTICK_RIGHT_TRIGGER) >
-      Math.abs(BUMPER_DEADZONE)
-    ) {
-      climbers.closeLongArms();
-    }
-
-    // if (
-    //   climbers.longClimberModule.contactedLeftPole() &&
-    //   climbers.longClimberModule.contactedRightPole()
-    // ) {
-    //   climbers.longClimberModule.setSolenoidState(SOLENOID_STATE.LOCKED);
-    // }
-
-    double leftYstick = joystick.getRawAxis(Constants.JOYSTICK_LEFT_Y_AXIS);
-    double shortPosition = Math.abs(climbers.shortClimberModule.getPosition());
-    /* Deadband gamepad, short climbers */
-    if (
-      Math.abs(leftYstick) < 0.10
-      // (shortPosition <= MIN_SHORT_CLIMBER_POSITION && leftYstick > 0) ||
-      // (shortPosition >= MAX_SHORT_CLIMBER_POSITION && leftYstick < -0)
-    ) {
-      /* Within 10% of zero */
-      leftYstick = 0;
-    }
-    leftYstick = Math.copySign(leftYstick * leftYstick, leftYstick);
-    climbers.shortClimberModule.moveArms(leftYstick);
-
-    // double targetPositionRotations =
-    //   leftYstick * ClimberModule.CLIMBER_MODULE_RATIO * 2048;
-    // climbers.shortClimberModule.setPosition(targetPositionRotations);
-
-    double rightYstick = joystick.getRawAxis(Constants.JOYSTICK_RIGHT_Y_AXIS);
-    /* Deadband gamepad, long climbers */
-    if (Math.abs(rightYstick) < 0.10) {
-      /* Within 10% of zero */
-      rightYstick = 0;
-    }
-    rightYstick = Math.copySign(rightYstick * rightYstick, rightYstick);
-    climbers.longClimberModule.moveArms(rightYstick);
-
-    // targetPositionRotations =
-    //   rightYstick *
-    //   ClimberModule.CLIMBER_MODULE_RATIO *
-    //   ClimberModule.CLIMBER_MODULE_MOTOR_TICK_COUNT;
-    // climbers.longClimberModule.setPosition(targetPositionRotations);
     SmartDashboard.putNumber(
       Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
       climbers.longClimberModule.getPosition()

@@ -52,7 +52,7 @@ public class RobotContainer {
   private final Collector m_collector = new Collector();
   private final Shooter m_shooter = new Shooter();
   private final Hood m_hood = new Hood();
-  // private final Climbers m_climbers = new Climbers();
+  private final Climbers m_climbers = new Climbers();
   // DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
   // private final Dashboard m_dashboard = new Dashboard(m_base, m_collector, m_shooter, null);
 
@@ -185,14 +185,15 @@ public class RobotContainer {
       Dashboard.DASH_SHOOTER_FF,
       ShooterConstants.kGains.kF
     );
-    // SmartDashboard.putNumber(
-    //   Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
-    //   m_climbers.longClimberModule.getPosition()
-    // );
-    // SmartDashboard.putNumber(
-    //   Dashboard.DASH_CLIMBER_SHORT_ARM_POSITION,
-    //   m_climbers.shortClimberModule.getPosition()
-    // );
+
+    SmartDashboard.putNumber(
+      Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
+      m_climbers.longClimberModule.getPosition()
+    );
+    SmartDashboard.putNumber(
+      Dashboard.DASH_CLIMBER_SHORT_ARM_POSITION,
+      m_climbers.shortClimberModule.getPosition()
+    );
   }
 
   /**
@@ -208,9 +209,9 @@ public class RobotContainer {
     // left joystick
 
     this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
-    // this.m_climbers.setDefaultCommand(
-    //     new JoystickClimb(m_climbers, this.gamepad_tower)
-    //   );
+    this.m_climbers.setDefaultCommand(
+        new JoystickClimb(m_climbers, this.gamepad_tower)
+      );
     //this.m_dashboard.setDefaultCommand(new DashboardPublish(m_dashboard));
 
     SmartDashboard.putNumber(Dashboard.DASH_HOOD_P, HoodConstants.kGains.kP);
@@ -236,6 +237,7 @@ public class RobotContainer {
     );
     SmartDashboard.putNumber(Dashboard.DASH_HOOD_OUTPUT, 0);
     SmartDashboard.putNumber(Dashboard.DASH_HOOD_DRAW, 0);
+    SmartDashboard.putNumber(Dashboard.DASH_CLIMBER_LIMITER, ClimberModule.CLIMBER_LIMITER);
 
     //Shooter - Shoot - move tower to push ball up to shooter
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_X)

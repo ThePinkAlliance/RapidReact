@@ -22,7 +22,7 @@ public class ClimberModule {
     RIGHT,
     BOTH,
   }
-
+  public static final double CLIMBER_LIMITER = 0.5;
   public static final int SHORT_ARM_MID_CLIMB_START = -222222;
   public static final int SHORT_ARM_MID_CLIMB_FINISH = -143195;
 

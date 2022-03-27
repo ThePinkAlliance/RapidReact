@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import java.util.function.Supplier;
@@ -327,6 +328,10 @@ public class Base extends SubsystemBase {
     return gyro.getRoll();
   }
 
+  public double getPitch() {
+    return gyro.getPitch();
+  }
+
   /**
    * @return ChassisSpeeds of the robot
    */
@@ -425,6 +430,7 @@ public class Base extends SubsystemBase {
         .getBoolean(true);
 
     setStates(this.states);
+    SmartDashboard.putNumber(Dashboard.DASH_BASE_ROLL, gyro.getRoll());
   }
 
   @Override
