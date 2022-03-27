@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.ClimberModule;
 import frc.robot.Constants;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Dashboard;
@@ -92,30 +93,19 @@ public class JoystickClimb extends CommandBase {
       climbers.closeLongArms();
     }
 
-    // if (
-    //   climbers.longClimberModule.contactedLeftPole() &&
-    //   climbers.longClimberModule.contactedRightPole()
-    // ) {
-    //   climbers.longClimberModule.setSolenoidState(SOLENOID_STATE.LOCKED);
-    // }
-
     double leftYstick = joystick.getRawAxis(Constants.JOYSTICK_LEFT_Y_AXIS);
     double shortPosition = Math.abs(climbers.shortClimberModule.getPosition());
     /* Deadband gamepad, short climbers */
     if (
       Math.abs(leftYstick) < 0.10
-      // (shortPosition <= MIN_SHORT_CLIMBER_POSITION && leftYstick > 0) ||
-      // (shortPosition >= MAX_SHORT_CLIMBER_POSITION && leftYstick < -0)
     ) {
       /* Within 10% of zero */
       leftYstick = 0;
     }
     leftYstick = Math.copySign(leftYstick * leftYstick, leftYstick);
+    double limiter = SmartDashboard.getNumber(Dashboard.DASH_CLIMBER_LIMITER, ClimberModule.CLIMBER_LIMITER);
+    leftYstick = leftYstick * Math.abs(limiter);
     climbers.shortClimberModule.moveArms(leftYstick);
-
-    // double targetPositionRotations =
-    //   leftYstick * ClimberModule.CLIMBER_MODULE_RATIO * 2048;
-    // climbers.shortClimberModule.setPosition(targetPositionRotations);
 
     double rightYstick = joystick.getRawAxis(Constants.JOYSTICK_RIGHT_Y_AXIS);
     /* Deadband gamepad, long climbers */
@@ -124,13 +114,9 @@ public class JoystickClimb extends CommandBase {
       rightYstick = 0;
     }
     rightYstick = Math.copySign(rightYstick * rightYstick, rightYstick);
+    rightYstick = rightYstick * Math.abs(limiter);
     climbers.longClimberModule.moveArms(rightYstick);
 
-    // targetPositionRotations =
-    //   rightYstick *
-    //   ClimberModule.CLIMBER_MODULE_RATIO *
-    //   ClimberModule.CLIMBER_MODULE_MOTOR_TICK_COUNT;
-    // climbers.longClimberModule.setPosition(targetPositionRotations);
     SmartDashboard.putNumber(
       Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
       climbers.longClimberModule.getPosition()
