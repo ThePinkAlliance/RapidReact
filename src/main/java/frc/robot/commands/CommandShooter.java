@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.TargetPackage;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Shooter;
+import java.util.function.Supplier;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -24,6 +25,8 @@ public class CommandShooter extends ParallelCommandGroup {
     TargetPackage tarmacPackage,
     TargetPackage lowPackage,
     TargetPackage defualtPackage,
+    Supplier<Double> distanceSupplier,
+    Supplier<Double> angleSupplier,
     int button_id
   ) {
     // Add your commands in the addCommands() call, e.g.
@@ -36,6 +39,8 @@ public class CommandShooter extends ParallelCommandGroup {
         tarmacPackage,
         lowPackage,
         defualtPackage,
+        distanceSupplier,
+        angleSupplier,
         button_id
       ),
       new CommandHood(
@@ -45,6 +50,8 @@ public class CommandShooter extends ParallelCommandGroup {
         tarmacPackage,
         lowPackage,
         defualtPackage,
+        distanceSupplier,
+        angleSupplier,
         button_id
       )
     );

@@ -9,12 +9,17 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.util.function.Supplier;
 
 // ADDRESS FOR THE LIMELIGHT FEED: http://limelight.local:5801/
 
 public class Limelight extends SubsystemBase {
 
   private boolean limelightLedOn = false;
+
+  private double horzontalOffset = 0;
+  private Supplier<Double> distanceSupplier = () -> 0.0;
+  private Supplier<Double> angleSupplier = () -> 0.0;
 
   /** Creates a new Limelight. */
   public Limelight() {
@@ -87,7 +92,7 @@ public class Limelight extends SubsystemBase {
     NetworkTableEntry ty = table.getEntry("ty");
     NetworkTableEntry tx = table.getEntry("tx");
 
-    double offsetX = tx.getDouble(0.0);
+    double offsetX = tx.getDouble(0.0) + horzontalOffset;
 
     double limelightMountedAngle = 50; //this can change a static number though once we have found it
     double limelightLensHeight = 33.5; //this can change (in) will be static, should NEVER change
@@ -144,10 +149,22 @@ public class Limelight extends SubsystemBase {
 
     double errorAccDistance = (distance / error);
     double distanceInFeet = errorAccDistance / 12;
+
+    this.distanceSupplier = () -> distanceInFeet;
+    this.angleSupplier = () -> offsetX;
+
     SmartDashboard.putNumber("Distance: ", errorAccDistance);
     SmartDashboard.putNumber("Distance in feet: ", distanceInFeet);
     SmartDashboard.putNumber("Object Offset X: ", offsetX);
     SmartDashboard.putNumber("Object Offset Y: ", verticalOffsetAngle);
+  }
+
+  public Supplier<Double> getDistanceSupplier() {
+    return this.distanceSupplier;
+  }
+
+  public Supplier<Double> getAngleSupplier() {
+    return this.angleSupplier;
   }
 
   @Override
@@ -170,6 +187,9 @@ public class Limelight extends SubsystemBase {
     SmartDashboard.putNumber("Limelight Area: ", objectArea);
     SmartDashboard.putNumber("Limelight Skew: ", robotSkew);
     SmartDashboard.putBoolean("Limelight On: ", limelightLedOn);
+
+    SmartDashboard.getNumber("limelight angle offset", horzontalOffset);
+
     if (limelightLedOn == true) {
       getDistance();
     }

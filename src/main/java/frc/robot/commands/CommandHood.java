@@ -12,6 +12,7 @@ import frc.robot.HoodConstants;
 import frc.robot.TargetPackage;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Hood;
+import java.util.function.Supplier;
 
 public class CommandHood extends CommandBase {
 
@@ -23,6 +24,9 @@ public class CommandHood extends CommandBase {
   private TargetPackage lowPackage;
   private TargetPackage defualtPackage;
   private TargetPackage currentPackage;
+
+  private Supplier<Double> distanceSupplier;
+  private Supplier<Double> angleSupplier;
 
   int buttonId;
   public static double HUB_SHOT_TICK_COUNT = -22000;
@@ -36,6 +40,8 @@ public class CommandHood extends CommandBase {
     TargetPackage tarmacPackage,
     TargetPackage lowPackage,
     TargetPackage defualtPackage,
+    Supplier<Double> distanceSupplier,
+    Supplier<Double> angleSupplier,
     int buttonId
   ) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -45,6 +51,9 @@ public class CommandHood extends CommandBase {
     this.highPackage = highPackage;
     this.tarmacPackage = tarmacPackage;
     this.defualtPackage = defualtPackage;
+
+    this.distanceSupplier = distanceSupplier;
+    this.angleSupplier = angleSupplier;
 
     this.buttonId = buttonId;
     this.joystick = joystick;

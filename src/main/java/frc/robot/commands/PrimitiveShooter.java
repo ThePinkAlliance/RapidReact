@@ -11,6 +11,7 @@ import frc.robot.ShooterConstants;
 import frc.robot.TargetPackage;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Shooter;
+import java.util.function.Supplier;
 
 public class PrimitiveShooter extends CommandBase {
 
@@ -21,6 +22,8 @@ public class PrimitiveShooter extends CommandBase {
   private TargetPackage lowPackage;
   private TargetPackage defualtPackage;
   private TargetPackage currentPackage;
+  private Supplier<Double> distanceSupplier;
+  private Supplier<Double> angleSupplier;
 
   private int button_id;
 
@@ -32,6 +35,8 @@ public class PrimitiveShooter extends CommandBase {
     TargetPackage tarmacPackage,
     TargetPackage lowPackage,
     TargetPackage defualtPackage,
+    Supplier<Double> distanceSupplier,
+    Supplier<Double> angleSupplier,
     int button_id
   ) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -42,6 +47,9 @@ public class PrimitiveShooter extends CommandBase {
     this.highPackage = highPackage;
     this.tarmacPackage = tarmacPackage;
     this.defualtPackage = defualtPackage;
+
+    this.distanceSupplier = distanceSupplier;
+    this.angleSupplier = angleSupplier;
 
     this.joystick = joystick;
 

@@ -24,6 +24,7 @@ import frc.robot.commands.JoystickClimb;
 import frc.robot.commands.LeaveTarmack;
 import frc.robot.commands.MoveTower;
 import frc.robot.commands.PrimitiveShooter;
+import frc.robot.commands.TargetTracking;
 import frc.robot.commands.paths.Threeball;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Climbers;
@@ -237,7 +238,10 @@ public class RobotContainer {
     );
     SmartDashboard.putNumber(Dashboard.DASH_HOOD_OUTPUT, 0);
     SmartDashboard.putNumber(Dashboard.DASH_HOOD_DRAW, 0);
-    SmartDashboard.putNumber(Dashboard.DASH_CLIMBER_LIMITER, ClimberModule.CLIMBER_LIMITER);
+    SmartDashboard.putNumber(
+      Dashboard.DASH_CLIMBER_LIMITER,
+      ClimberModule.CLIMBER_LIMITER
+    );
 
     //Shooter - Shoot - move tower to push ball up to shooter
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_X)
@@ -260,6 +264,8 @@ public class RobotContainer {
           tarmacPackage,
           lowPackage,
           defualtPackage,
+          m_limelight.getDistanceSupplier(),
+          m_limelight.getAngleSupplier(),
           Constants.JOYSTICK_BUTTON_B
         )
       );
@@ -283,6 +289,8 @@ public class RobotContainer {
           false
         )
       );
+    new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_A)
+    .whenPressed(new TargetTracking(m_base, m_limelight));
     // Climbers
     // new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
     // .whenPressed(
