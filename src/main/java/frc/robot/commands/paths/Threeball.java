@@ -7,6 +7,8 @@ package frc.robot.commands.paths;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.AutoShootHood;
+import frc.robot.HoodConstants;
+import frc.robot.ShooterConstants;
 import frc.robot.TargetPackage;
 import frc.robot.commands.AutoCollectGroup;
 import frc.robot.commands.AutoHood;
@@ -26,29 +28,6 @@ import java.util.function.Supplier;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class Threeball extends SequentialCommandGroup {
 
-  class CollectorOn extends CommandBase {
-
-    Collector m_collector;
-    Supplier<Boolean> isFinished;
-
-    public CollectorOn(Collector m_collector, Supplier<Boolean> isFinished) {
-      this.m_collector = m_collector;
-    }
-
-    @Override
-    public void execute() {
-      m_collector.SetSpeedCollector(1);
-      m_collector.setSolenoid(true);
-    }
-
-    @Override
-    public boolean isFinished() {
-      return this.isFinished.get();
-    }
-  }
-
-  Navigate navCollect;
-
   /** Creates a new ThreeballRightBlue. */
   public Threeball(
     Base m_base,
@@ -58,10 +37,10 @@ public class Threeball extends SequentialCommandGroup {
     Hood m_hood
   ) {
     TargetPackage shooter_tp = new TargetPackage(
-      Shooter.SHOOTER_Kp_AUTO_THREE_BALL,
-      Shooter.SHOOTER_FF_AUTO_THREE_BALL,
-      Hood.AUTO_SHOT_THREEBALL_TICK_COUNT,
-      Shooter.SHOOTER_POWER_THREE_BALL
+      ShooterConstants.SHOOTER_Kp_AUTO_THREE_BALL,
+      ShooterConstants.SHOOTER_FF_AUTO_THREE_BALL,
+      HoodConstants.AUTO_SHOT_THREEBALL_TICK_COUNT,
+      ShooterConstants.SHOOTER_POWER_THREE_BALL
     );
 
     // Add your commands in the addCommands() call, e.g.

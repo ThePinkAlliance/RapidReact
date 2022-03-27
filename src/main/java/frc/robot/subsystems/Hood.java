@@ -14,17 +14,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Hood extends SubsystemBase {
 
-  public static final double HOOD_Kp = 1.0;
-  public static final double HOOD_Ki = 0.0;
-  public static final double HOOD_Kd = 0.0;
-  public static final double HOOD_FF = 0.0;
-  public static final double HUB_SHOT_TICK_COUNT = -22000;
-  public static final double HUB_LOW_SHOT_COUNT = -70000;
-  public static final double TARMAC_SHOT_TICK_COUNT = -55000;
-  public static final double AUTO_SHOT_TWOBALL_TICK_COUNT = -55000;
-  public static final double AUTO_SHOT_THREEBALL_TICK_COUNT = -55000;
-  public static final double IDLE_TICK_COUNT = -1000;
-
   // public final double
   public final double REV_TICKS_PER_REV = 4096;
   public final double MAX_HOOD_WIDTH_INCHES = 5.582;
@@ -85,6 +74,12 @@ public class Hood extends SubsystemBase {
     this.hoodPid.setI(i);
     this.hoodPid.setD(d);
     this.hoodPid.setFF(ff);
+  }
+
+  public void setPID(double p, double i, double d) {
+    this.hoodPid.setP(p);
+    this.hoodPid.setI(i);
+    this.hoodPid.setD(d);
   }
 
   public SparkMaxPIDController hoodPidController() {

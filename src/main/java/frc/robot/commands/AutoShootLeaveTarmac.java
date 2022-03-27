@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.HoodConstants;
 import frc.robot.ShooterConstants;
 import frc.robot.TargetPackage;
 import frc.robot.subsystems.Base;
@@ -23,14 +24,19 @@ public class AutoShootLeaveTarmac extends SequentialCommandGroup {
     Hood m_hood,
     Collector m_collector
   ) {
-    TargetPackage tp = new TargetPackage(ShooterConstants.kGains.kP, ShooterConstants.kGains.kF, Hood.HUB_SHOT_TICK_COUNT, Shooter.SHOOTER_POWER_HUB_HIGH);
+    TargetPackage tp = new TargetPackage(
+      ShooterConstants.kGains.kP,
+      ShooterConstants.kGains.kF,
+      HoodConstants.HUB_SHOT_TICK_COUNT,
+      ShooterConstants.SHOOTER_POWER_HUB_HIGH
+    );
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new AutoHood(m_hood, Hood.HUB_SHOT_TICK_COUNT),
+      new AutoHood(m_hood, HoodConstants.HUB_SHOT_TICK_COUNT),
       new AutoShoot(m_shooter, m_collector, tp, AutoShoot.ONE_BALL_MAX_TIME),
-      new Navigate(m_base, LeaveTarmack.TRAVEL_DISTANCE, false).alongWith(
-      new AutoHood(m_hood, tp.hoodPosition))
+      new Navigate(m_base, LeaveTarmack.TRAVEL_DISTANCE, false)
+      .alongWith(new AutoHood(m_hood, tp.hoodPosition))
     );
   }
 }

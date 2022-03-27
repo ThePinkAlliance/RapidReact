@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.ShooterConstants;
 
 public class Dashboard extends SubsystemBase {
 
@@ -67,7 +68,10 @@ public class Dashboard extends SubsystemBase {
 
   public void initialize() {
     //Values that are init once, user changes for testing or ops, robot reads them when needed
-    SmartDashboard.putNumber(DASH_SHOOTER_RPMS, Shooter.SHOOTER_POWER_HUB_HIGH);
+    SmartDashboard.putNumber(
+      DASH_SHOOTER_RPMS,
+      ShooterConstants.SHOOTER_POWER_HUB_HIGH
+    );
   }
 
   public void publishDashboard() {

@@ -42,6 +42,27 @@ public class ShooterConstants {
     0,
     1.0
   );
+
+  public static final ShooterGains kGainsTarmac = new ShooterGains(
+    0.4,
+    0,
+    0,
+    0.047,
+    0,
+    0
+  );
+
+  public static final double SHOOTER_POWER_HUB_HIGH = 2450;
+  public static final double SHOOTER_POWER_TARMAC_HIGH = 2730;
+  public static final double SHOOTER_POWER_THREE_BALL = 2730;
+  public static final double SHOOTER_POWER_AUTO_TWO_BALL = 2750;
+  public static final double SHOOTER_Kp_AUTO_TWO_BALL = 0.4;
+  public static final double SHOOTER_FF_AUTO_TWO_BALL = 0.047;
+  public static final double SHOOTER_POWER_HUB_LOW = 1800;
+
+  public static final double SHOOTER_Kp_AUTO_THREE_BALL = 0.4;
+  public static final double SHOOTER_FF_AUTO_THREE_BALL = 0.047;
+
   // public static final ShooterGains kGains = new ShooterGains(0.2, 0.0, 0.0, 0.046, 0, 1.0);
   public static double ALLOWABLE_CLOSELOOP_ERROR = 0;
 }

@@ -18,6 +18,7 @@ import frc.robot.commands.AutoShootLeaveTarmac;
 import frc.robot.commands.AutoTwoBall;
 import frc.robot.commands.CollectGroup;
 import frc.robot.commands.CommandHood;
+import frc.robot.commands.CommandShooter;
 import frc.robot.commands.Drive;
 import frc.robot.commands.JoystickClimb;
 import frc.robot.commands.LeaveTarmack;
@@ -59,6 +60,41 @@ public class RobotContainer {
   //ShuffleboardTab driverDashboard = Shuffleboard.getTab("Dashboard");
   SendableChooser<SelectableTrajectory> selectedPath = new SendableChooser<SelectableTrajectory>();
 
+  private final TargetPackage lowPackage = new TargetPackage(
+    ShooterConstants.kGains.kP,
+    ShooterConstants.kGains.kF,
+    HoodConstants.HUB_LOW_SHOT_COUNT,
+    ShooterConstants.SHOOTER_POWER_HUB_LOW
+  );
+
+  private final TargetPackage highPackage = new TargetPackage(
+    ShooterConstants.kGains.kP,
+    ShooterConstants.kGains.kF,
+    HoodConstants.HUB_SHOT_TICK_COUNT,
+    ShooterConstants.SHOOTER_POWER_HUB_HIGH
+  );
+
+  private final TargetPackage tarmacPackage = new TargetPackage(
+    ShooterConstants.kGainsTarmac.kP,
+    ShooterConstants.kGainsTarmac.kF,
+    HoodConstants.TARMAC_SHOT_TICK_COUNT,
+    ShooterConstants.SHOOTER_POWER_TARMAC_HIGH
+  );
+
+  private final TargetPackage defualtPackage = new TargetPackage(
+    ShooterConstants.kGains.kP,
+    ShooterConstants.kGains.kF,
+    HoodConstants.TARMAC_SHOT_TICK_COUNT,
+    ShooterConstants.SHOOTER_POWER_TARMAC_HIGH
+  );
+
+  private final TargetPackage twoBallTargetPackage = new TargetPackage(
+    ShooterConstants.SHOOTER_Kp_AUTO_TWO_BALL,
+    ShooterConstants.SHOOTER_FF_AUTO_TWO_BALL,
+    HoodConstants.AUTO_SHOT_TWOBALL_TICK_COUNT,
+    ShooterConstants.SHOOTER_POWER_TARMAC_HIGH
+  );
+
   private final SelectableTrajectory LeaveTarmac = new SelectableTrajectory(
     "Leave Tarmac",
     new LeaveTarmack(m_base)
@@ -71,7 +107,13 @@ public class RobotContainer {
 
   private final SelectableTrajectory ShootLeaveTarmacCollectShoot = new SelectableTrajectory(
     "Two Ball Auto",
-    new AutoTwoBall(m_base, m_shooter, m_collector, m_hood)
+    new AutoTwoBall(
+      m_base,
+      m_shooter,
+      m_collector,
+      m_hood,
+      twoBallTargetPackage
+    )
   );
 
   private final SelectableTrajectory ThreeBallAuto = new SelectableTrajectory(
@@ -128,7 +170,7 @@ public class RobotContainer {
     );
     SmartDashboard.putNumber(
       Dashboard.DASH_SHOOTER_TARGET_RPMS,
-      Shooter.SHOOTER_POWER_HUB_HIGH
+      ShooterConstants.SHOOTER_POWER_HUB_HIGH
     );
     SmartDashboard.putNumber(
       Dashboard.DASH_SHOOTER_RPMS,
@@ -171,10 +213,9 @@ public class RobotContainer {
     //   );
     //this.m_dashboard.setDefaultCommand(new DashboardPublish(m_dashboard));
 
-    SmartDashboard.putNumber(Dashboard.DASH_HOOD_P, Hood.HOOD_Kp);
-    SmartDashboard.putNumber(Dashboard.DASH_HOOD_I, Hood.HOOD_Ki);
-    SmartDashboard.putNumber(Dashboard.DASH_HOOD_D, Hood.HOOD_Kd);
-    SmartDashboard.putNumber(Dashboard.DASH_HOOD_FF, Hood.HOOD_FF);
+    SmartDashboard.putNumber(Dashboard.DASH_HOOD_P, HoodConstants.kGains.kP);
+    SmartDashboard.putNumber(Dashboard.DASH_HOOD_I, HoodConstants.kGains.kI);
+    SmartDashboard.putNumber(Dashboard.DASH_HOOD_D, HoodConstants.kGains.kD);
 
     SmartDashboard.putNumber(
       Dashboard.DASH_TARGET_TRACKER_KP,
@@ -189,7 +230,10 @@ public class RobotContainer {
       BaseConstants.targetTrackerGains.kD
     );
 
-    SmartDashboard.putNumber(Dashboard.DASH_HOOD_TICKS, Hood.IDLE_TICK_COUNT);
+    SmartDashboard.putNumber(
+      Dashboard.DASH_HOOD_TICKS,
+      HoodConstants.IDLE_TICK_COUNT
+    );
     SmartDashboard.putNumber(Dashboard.DASH_HOOD_OUTPUT, 0);
     SmartDashboard.putNumber(Dashboard.DASH_HOOD_DRAW, 0);
 
@@ -198,7 +242,7 @@ public class RobotContainer {
     .whenPressed(
         new MoveTower(
           m_collector,
-          Shooter.SHOOTER_POWER_HUB_HIGH,
+          ShooterConstants.SHOOTER_POWER_HUB_HIGH,
           Constants.JOYSTICK_BUTTON_X,
           gamepad_tower,
           true
@@ -206,20 +250,15 @@ public class RobotContainer {
       );
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
     .whenPressed(
-        new PrimitiveShooter(
+        new CommandShooter(
           m_shooter,
-          gamepad_tower,
-          Shooter.SHOOTER_POWER_HUB_HIGH,
-          Constants.JOYSTICK_BUTTON_B
-        )
-      );
-    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_A)
-    .whenPressed(
-        new CommandHood(
           m_hood,
-          -100,
-          Constants.JOYSTICK_BUTTON_A,
-          gamepad_tower
+          gamepad_tower,
+          highPackage,
+          tarmacPackage,
+          lowPackage,
+          defualtPackage,
+          Constants.JOYSTICK_BUTTON_B
         )
       );
     // Collector Intake
@@ -302,7 +341,7 @@ public class RobotContainer {
 
   public void resetHood() {
     if (m_hood != null) {
-      m_hood.setPosition(Hood.IDLE_TICK_COUNT);
+      m_hood.setPosition(HoodConstants.IDLE_TICK_COUNT);
       m_hood.disableCloseLoopControl();
     }
   }
