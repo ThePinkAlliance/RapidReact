@@ -29,6 +29,8 @@ public class LimelightAlign extends CommandBase {
 
   private int buttonId;
 
+  private double setPoint;
+
   private final double MAX_TIME = 3;
   private final double ANGLE_TOLERANCE = 1;
 
@@ -59,13 +61,14 @@ public class LimelightAlign extends CommandBase {
   @Override
   public void initialize() {
     alignController.reset();
+    alignController.enableContinuousInput(-180.0, 180.0);
+    alignController.setTolerance(this.ANGLE_TOLERANCE);
+
+    setPoint = base.getSensorYaw() + limelight.getOffset();
+
     base.zeroGyro();
     timer.reset();
     timer.start();
-    alignController.enableContinuousInput(-180.0, 180.0);
-
-    // alignController.i
-    alignController.setTolerance(this.ANGLE_TOLERANCE);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -93,15 +96,12 @@ public class LimelightAlign extends CommandBase {
     );
 
     boolean availableTarget = limelight.isTarget();
-    double targetWithOffset = handleOverflow(
-      limelight.getOffset() - base.getSensorYaw()
-    );
+    // double targetWithOffset = handleOverflow(
+    //   limelight.getOffset() - base.getSensorYaw()
+    // );
 
     if (availableTarget == true) {
-      double error = alignController.calculate(
-        base.getSensorYaw(),
-        targetWithOffset
-      );
+      double error = alignController.calculate(limelight.getOffset(), 0);
       double power = (error / -180) * Base.MAX_VELOCITY_METERS_PER_SECOND;
 
       System.out.println(
@@ -113,7 +113,7 @@ public class LimelightAlign extends CommandBase {
         alignController.getD()
       );
 
-      SmartDashboard.putNumber("targetWithOffset", targetWithOffset);
+      SmartDashboard.putNumber("targetWithOffset", setPoint);
       SmartDashboard.putNumber("power", power);
 
       ChassisSpeeds speeds = new ChassisSpeeds(0, 0, power);
