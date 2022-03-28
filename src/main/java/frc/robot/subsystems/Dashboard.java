@@ -6,7 +6,11 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.BaseConstants;
+import frc.robot.ClimberModule;
+import frc.robot.HoodConstants;
 import frc.robot.ShooterConstants;
+import frc.robot.commands.LimelightAlign;
 
 public class Dashboard extends SubsystemBase {
 
@@ -73,14 +77,10 @@ public class Dashboard extends SubsystemBase {
   }
 
   public void initialize() {
-    //Values that are init once, user changes for testing or ops, robot reads them when needed
-    SmartDashboard.putNumber(
-      DASH_SHOOTER_RPMS,
-      ShooterConstants.SHOOTER_POWER_HUB_HIGH
-    );
+    
   }
 
-  public void publishDashboard() {
+  public void publishInitialDashboard() {
     //public information about subsystems
     //this info is read only and put on dashboard for display purposes only
     if (base != null) {
@@ -101,11 +101,73 @@ public class Dashboard extends SubsystemBase {
         DASH_BASE_BRPOS,
         this.base.backRightModule.getDrivePosition()
       );
+    } else if (collector != null) { } 
+    else if (shooter != null) {
+      SmartDashboard.putNumber(
+        Dashboard.DASH_SHOOTER_VELOCITY,
+        this.shooter.getMotorOutputPercent()
+      );
+      SmartDashboard.putNumber(
+      Dashboard.DASH_SHOOTER_RPMS,
+      this.shooter.getMotorRpms()
+    );
     }
+    else if (climbers != null) {
+      SmartDashboard.putNumber(
+        Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
+        this.climbers.longClimberModule.getPosition()
+      );
+      SmartDashboard.putNumber(
+        Dashboard.DASH_CLIMBER_SHORT_ARM_POSITION,
+        this.climbers.shortClimberModule.getPosition()
+      );
+     }
 
-    if (collector != null) {}
-    if (shooter != null) {}
-    if (climbers != null) {}
+    SmartDashboard.putNumber(Dashboard.DASH_HOOD_P, HoodConstants.kGains.kP);
+    SmartDashboard.putNumber(Dashboard.DASH_HOOD_I, HoodConstants.kGains.kI);
+    SmartDashboard.putNumber(Dashboard.DASH_HOOD_D, HoodConstants.kGains.kD);
+    SmartDashboard.putNumber(
+      Dashboard.DASH_TARGET_TRACKER_KP,
+      BaseConstants.targetTrackerGains.kP
+    );
+    SmartDashboard.putNumber(
+      Dashboard.DASH_TARGET_TRACKER_KI,
+      BaseConstants.targetTrackerGains.kI
+    );
+    SmartDashboard.putNumber(
+      Dashboard.DASH_TARGET_TRACKER_KD,
+      BaseConstants.targetTrackerGains.kD
+    );
+
+    SmartDashboard.putNumber(
+      Dashboard.DASH_HOOD_TICKS,
+      HoodConstants.IDLE_TICK_COUNT
+    );
+    SmartDashboard.putNumber(Dashboard.DASH_HOOD_OUTPUT, 0);
+    SmartDashboard.putNumber(Dashboard.DASH_HOOD_DRAW, 0);
+    SmartDashboard.putNumber(
+      Dashboard.DASH_CLIMBER_LIMITER,
+      ClimberModule.CLIMBER_LIMITER
+    );
+    SmartDashboard.putNumber(Dashboard.BASE_ALIGN_LIMIT, LimelightAlign.TRACKER_LIMIT_DEFAULT);
+    SmartDashboard.putNumber(
+      DASH_SHOOTER_RPMS,
+      ShooterConstants.SHOOTER_POWER_HUB_HIGH
+    );
+
+    SmartDashboard.putNumber(
+      Dashboard.DASH_SHOOTER_TARGET_RPMS,
+      ShooterConstants.SHOOTER_POWER_HUB_HIGH
+    );
+    SmartDashboard.putBoolean(Dashboard.DASH_SHOOTER_READY, false);
+    SmartDashboard.putNumber(
+      Dashboard.DASH_SHOOTER_P,
+      ShooterConstants.kGains.kP
+    );
+    SmartDashboard.putNumber(
+      Dashboard.DASH_SHOOTER_FF,
+      ShooterConstants.kGains.kF
+    );
   }
 
   @Override

@@ -27,13 +27,9 @@ public class LimelightAlign extends CommandBase {
     BaseConstants.targetTrackerGains.kD
   );
 
-  /* Kp = 6, Limiter =  0.45, setpoint threshold = 0.5 */
-
   private int buttonId;
-
-  private double setPoint;
-
-  private final double MAX_TIME = 3;  //Arbitrary
+  private final double MAX_TIME = 0.75;  //Arbitrary
+  double maxSecondsToAcquireTarget = MAX_TIME;
   private final double ANGLE_TOLERANCE = 0.5; //Tuned at SLF
   public static final double TRACKER_LIMIT_DEFAULT = 0.45; //Tuned at SLF
 
@@ -47,15 +43,17 @@ public class LimelightAlign extends CommandBase {
     limelight = limelightSubsystem;
     this.joystick = joystick;
     this.buttonId = buttonId;
+    this.maxSecondsToAcquireTarget = MAX_TIME;
     timer = new Timer();
 
     addRequirements(baseSubsystem, limelightSubsystem);
   }
 
-  public LimelightAlign(Base baseSubsystem, Limelight limelightSubsystem) {
-    base = baseSubsystem;
-    limelight = limelightSubsystem;
-    timer = new Timer();
+  public LimelightAlign(Base baseSubsystem, Limelight limelightSubsystem, double maxSecondsToAcquireTarget) {
+    this.base = baseSubsystem;
+    this.limelight = limelightSubsystem;
+    this.maxSecondsToAcquireTarget = maxSecondsToAcquireTarget;
+    this.timer = new Timer();
 
     addRequirements(baseSubsystem, limelightSubsystem);
   }
@@ -66,8 +64,6 @@ public class LimelightAlign extends CommandBase {
     alignController.reset();
     alignController.enableContinuousInput(-180.0, 180.0);
     alignController.setTolerance(this.ANGLE_TOLERANCE);
-
-    setPoint = base.getSensorYaw() + limelight.getOffset();
 
     base.zeroGyro();
     timer.reset();
@@ -99,10 +95,6 @@ public class LimelightAlign extends CommandBase {
     );
 
     boolean availableTarget = limelight.isTarget();
-    // double targetWithOffset = handleOverflow(
-    //   limelight.getOffset() - base.getSensorYaw()
-    // );
-
     if (availableTarget == true) {
       double output = alignController.calculate(limelight.getOffset(), 0);
       output = limitAzimuthPower(output / 180);
@@ -117,8 +109,8 @@ public class LimelightAlign extends CommandBase {
         alignController.getD()
       );
 
-      SmartDashboard.putNumber("targetWithOffset", setPoint);
-      SmartDashboard.putNumber("power", power);
+      //SmartDashboard.putNumber("targetWithOffset", setPoint);
+      //SmartDashboard.putNumber("power", power);
 
       ChassisSpeeds speeds = new ChassisSpeeds(0, 0, power);
       base.drive(speeds);
@@ -127,7 +119,7 @@ public class LimelightAlign extends CommandBase {
 
   private double limitAzimuthPower(double currentPower) {
     double value = currentPower;
-    double limit = SmartDashboard.getNumber(Dashboard.BASE_ALIGN_LIMIT, LimelightAlign.TRACKER_LIMIT_DEFAULT);
+    double limit = LimelightAlign.TRACKER_LIMIT_DEFAULT; //SmartDashboard.getNumber(Dashboard.BASE_ALIGN_LIMIT, LimelightAlign.TRACKER_LIMIT_DEFAULT);
     if (Math.abs(currentPower) > limit)
        value = Math.copySign(limit, currentPower);
     System.out.println("limitAzimuthPower: " + value + "; Original: " + currentPower);

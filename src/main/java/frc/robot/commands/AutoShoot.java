@@ -7,11 +7,15 @@ package frc.robot.commands;
 
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.HoodConstants;
 import frc.robot.TargetPackage;
+import frc.robot.TargetPackageFactory;
 import frc.robot.subsystems.Collector;
-import frc.robot.subsystems.Dashboard;
+import frc.robot.subsystems.Hood;
+import frc.robot.subsystems.Limelight;
+//import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Shooter;
 
 public class AutoShoot extends CommandBase {
@@ -20,42 +24,47 @@ public class AutoShoot extends CommandBase {
 
   private Shooter m_shooter;
   private Collector m_collector;
-
-  private int ballsShot = 0;
-  private boolean shotBefore = false;
-
+  private Limelight m_limelight;
+  private Hood m_hood;
   private Timer timer;
   private TargetPackage tp;
+  boolean bUseCustomPackage = false;
 
   public static final double ONE_BALL_MAX_TIME = 1.5;
 
-  public AutoShoot(Shooter m_shooter, Collector m_collector, TargetPackage tp) {
-    // Use addRequirements() here to declare subsystem dependencies.
-
+  public AutoShoot(Shooter m_shooter, Collector m_collector, Hood m_hood, Limelight m_limelight, TargetPackage tp, boolean bUseCustomPackage) {
     this.m_collector = m_collector;
     this.m_shooter = m_shooter;
+    this.m_limelight = m_limelight;
+    this.m_hood = m_hood;
     this.tp = tp;
-
+    this.bUseCustomPackage = bUseCustomPackage;
     this.timer = new Timer();
-    addRequirements(this.m_shooter, this.m_collector);
+    addRequirements(this.m_shooter, this.m_collector, this.m_hood, this.m_limelight);
   }
 
-  public AutoShoot(Shooter m_shooter, Collector m_collector, TargetPackage tp, double maxTime) {
-    // Use addRequirements() here to declare subsystem dependencies.
-
+  public AutoShoot(Shooter m_shooter, Collector m_collector, Hood m_hood, Limelight m_limelight, TargetPackage tp, double maxTime, boolean bUseCustomPackage) {
     this.m_collector = m_collector;
     this.m_shooter = m_shooter;
+    this.m_limelight = m_limelight;
+    this.m_hood = m_hood;
     this.tp = tp;
-
+    this.bUseCustomPackage = bUseCustomPackage;
     this.timer = new Timer();
     this.MAX_TIMER_SECS = maxTime;
-    addRequirements(this.m_shooter, this.m_collector);
+    addRequirements(this.m_shooter, this.m_collector, this.m_hood, this.m_limelight);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-        timer.reset();
+    timer.reset();
+    //override TargetPackage with one based on limelight distance
+    if (bUseCustomPackage == true) {
+      double distance = m_limelight.getDistanceSupplier().get();
+      tp = TargetPackageFactory.getCustomPackage(distance);
+    } 
+    this.m_hood.setPosition(tp.hoodPosition);
     this.m_shooter.configKp(tp.Kp);
     this.m_shooter.configFeedForward(tp.Kf);
     timer.start();
@@ -66,24 +75,22 @@ public class AutoShoot extends CommandBase {
   public void execute() {
     boolean ready = m_shooter.readyToShoot(tp.rpm, 100);
 
-    //double currentRPM = m_shooter.getMotorRpms();
-
     if (ready) {
       this.m_collector.enableTowerOverride();
     } else {
       this.m_collector.disableTowerOverride();
     }
-    System.out.println("RPM: " + tp.rpm);
+    //System.out.println("RPM: " + tp.rpm);
     this.m_collector.SetSpeedTowerForOverride(Collector.TOWER_MOTOR_FULL_SPEED);
     this.m_shooter.commandRpm(tp.rpm);
-    SmartDashboard.putNumber(
-      Dashboard.DASH_SHOOTER_VELOCITY,
-      this.m_shooter.getMotorOutputPercent()
-    );
-    SmartDashboard.putNumber(
-      Dashboard.DASH_SHOOTER_RPMS,
-      this.m_shooter.getMotorRpms()
-    );
+    // SmartDashboard.putNumber(
+    //   Dashboard.DASH_SHOOTER_VELOCITY,
+    //   this.m_shooter.getMotorOutputPercent()
+    // );
+    // SmartDashboard.putNumber(
+    //   Dashboard.DASH_SHOOTER_RPMS,
+    //   this.m_shooter.getMotorRpms()
+    // );
   }
 
   // Called once the command ends or is interrupted.
@@ -92,6 +99,7 @@ public class AutoShoot extends CommandBase {
     this.m_shooter.command(0);
     this.m_collector.disableTowerOverride();
     this.m_collector.SetSpeedTowerForOverride(0);
+    this.m_hood.setPosition(HoodConstants.IDLE_TICK_COUNT);
     this.timer.stop();
   }
 

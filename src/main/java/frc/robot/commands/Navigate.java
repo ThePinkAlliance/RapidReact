@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.BaseConstants;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Dashboard;
 
@@ -21,10 +22,6 @@ public class Navigate extends CommandBase {
   double drive_kP = 1;
   double drive_kI = 0.5;
   double drive_kD = 0.002;
-
-  double align_kP = 3.7;
-  double align_kI = 0.5;
-  double align_kD = 0.003;
 
   boolean bBackwards = false;
 
@@ -39,14 +36,13 @@ public class Navigate extends CommandBase {
     drive_kI,
     drive_kD
   ); // kP 0.27 kI 0.3 kD 0.002
-
+  
   PIDController alignController = new PIDController(
-    align_kP,
-    align_kI,
-    align_kD
+    BaseConstants.navigateTurnGains.kP,
+    BaseConstants.navigateTurnGains.kI,
+    BaseConstants.navigateTurnGains.kD
   );
 
-  // 0.122807
   double reduction = SdsModuleConfigurations.MK4I_L1.getDriveReduction();
 
   double targetAngle = 0;
@@ -58,15 +54,6 @@ public class Navigate extends CommandBase {
     this.base = base;
     this.targetInches = targetInches;
     this.targetAngle = targetAngle;
-
-    SmartDashboard.putNumber(Dashboard.BASE_NAVIGATE_KP, drive_kP);
-    SmartDashboard.putNumber(Dashboard.BASE_NAVIGATE_KI, drive_kI);
-    SmartDashboard.putNumber(Dashboard.BASE_NAVIGATE_KD, drive_kD);
-
-    SmartDashboard.putNumber(Dashboard.BASE_ALIGN_NAVIGATE_KP, align_kP);
-    SmartDashboard.putNumber(Dashboard.BASE_ALIGN_NAVIGATE_KI, align_kI);
-    SmartDashboard.putNumber(Dashboard.BASE_ALIGN_NAVIGATE_KD, align_kD);
-
     addRequirements(base);
   }
 
@@ -74,15 +61,6 @@ public class Navigate extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     this.base = base;
     this.targetInches = targetInches;
-
-    SmartDashboard.putNumber(Dashboard.BASE_NAVIGATE_KP, drive_kP);
-    SmartDashboard.putNumber(Dashboard.BASE_NAVIGATE_KI, drive_kI);
-    SmartDashboard.putNumber(Dashboard.BASE_NAVIGATE_KD, drive_kD);
-
-    SmartDashboard.putNumber(Dashboard.BASE_ALIGN_NAVIGATE_KP, align_kP);
-    SmartDashboard.putNumber(Dashboard.BASE_ALIGN_NAVIGATE_KI, align_kI);
-    SmartDashboard.putNumber(Dashboard.BASE_ALIGN_NAVIGATE_KD, align_kD);
-
     addRequirements(base);
   }
 
@@ -91,15 +69,6 @@ public class Navigate extends CommandBase {
     this.base = base;
     this.targetInches = targetInches;
     this.bBackwards = bBackwards;
-
-    SmartDashboard.putNumber(Dashboard.BASE_NAVIGATE_KP, drive_kP);
-    SmartDashboard.putNumber(Dashboard.BASE_NAVIGATE_KI, drive_kI);
-    SmartDashboard.putNumber(Dashboard.BASE_NAVIGATE_KD, drive_kD);
-
-    SmartDashboard.putNumber(Dashboard.BASE_ALIGN_NAVIGATE_KP, align_kP);
-    SmartDashboard.putNumber(Dashboard.BASE_ALIGN_NAVIGATE_KI, align_kI);
-    SmartDashboard.putNumber(Dashboard.BASE_ALIGN_NAVIGATE_KD, align_kD);
-
     addRequirements(base);
   }
 
@@ -108,36 +77,16 @@ public class Navigate extends CommandBase {
   public void initialize() {
     base.drive(new ChassisSpeeds());
 
-    straightController.setP(
-      SmartDashboard.getNumber(Dashboard.BASE_NAVIGATE_KP, drive_kP)
-    );
-    straightController.setI(
-      SmartDashboard.getNumber(Dashboard.BASE_NAVIGATE_KI, drive_kI)
-    );
-    straightController.setD(
-      SmartDashboard.getNumber(Dashboard.BASE_NAVIGATE_KD, drive_kD)
-    );
-
-    alignController.setP(
-      SmartDashboard.getNumber(Dashboard.BASE_ALIGN_NAVIGATE_KP, align_kP)
-    );
-    alignController.setI(
-      SmartDashboard.getNumber(Dashboard.BASE_ALIGN_NAVIGATE_KI, align_kI)
-    );
-    alignController.setD(
-      SmartDashboard.getNumber(Dashboard.BASE_ALIGN_NAVIGATE_KD, align_kD)
-    );
-
+    
     alignController.reset();
-    straightController.reset();
-
+    alignController.enableContinuousInput(-180.0, 180.0);
+    alignController.setTolerance(1);
     base.zeroGyro();
-    base.resetDriveMotors();
 
-    alignController.enableContinuousInput(-180, 180);
-
-    alignController.setTolerance(0.5, 1.0);
+    straightController.reset();
     straightController.setTolerance(1.5);
+    base.resetDriveMotors();
+   
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -165,7 +114,18 @@ public class Navigate extends CommandBase {
       ((0.123825) * (front_right_pos / Base.FULL_TALON_ROTATION_TICKS)) *
       12.875;
 
-    double x_error = straightController.calculate(
+    //Turn: PID Controller using setpoint of zero
+    // double d_processVariable = Math.abs(targetInches) - Math.abs(distance_traveled_inches);
+    // d_processVariable = Math.copySign(d_processVariable, targetInches);
+    // double d_output = alignController.calculate(d_processVariable, 0);
+    // double d_limitedDrivePower = limitPower(d_output / targetInches, 0.45);
+    // double d_drivePower = d_limitedDrivePower * Base.MAX_VELOCITY_METERS_PER_SECOND;
+    // SmartDashboard.putNumber("Navigate Drive Output: ", d_output);
+    // SmartDashboard.putNumber("Navigate Drive Power:", d_drivePower);
+    // SmartDashboard.putNumber("Navigate Drive Limited Power:", d_limitedDrivePower);
+    // SmartDashboard.putNumber("Navigate Drive Distance:", distance_traveled_inches);
+    // SmartDashboard.putNumber("Navigate Drive Process Variable:", d_processVariable);
+   double x_error = straightController.calculate(
       distance_traveled_inches,
       targetInches
     );
@@ -178,10 +138,18 @@ public class Navigate extends CommandBase {
     }
 
     System.out.println(x_power + ", " + x_error);
-
-    double angle_error = alignController.calculate(currentAngle, targetAngle);
-    double theta_power =
-      (angle_error / -180) * Base.MAX_VELOCITY_METERS_PER_SECOND;
+    
+    //Turn: PID Controller using setpoint of zero
+    double processVariable = Math.abs(targetAngle) - Math.abs(currentAngle);
+    processVariable = Math.copySign(processVariable, targetAngle);
+    double output = alignController.calculate(processVariable, 0);
+    double limitedTurnPower = limitPower(output / 180, LimelightAlign.TRACKER_LIMIT_DEFAULT);
+    double turnPower = limitedTurnPower * Base.MAX_VELOCITY_METERS_PER_SECOND;
+    SmartDashboard.putNumber("Navigate Output: ", output);
+    SmartDashboard.putNumber("Navigate Turn Power:", turnPower);
+    SmartDashboard.putNumber("Navigate Limited Power:", limitedTurnPower);
+    SmartDashboard.putNumber("Navigate Current Angle:", currentAngle);
+    SmartDashboard.putNumber("Navigate Process Variable:", processVariable);
 
     NetworkTableInstance
       .getDefault()
@@ -227,11 +195,18 @@ public class Navigate extends CommandBase {
       .getEntry("yaw")
       .setNumber(base.getSensorYaw());
     if (bBackwards) x_power *= -1;
-    ChassisSpeeds speeds = new ChassisSpeeds(x_power, 0, theta_power);
+    ChassisSpeeds speeds = new ChassisSpeeds(x_power, 0, turnPower);
 
     base.drive(speeds);
   }
-
+  private double limitPower(double currentPower, double limit) {
+    double value = currentPower;
+    //double limit = LimelightAlign.TRACKER_LIMIT_DEFAULT; //SmartDashboard.getNumber(Dashboard.BASE_ALIGN_LIMIT, LimelightAlign.TRACKER_LIMIT_DEFAULT);
+    if (Math.abs(currentPower) > limit)
+       value = Math.copySign(limit, currentPower);
+    System.out.println("limitPower: " + value + "; Original: " + currentPower);
+    return value;
+  }
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
@@ -264,6 +239,11 @@ public class Navigate extends CommandBase {
     System.out.println(
       "Straight Met: " + straightMet + "; turnMet: " + turnMet
     );
-    return straightMet && turnMet;
+
+    //ONLY CHECK THE CONDITION FOR THE MOVEMENT WHOSE TARGET IS NOT ZERO
+    if (targetInches == 0)
+       return turnMet;
+    else
+       return straightMet;
   }
 }

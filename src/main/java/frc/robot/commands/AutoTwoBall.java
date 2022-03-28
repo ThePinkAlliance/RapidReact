@@ -7,9 +7,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.HoodConstants;
 import frc.robot.TargetPackage;
+import frc.robot.TargetPackageFactory;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Hood;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -23,21 +25,28 @@ public class AutoTwoBall extends SequentialCommandGroup {
     Shooter m_shooter,
     Collector m_collector,
     Hood m_hood,
-    TargetPackage tp
+    Limelight m_limelight
   ) {
+    //seconds needed (as seen during SLF testing) to collect the second ball.
+    double autoCollectSeconds = 1.0;
+    double shootSeconds = 2;
+    double targetAcquireSeconds = 0.75;
+    TargetPackage tp = TargetPackageFactory.getTwoBallPackage();
+    boolean bUseLimelightInstead = true;
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      // new AutoHood(m_hood,tp.hoodPosition),
       //in parallel: move to pick up ball
       new Navigate(m_base, 70, false)
       //in parallel: start collecting and move the hood to shooting position
         .alongWith(
-          new AutoCollectGroup(m_collector, 1.6, true),
+          new AutoCollectGroup(m_collector, autoCollectSeconds, true),
           new AutoHood(m_hood, tp.hoodPosition)
         ),
+      //align before shooting
+      new LimelightAlign(m_base, m_limelight, targetAcquireSeconds),
       //Shoot both balls
-      new AutoShoot(m_shooter, m_collector, tp),
+      new AutoShoot(m_shooter, m_collector, m_hood, m_limelight, tp, shootSeconds, bUseLimelightInstead),
       new AutoHood(m_hood, HoodConstants.IDLE_TICK_COUNT)
     );
   }

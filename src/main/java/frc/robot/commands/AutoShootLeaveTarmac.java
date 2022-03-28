@@ -6,11 +6,12 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.HoodConstants;
-import frc.robot.ShooterConstants;
 import frc.robot.TargetPackage;
+import frc.robot.TargetPackageFactory;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Hood;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -22,21 +23,18 @@ public class AutoShootLeaveTarmac extends SequentialCommandGroup {
     Base m_base,
     Shooter m_shooter,
     Hood m_hood,
-    Collector m_collector
+    Collector m_collector,
+    Limelight m_limelight
   ) {
-    TargetPackage tp = new TargetPackage(
-      ShooterConstants.kGains.kP,
-      ShooterConstants.kGains.kF,
-      HoodConstants.HUB_SHOT_TICK_COUNT,
-      ShooterConstants.SHOOTER_POWER_HUB_HIGH
-    );
+    TargetPackage tp = TargetPackageFactory.getHighHubPackage();
+    boolean bUseLimelightInstead = false;
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new AutoHood(m_hood, HoodConstants.HUB_SHOT_TICK_COUNT),
-      new AutoShoot(m_shooter, m_collector, tp, AutoShoot.ONE_BALL_MAX_TIME),
-      new Navigate(m_base, LeaveTarmack.TRAVEL_DISTANCE, false)
-      .alongWith(new AutoHood(m_hood, tp.hoodPosition))
+      new AutoHood(m_hood, tp.hoodPosition),
+      new AutoShoot(m_shooter, m_collector, m_hood, m_limelight, tp, AutoShoot.ONE_BALL_MAX_TIME, bUseLimelightInstead),
+      new Navigate(m_base, LeaveTarmack.TRAVEL_DISTANCE, false),
+      new AutoHood(m_hood, HoodConstants.IDLE_TICK_COUNT)
     );
   }
 }

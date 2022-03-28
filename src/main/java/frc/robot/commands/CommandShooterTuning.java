@@ -7,10 +7,13 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.TargetPackage;
+import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 import java.util.function.Supplier;
+
+import org.ejml.dense.block.MatrixOps_DDRB;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -20,13 +23,10 @@ public class CommandShooterTuning extends ParallelCommandGroup {
   /** Creates a new CommandShooter. */
   public CommandShooterTuning(
     Shooter m_shooter,
-    Limelight m_limeLight,
+    Limelight m_limelight,
     Hood m_hood,
+    Base m_base,
     Joystick joystick,
-    TargetPackage highPackage,
-    TargetPackage tarmacPackage,
-    TargetPackage lowPackage,
-    TargetPackage defualtPackage,
     Supplier<Double> distanceSupplier,
     Supplier<Double> angleSupplier,
     int button_id
@@ -36,17 +36,12 @@ public class CommandShooterTuning extends ParallelCommandGroup {
     addCommands(
       new PrimitiveShooterTuning(
         m_shooter,
-        m_limeLight,
+        m_limelight,
         m_hood,
         joystick,
-        highPackage,
-        tarmacPackage,
-        lowPackage,
-        defualtPackage,
-        distanceSupplier,
-        angleSupplier,
         button_id
-      ));
+    ));
+      //new LimelightAlign(m_base, m_limelight));
 
   }
 }

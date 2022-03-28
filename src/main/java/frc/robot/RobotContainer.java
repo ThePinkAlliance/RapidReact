@@ -17,16 +17,13 @@ import frc.robot.commands.AutoMidClimb;
 import frc.robot.commands.AutoShootLeaveTarmac;
 import frc.robot.commands.AutoTwoBall;
 import frc.robot.commands.CollectGroup;
-import frc.robot.commands.CommandHood;
 import frc.robot.commands.CommandHoodTuning;
-import frc.robot.commands.CommandShooter;
 import frc.robot.commands.CommandShooterTuning;
 import frc.robot.commands.Drive;
 import frc.robot.commands.JoystickClimb;
 import frc.robot.commands.LeaveTarmack;
 import frc.robot.commands.LimelightAlign;
 import frc.robot.commands.MoveTower;
-import frc.robot.commands.PrimitiveShooter;
 import frc.robot.commands.paths.Threeball;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Climbers;
@@ -57,78 +54,37 @@ public class RobotContainer {
   private final Hood m_hood = new Hood();
   private final Climbers m_climbers = new Climbers();
   // DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
-  // private final Dashboard m_dashboard = new Dashboard(m_base, m_collector, m_shooter, null);
+  private final Dashboard m_dashboard = new Dashboard(m_base, m_collector, m_shooter, m_climbers);
 
   Trajectory trajectory = new Trajectory();
-  //ShuffleboardTab driverDashboard = Shuffleboard.getTab("Dashboard");
   SendableChooser<SelectableTrajectory> selectedPath = new SendableChooser<SelectableTrajectory>();
-
-  private final TargetPackage lowPackage = new TargetPackage(
-    ShooterConstants.kGains.kP,
-    ShooterConstants.kGains.kF,
-    HoodConstants.HUB_LOW_SHOT_COUNT,
-    ShooterConstants.SHOOTER_POWER_HUB_LOW
-  );
-
-  private final TargetPackage highPackage = new TargetPackage(
-    ShooterConstants.kGains.kP,
-    ShooterConstants.kGains.kF,
-    HoodConstants.HUB_SHOT_TICK_COUNT,
-    ShooterConstants.SHOOTER_POWER_HUB_HIGH
-  );
-
-  private final TargetPackage tarmacPackage = new TargetPackage(
-    ShooterConstants.kGainsTarmac.kP,
-    ShooterConstants.kGainsTarmac.kF,
-    HoodConstants.TARMAC_SHOT_TICK_COUNT,
-    ShooterConstants.SHOOTER_POWER_TARMAC_HIGH
-  );
-
-  private final TargetPackage defaultPackage = new TargetPackage(
-    ShooterConstants.kGainsRange.kP,
-    ShooterConstants.kGainsRange.kF,
-    HoodConstants.TARMAC_SHOT_TICK_COUNT,
-    ShooterConstants.SHOOTER_POWER_TARMAC_HIGH
-  );
-
-  private final TargetPackage twoBallTargetPackage = new TargetPackage(
-    ShooterConstants.SHOOTER_Kp_AUTO_TWO_BALL,
-    ShooterConstants.SHOOTER_FF_AUTO_TWO_BALL,
-    HoodConstants.AUTO_SHOT_TWOBALL_TICK_COUNT,
-    ShooterConstants.SHOOTER_POWER_TARMAC_HIGH
-  );
-
   private final SelectableTrajectory LeaveTarmac = new SelectableTrajectory(
     "Leave Tarmac",
     new LeaveTarmack(m_base)
   );
-
   private final SelectableTrajectory ShootLeaveTarmac = new SelectableTrajectory(
     "Auto Shoot Leave Tarmac",
-    new AutoShootLeaveTarmac(m_base, m_shooter, m_hood, m_collector)
+    new AutoShootLeaveTarmac(m_base, m_shooter, m_hood, m_collector, m_limelight)
   );
-
-  private final SelectableTrajectory ShootLeaveTarmacCollectShoot = new SelectableTrajectory(
+  private final SelectableTrajectory TwoBallAuto = new SelectableTrajectory(
     "Two Ball Auto",
     new AutoTwoBall(
       m_base,
       m_shooter,
       m_collector,
       m_hood,
-      twoBallTargetPackage
+      m_limelight
     )
   );
-
   private final SelectableTrajectory ThreeBallAuto = new SelectableTrajectory(
     "Auto Three Ball",
     new Threeball(m_base, m_shooter, m_collector, m_limelight, m_hood)
   );
 
-  private final SelectableTrajectory TwoBallBlue = new SelectableTrajectory(
-    "Two Ball Blue",
-    "output/2 Ball Blue.wpilib.json"
-  );
-
+  // private final SelectableTrajectory TwoBallBlue = new SelectableTrajectory(
+  //   "Two Ball Blue",
+  //   "output/2 Ball Blue.wpilib.json"
+  // );
   // private final SelectableTrajectory autoMidClimb = new SelectableTrajectory(
   //   "AutoMidClimb",
   //   new AutoMidClimb(m_base, m_climbers)
@@ -140,7 +96,7 @@ public class RobotContainer {
   private final SelectableTrajectory[] trajectories = {
     LeaveTarmac,
     ShootLeaveTarmac,
-    ShootLeaveTarmacCollectShoot,
+    TwoBallAuto,
     ThreeBallAuto,
     // autoMidClimb,
   };
@@ -161,42 +117,12 @@ public class RobotContainer {
     }
 
     SmartDashboard.putData(selectedPath);
+    m_dashboard.publishInitialDashboard();  //DO NOT REMOVE and DO NOT COMMENT OUT
 
-    // for now select leave blue 1 for testing
-
-    //Initialize and publish for the first time.  Default command of dashboard handles thereafter.
-    //m_dashboard.initialize();
-    //m_dashboard.publishDashboard();
-    SmartDashboard.putNumber(
-      Dashboard.DASH_SHOOTER_VELOCITY,
-      this.m_shooter.getMotorOutputPercent()
-    );
-    SmartDashboard.putNumber(
-      Dashboard.DASH_SHOOTER_TARGET_RPMS,
-      ShooterConstants.SHOOTER_POWER_HUB_HIGH
-    );
-    SmartDashboard.putNumber(
-      Dashboard.DASH_SHOOTER_RPMS,
-      m_shooter.getMotorRpms()
-    );
-    SmartDashboard.putBoolean(Dashboard.DASH_SHOOTER_READY, false);
-    SmartDashboard.putNumber(
-      Dashboard.DASH_SHOOTER_P,
-      ShooterConstants.kGains.kP
-    );
-    SmartDashboard.putNumber(
-      Dashboard.DASH_SHOOTER_FF,
-      ShooterConstants.kGains.kF
-    );
-
-    SmartDashboard.putNumber(
-      Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
-      m_climbers.longClimberModule.getPosition()
-    );
-    SmartDashboard.putNumber(
-      Dashboard.DASH_CLIMBER_SHORT_ARM_POSITION,
-      m_climbers.shortClimberModule.getPosition()
-    );
+    this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
+    // this.m_climbers.setDefaultCommand(
+    //     new JoystickClimb(m_climbers, this.gamepad_tower)
+    //   );
   }
 
   /**
@@ -208,43 +134,6 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // base controller
-    // left joystick
-
-    this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
-    this.m_climbers.setDefaultCommand(
-        new JoystickClimb(m_climbers, this.gamepad_tower)
-      );
-    //this.m_dashboard.setDefaultCommand(new DashboardPublish(m_dashboard));
-
-    SmartDashboard.putNumber(Dashboard.DASH_HOOD_P, HoodConstants.kGains.kP);
-    SmartDashboard.putNumber(Dashboard.DASH_HOOD_I, HoodConstants.kGains.kI);
-    SmartDashboard.putNumber(Dashboard.DASH_HOOD_D, HoodConstants.kGains.kD);
-
-    SmartDashboard.putNumber(
-      Dashboard.DASH_TARGET_TRACKER_KP,
-      BaseConstants.targetTrackerGains.kP
-    );
-    SmartDashboard.putNumber(
-      Dashboard.DASH_TARGET_TRACKER_KI,
-      BaseConstants.targetTrackerGains.kI
-    );
-    SmartDashboard.putNumber(
-      Dashboard.DASH_TARGET_TRACKER_KD,
-      BaseConstants.targetTrackerGains.kD
-    );
-
-    SmartDashboard.putNumber(
-      Dashboard.DASH_HOOD_TICKS,
-      HoodConstants.IDLE_TICK_COUNT
-    );
-    SmartDashboard.putNumber(Dashboard.DASH_HOOD_OUTPUT, 0);
-    SmartDashboard.putNumber(Dashboard.DASH_HOOD_DRAW, 0);
-    SmartDashboard.putNumber(
-      Dashboard.DASH_CLIMBER_LIMITER,
-      ClimberModule.CLIMBER_LIMITER
-    );
-    SmartDashboard.putNumber(Dashboard.BASE_ALIGN_LIMIT, LimelightAlign.TRACKER_LIMIT_DEFAULT);
 
     //Shooter - Shoot - move tower to push ball up to shooter
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_X)
@@ -263,11 +152,8 @@ public class RobotContainer {
           m_shooter,
           m_limelight,
           m_hood,
+          m_base,
           gamepad_tower,
-          highPackage,
-          tarmacPackage,
-          lowPackage,
-          defaultPackage,
           m_limelight.getDistanceSupplier(),
           m_limelight.getAngleSupplier(),
           Constants.JOYSTICK_BUTTON_B
@@ -342,7 +228,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     if (selectedPath.getSelected() == null) {
-      selectedPath.setDefaultOption(ShootLeaveTarmac.name, ShootLeaveTarmac);
+      selectedPath.setDefaultOption(TwoBallAuto.name, TwoBallAuto);
     }
 
     return selectedPath.getSelected().getDefualtCommand();

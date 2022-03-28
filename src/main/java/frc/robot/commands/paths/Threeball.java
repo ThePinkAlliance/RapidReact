@@ -10,6 +10,7 @@ import frc.robot.AutoShootHood;
 import frc.robot.HoodConstants;
 import frc.robot.ShooterConstants;
 import frc.robot.TargetPackage;
+import frc.robot.TargetPackageFactory;
 import frc.robot.commands.AutoCollectGroup;
 import frc.robot.commands.AutoHood;
 import frc.robot.commands.AutoShoot;
@@ -36,30 +37,28 @@ public class Threeball extends SequentialCommandGroup {
     Limelight m_limelight,
     Hood m_hood
   ) {
-    TargetPackage shooter_tp = new TargetPackage(
-      ShooterConstants.SHOOTER_Kp_AUTO_THREE_BALL,
-      ShooterConstants.SHOOTER_FF_AUTO_THREE_BALL,
-      HoodConstants.AUTO_SHOT_THREEBALL_TICK_COUNT,
-      ShooterConstants.SHOOTER_POWER_THREE_BALL
-    );
-
+    double autoCollectSeconds = 1.0;
+    double autoCollectSecondsThirdBall = 2.6;
+    double shootSeconds = 2;
+    double shootSecondsThirdBall = 1.2;
+    double targetAcquireSeconds = 0.75;
     // Add your commands in the addCommands() call, e.g.
     addCommands(
       // in parallel: move to pick up ball
       new Navigate(m_base, 70, false)
       // in parallel: start collecting and move the hood to shooting position
         .alongWith(
-          new AutoCollectGroup(m_collector, 1.6, true),
-          new AutoHood(m_hood, shooter_tp.hoodPosition)
+          new AutoCollectGroup(m_collector, autoCollectSeconds, true)
+          //new AutoHood(m_hood, shooter_tp.hoodPosition)
         ),
       // Shoot both balls
-      new AutoShoot(m_shooter, m_collector, shooter_tp),
-      new Navigate(m_base, 0, 75),
-      new Navigate(m_base, 110, 0)
-      .alongWith(new AutoCollectGroup(m_collector, 2.6, true)),
-      new Navigate(m_base, 0, 25),
-      new LimelightAlign(m_base, m_limelight),
-      new AutoShoot(m_shooter, m_collector, shooter_tp)
+      //new AutoShoot(m_shootPer, m_collector, m_hood, m_limelight, null, shootSeconds, true),
+      new Navigate(m_base, 0, 100)//,
+     // new Navigate(m_base, 60, false)
+     // .alongWith(new AutoCollectGroup(m_collector, autoCollectSecondsThirdBall, true)),
+     // new Navigate(m_base, 0, -25)
+      //new LimelightAlign(m_base, m_limelight, targetAcquireSeconds),
+      //new AutoShoot(m_shooter, m_collector, m_hood, m_limelight, null, shootSecondsThirdBall, true)
     );
   }
 }
