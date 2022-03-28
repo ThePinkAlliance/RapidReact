@@ -28,7 +28,7 @@ public class AutoTwoBall extends SequentialCommandGroup {
     Limelight m_limelight
   ) {
     //seconds needed (as seen during SLF testing) to collect the second ball.
-    double autoCollectSeconds = 1.0;
+    double autoCollectSeconds = 1.2;
     double shootSeconds = 2;
     double targetAcquireSeconds = 0.75;
     TargetPackage tp = TargetPackageFactory.getTwoBallPackage();

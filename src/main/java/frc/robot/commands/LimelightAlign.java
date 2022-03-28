@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.BaseConstants;
+import frc.robot.Constants;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Limelight;
@@ -21,6 +22,7 @@ public class LimelightAlign extends CommandBase {
   Limelight limelight;
   Joystick joystick;
   Timer timer;
+  
   PIDController alignController = new PIDController(
     BaseConstants.targetTrackerGains.kP,
     BaseConstants.targetTrackerGains.kI,
@@ -32,6 +34,8 @@ public class LimelightAlign extends CommandBase {
   double maxSecondsToAcquireTarget = MAX_TIME;
   private final double ANGLE_TOLERANCE = 0.5; //Tuned at SLF
   public static final double TRACKER_LIMIT_DEFAULT = 0.45; //Tuned at SLF
+  public static final double TRACKER_OFFSET = -2;
+  private double setPoint = 0;
 
   public LimelightAlign(
     Base baseSubsystem,
@@ -73,6 +77,9 @@ public class LimelightAlign extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    boolean  right = joystick.getPOV() == Constants.JOYSTICK_POV_RIGHT;
+    boolean left = joystick.getPOV() == Constants.JOYSTICK_POV_LEFT;
+    
     alignController.setP(
       SmartDashboard.getNumber(
         Dashboard.DASH_TARGET_TRACKER_KP,
@@ -96,7 +103,13 @@ public class LimelightAlign extends CommandBase {
 
     boolean availableTarget = limelight.isTarget();
     if (availableTarget == true) {
-      double output = alignController.calculate(limelight.getOffset(), 0);
+      double offset = 0;
+      if (right)
+        offset = SmartDashboard.getNumber(Dashboard.DASH_LIMELIGHT_ANGLE_OFFSET, TRACKER_OFFSET);
+      else if (left)
+        offset = SmartDashboard.getNumber(Dashboard.DASH_LIMELIGHT_ANGLE_OFFSET, TRACKER_OFFSET);
+      
+      double output = alignController.calculate(limelight.getOffset(), setPoint + offset);
       output = limitAzimuthPower(output / 180);
       double power = output * Base.MAX_VELOCITY_METERS_PER_SECOND;
 

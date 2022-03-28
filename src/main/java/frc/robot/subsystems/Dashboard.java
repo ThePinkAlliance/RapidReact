@@ -168,6 +168,7 @@ public class Dashboard extends SubsystemBase {
       Dashboard.DASH_SHOOTER_FF,
       ShooterConstants.kGains.kF
     );
+    SmartDashboard.putNumber(DASH_LIMELIGHT_ANGLE_OFFSET, LimelightAlign.TRACKER_OFFSET);
   }
 
   @Override

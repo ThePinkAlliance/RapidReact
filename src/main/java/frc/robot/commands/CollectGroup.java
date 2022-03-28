@@ -40,7 +40,9 @@ public class CollectGroup extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    this.m_collector.setSolenoid(true);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -52,7 +54,7 @@ public class CollectGroup extends CommandBase {
       this.m_collector.SetSpeedCollector(Collector.COLLECTOR_MOTOR_FULL_SPEED);
       this.m_collector.SetSpeedTowerForOverride(Collector.TOWER_MOTOR_FULL_SPEED);
     }
-    this.m_collector.setSolenoid(true);
+    
   }
 
   // Called once the command ends or is interrupted.

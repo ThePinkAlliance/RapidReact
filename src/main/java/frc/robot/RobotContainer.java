@@ -77,7 +77,7 @@ public class RobotContainer {
     )
   );
   private final SelectableTrajectory ThreeBallAuto = new SelectableTrajectory(
-    "Auto Three Ball",
+    "Three Ball Auto",
     new Threeball(m_base, m_shooter, m_collector, m_limelight, m_hood)
   );
 
@@ -109,7 +109,7 @@ public class RobotContainer {
     configureButtonBindings();
 
     for (SelectableTrajectory t : trajectories) {
-      if (t.location == ShootLeaveTarmac.name) {
+      if (t.location == TwoBallAuto.name) {
         selectedPath.setDefaultOption(t.name, t);
       } else {
         selectedPath.addOption(t.name, t);
@@ -121,8 +121,8 @@ public class RobotContainer {
 
     this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
     // this.m_climbers.setDefaultCommand(
-    //     new JoystickClimb(m_climbers, this.gamepad_tower)
-    //   );
+    //      new JoystickClimb(m_climbers, this.gamepad_tower)
+    //  );
   }
 
   /**
@@ -146,7 +146,7 @@ public class RobotContainer {
           true
         )
       );
-    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
+    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_A)
     .whenPressed(
         new CommandShooterTuning(
           m_shooter,
@@ -156,12 +156,12 @@ public class RobotContainer {
           gamepad_tower,
           m_limelight.getDistanceSupplier(),
           m_limelight.getAngleSupplier(),
-          Constants.JOYSTICK_BUTTON_B
+          Constants.JOYSTICK_BUTTON_A
         )
       );
-      new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_A)
+      new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
     .whenPressed(
-        new CommandHoodTuning(m_hood, gamepad_tower, Constants.JOYSTICK_BUTTON_A)
+        new CommandHoodTuning(m_hood, gamepad_tower, Constants.JOYSTICK_BUTTON_B)
       );
     // Collector Intake
     new JoystickButton(gamepad_base, Constants.JOYSTICK_RIGHT_BUMPER)

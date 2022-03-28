@@ -37,7 +37,7 @@ public class Threeball extends SequentialCommandGroup {
     Limelight m_limelight,
     Hood m_hood
   ) {
-    double autoCollectSeconds = 1.0;
+    double autoCollectSeconds = 1.2;
     double autoCollectSecondsThirdBall = 2.6;
     double shootSeconds = 2;
     double shootSecondsThirdBall = 1.2;
@@ -45,19 +45,19 @@ public class Threeball extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     addCommands(
       // in parallel: move to pick up ball
-      new Navigate(m_base, 70, false)
+      new Navigate(m_base, 75, false)
       // in parallel: start collecting and move the hood to shooting position
         .alongWith(
           new AutoCollectGroup(m_collector, autoCollectSeconds, true)
           //new AutoHood(m_hood, shooter_tp.hoodPosition)
         ),
       // Shoot both balls
-      //new AutoShoot(m_shootPer, m_collector, m_hood, m_limelight, null, shootSeconds, true),
-      new Navigate(m_base, 0, 100)//,
-     // new Navigate(m_base, 60, false)
-     // .alongWith(new AutoCollectGroup(m_collector, autoCollectSecondsThirdBall, true)),
-     // new Navigate(m_base, 0, -25)
-      //new LimelightAlign(m_base, m_limelight, targetAcquireSeconds),
+      new AutoShoot(m_shooter, m_collector, m_hood, m_limelight, null, shootSeconds, true),
+      new Navigate(m_base, 0, 95, false),
+      new Navigate(m_base, 105, 0, false)
+      .alongWith(new AutoCollectGroup(m_collector, autoCollectSecondsThirdBall, true))//,
+      //new Navigate(m_base, 0, 25),
+      //new LimelightAlign(m_base, m_limelight, targetAcquireSeconds)
       //new AutoShoot(m_shooter, m_collector, m_hood, m_limelight, null, shootSecondsThirdBall, true)
     );
   }

@@ -38,7 +38,6 @@ public class PrimitiveShooterTuning extends CommandBase {
     this.m_hood = m_hood;
     this.button_id = button_id;
     this.joystick = joystick;
-    //DO NOT ADD LIMELIGHT AS REQUIRED
     addRequirements(m_shooter, m_limelight, m_hood);
   }
 
@@ -56,13 +55,16 @@ public class PrimitiveShooterTuning extends CommandBase {
 
     if (low) {
       currentPackage = TargetPackageFactory.getLowHubPackage();
+      System.out.println("Low Hub Package");
     } else if (tarmac) {
       currentPackage = TargetPackageFactory.getTarmacPackage();
+      System.out.println("Tarmac Package");
     } else if (high) {
       currentPackage = TargetPackageFactory.getHighHubPackage();
+      System.out.println("High Hub Package");
     } else {
       double distance = m_limelight.getDistanceSupplier().get();
-      System.out.println("Distance: " + distance);
+      System.out.println("Custom Package Distance: " + distance);
       currentPackage = TargetPackageFactory.getCustomPackage(distance);
     }
 
