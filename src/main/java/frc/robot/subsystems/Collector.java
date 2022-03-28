@@ -12,6 +12,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.Rev2mDistanceSensor;
 import com.revrobotics.Rev2mDistanceSensor.Port;
 import com.revrobotics.Rev2mDistanceSensor.Unit;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,11 +25,12 @@ public class Collector extends SubsystemBase {
   public static double TOWER_MOTOR_FULL_SPEED = 1;
   public static final double TOWER_SENSOR_TRIGGER_DISTANCE = 150.0; // millimeters
   private final int TOWER_MOTOR_PORT = 20;
-  private final int SOLENOID_ID = 0;
+  private final int SOLENOID_ID_CLOSE = 0;
+  private final int SOLENOID_ID_OPEN = 0;
 
   // Collector
   private CANSparkMax collectorMotor;
-  private Solenoid solenoid;
+  private DoubleSolenoid solenoid;
   private boolean collectorRunning = false;
   // Tower
   private TalonFX towerMotor;
@@ -35,12 +38,20 @@ public class Collector extends SubsystemBase {
   private boolean towerOverride = false;
   private boolean towerReverse = false;
 
+  private Value OPEN = Value.kForward;
+  private Value CLOSE = Value.kReverse;
+
   /** Creates a new Collector. */
   public Collector() {
     //Collector
     this.collectorMotor =
       new CANSparkMax(Collector.COLLECTOR_MOTOR_PORT, MotorType.kBrushless);
-    this.solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, SOLENOID_ID);
+    this.solenoid =
+      new DoubleSolenoid(
+        PneumaticsModuleType.CTREPCM,
+        SOLENOID_ID_OPEN,
+        SOLENOID_ID_CLOSE
+      );
     this.collectorMotor.setInverted(true);
     //Tower
     this.towerMotor = new TalonFX(TOWER_MOTOR_PORT);
@@ -63,10 +74,10 @@ public class Collector extends SubsystemBase {
 
   public void dropCollector() {
     this.collectorMotor.set(1);
-    this.solenoid.set(true);
+    this.solenoid.set(OPEN);
   }
 
-  public void setSolenoid(boolean on) {
+  public void setSolenoid(Value on) {
     this.solenoid.set(on);
   }
 

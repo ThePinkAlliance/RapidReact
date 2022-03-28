@@ -22,7 +22,7 @@ public class LimelightAlign extends CommandBase {
   Limelight limelight;
   Joystick joystick;
   Timer timer;
-  
+
   PIDController alignController = new PIDController(
     BaseConstants.targetTrackerGains.kP,
     BaseConstants.targetTrackerGains.kI,
@@ -30,7 +30,7 @@ public class LimelightAlign extends CommandBase {
   );
 
   private int buttonId;
-  private final double MAX_TIME = 0.75;  //Arbitrary
+  private final double MAX_TIME = 0.75; //Arbitrary
   double maxSecondsToAcquireTarget = MAX_TIME;
   private final double ANGLE_TOLERANCE = 0.5; //Tuned at SLF
   public static final double TRACKER_LIMIT_DEFAULT = 0.45; //Tuned at SLF
@@ -53,7 +53,11 @@ public class LimelightAlign extends CommandBase {
     addRequirements(baseSubsystem, limelightSubsystem);
   }
 
-  public LimelightAlign(Base baseSubsystem, Limelight limelightSubsystem, double maxSecondsToAcquireTarget) {
+  public LimelightAlign(
+    Base baseSubsystem,
+    Limelight limelightSubsystem,
+    double maxSecondsToAcquireTarget
+  ) {
     this.base = baseSubsystem;
     this.limelight = limelightSubsystem;
     this.maxSecondsToAcquireTarget = maxSecondsToAcquireTarget;
@@ -77,9 +81,9 @@ public class LimelightAlign extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    boolean  right = joystick.getPOV() == Constants.JOYSTICK_POV_RIGHT;
+    boolean right = joystick.getPOV() == Constants.JOYSTICK_POV_RIGHT;
     boolean left = joystick.getPOV() == Constants.JOYSTICK_POV_LEFT;
-    
+
     alignController.setP(
       SmartDashboard.getNumber(
         Dashboard.DASH_TARGET_TRACKER_KP,
@@ -104,12 +108,21 @@ public class LimelightAlign extends CommandBase {
     boolean availableTarget = limelight.isTarget();
     if (availableTarget == true) {
       double offset = 0;
-      if (right)
-        offset = SmartDashboard.getNumber(Dashboard.DASH_LIMELIGHT_ANGLE_OFFSET, TRACKER_OFFSET);
-      else if (left)
-        offset = SmartDashboard.getNumber(Dashboard.DASH_LIMELIGHT_ANGLE_OFFSET, TRACKER_OFFSET);
-      
-      double output = alignController.calculate(limelight.getOffset(), setPoint + offset);
+      if (right) offset =
+        SmartDashboard.getNumber(
+          Dashboard.DASH_LIMELIGHT_ANGLE_OFFSET,
+          TRACKER_OFFSET
+        ); else if (left) offset =
+        SmartDashboard.getNumber(
+          Dashboard.DASH_LIMELIGHT_ANGLE_OFFSET,
+          TRACKER_OFFSET
+        ) *
+        -1.0;
+
+      double output = alignController.calculate(
+        limelight.getOffset(),
+        setPoint + offset
+      );
       output = limitAzimuthPower(output / 180);
       double power = output * Base.MAX_VELOCITY_METERS_PER_SECOND;
 
@@ -122,9 +135,6 @@ public class LimelightAlign extends CommandBase {
         alignController.getD()
       );
 
-      //SmartDashboard.putNumber("targetWithOffset", setPoint);
-      //SmartDashboard.putNumber("power", power);
-
       ChassisSpeeds speeds = new ChassisSpeeds(0, 0, power);
       base.drive(speeds);
     }
@@ -133,13 +143,13 @@ public class LimelightAlign extends CommandBase {
   private double limitAzimuthPower(double currentPower) {
     double value = currentPower;
     double limit = LimelightAlign.TRACKER_LIMIT_DEFAULT; //SmartDashboard.getNumber(Dashboard.BASE_ALIGN_LIMIT, LimelightAlign.TRACKER_LIMIT_DEFAULT);
-    if (Math.abs(currentPower) > limit)
-       value = Math.copySign(limit, currentPower);
-    System.out.println("limitAzimuthPower: " + value + "; Original: " + currentPower);
+    if (Math.abs(currentPower) > limit) value =
+      Math.copySign(limit, currentPower);
+    System.out.println(
+      "limitAzimuthPower: " + value + "; Original: " + currentPower
+    );
     return value;
   }
-
-  
 
   // Called once the command ends or is interrupted.
   @Override
@@ -153,9 +163,7 @@ public class LimelightAlign extends CommandBase {
   @Override
   public boolean isFinished() {
     if (this.joystick != null) {
-      return (
-        !joystick.getRawButton(this.buttonId)
-      );
+      return (!joystick.getRawButton(this.buttonId));
     } else {
       return alignController.atSetpoint() || timer.hasElapsed(MAX_TIME);
     }

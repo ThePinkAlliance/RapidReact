@@ -12,7 +12,6 @@ import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
 import java.util.function.Supplier;
-
 import org.ejml.dense.block.MatrixOps_DDRB;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -40,8 +39,7 @@ public class CommandShooterTuning extends ParallelCommandGroup {
         m_hood,
         joystick,
         button_id
-    ));
-      //new LimelightAlign(m_base, m_limelight));
-
+      )
+    );
   }
 }

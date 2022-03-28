@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Collector;
@@ -41,7 +42,7 @@ public class CollectGroup extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    this.m_collector.setSolenoid(true);
+    this.m_collector.setSolenoid(Value.kForward);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -49,12 +50,15 @@ public class CollectGroup extends CommandBase {
   public void execute() {
     if (bIntake == false) {
       this.m_collector.SetSpeedCollector(-Collector.COLLECTOR_MOTOR_FULL_SPEED);
-      this.m_collector.SetSpeedTowerForOverride(-Collector.TOWER_MOTOR_FULL_SPEED);
+      this.m_collector.SetSpeedTowerForOverride(
+          -Collector.TOWER_MOTOR_FULL_SPEED
+        );
     } else {
       this.m_collector.SetSpeedCollector(Collector.COLLECTOR_MOTOR_FULL_SPEED);
-      this.m_collector.SetSpeedTowerForOverride(Collector.TOWER_MOTOR_FULL_SPEED);
+      this.m_collector.SetSpeedTowerForOverride(
+          Collector.TOWER_MOTOR_FULL_SPEED
+        );
     }
-    
   }
 
   // Called once the command ends or is interrupted.
@@ -62,7 +66,7 @@ public class CollectGroup extends CommandBase {
   public void end(boolean interrupted) {
     this.m_collector.SetSpeedCollector(0);
     this.m_collector.SetSpeedTowerForOverride(0);
-    this.m_collector.setSolenoid(false);
+    this.m_collector.setSolenoid(Value.kReverse);
   }
 
   // Returns true when the command should end.

@@ -12,15 +12,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.AutoHood;
-import frc.robot.commands.AutoMidClimb;
 import frc.robot.commands.AutoShootLeaveTarmac;
 import frc.robot.commands.AutoTwoBall;
 import frc.robot.commands.CollectGroup;
 import frc.robot.commands.CommandHoodTuning;
 import frc.robot.commands.CommandShooterTuning;
 import frc.robot.commands.Drive;
-import frc.robot.commands.JoystickClimb;
 import frc.robot.commands.LeaveTarmack;
 import frc.robot.commands.LimelightAlign;
 import frc.robot.commands.MoveTower;
@@ -54,7 +51,12 @@ public class RobotContainer {
   private final Hood m_hood = new Hood();
   private final Climbers m_climbers = new Climbers();
   // DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
-  private final Dashboard m_dashboard = new Dashboard(m_base, m_collector, m_shooter, m_climbers);
+  private final Dashboard m_dashboard = new Dashboard(
+    m_base,
+    m_collector,
+    m_shooter,
+    m_climbers
+  );
 
   Trajectory trajectory = new Trajectory();
   SendableChooser<SelectableTrajectory> selectedPath = new SendableChooser<SelectableTrajectory>();
@@ -64,17 +66,17 @@ public class RobotContainer {
   );
   private final SelectableTrajectory ShootLeaveTarmac = new SelectableTrajectory(
     "Auto Shoot Leave Tarmac",
-    new AutoShootLeaveTarmac(m_base, m_shooter, m_hood, m_collector, m_limelight)
+    new AutoShootLeaveTarmac(
+      m_base,
+      m_shooter,
+      m_hood,
+      m_collector,
+      m_limelight
+    )
   );
   private final SelectableTrajectory TwoBallAuto = new SelectableTrajectory(
     "Two Ball Auto",
-    new AutoTwoBall(
-      m_base,
-      m_shooter,
-      m_collector,
-      m_hood,
-      m_limelight
-    )
+    new AutoTwoBall(m_base, m_shooter, m_collector, m_hood, m_limelight)
   );
   private final SelectableTrajectory ThreeBallAuto = new SelectableTrajectory(
     "Three Ball Auto",
@@ -98,7 +100,6 @@ public class RobotContainer {
     ShootLeaveTarmac,
     TwoBallAuto,
     ThreeBallAuto,
-    // autoMidClimb,
   };
 
   /**
@@ -117,7 +118,7 @@ public class RobotContainer {
     }
 
     SmartDashboard.putData(selectedPath);
-    m_dashboard.publishInitialDashboard();  //DO NOT REMOVE and DO NOT COMMENT OUT
+    m_dashboard.publishInitialDashboard(); //DO NOT REMOVE and DO NOT COMMENT OUT
 
     this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
     // this.m_climbers.setDefaultCommand(
@@ -134,8 +135,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-
-    //Shooter - Shoot - move tower to push ball up to shooter
+    // Shooter - Shoot - move tower to push ball up to shooter
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_X)
     .whenPressed(
         new MoveTower(
@@ -159,9 +159,13 @@ public class RobotContainer {
           Constants.JOYSTICK_BUTTON_A
         )
       );
-      new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
+    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
     .whenPressed(
-        new CommandHoodTuning(m_hood, gamepad_tower, Constants.JOYSTICK_BUTTON_B)
+        new CommandHoodTuning(
+          m_hood,
+          gamepad_tower,
+          Constants.JOYSTICK_BUTTON_B
+        )
       );
     // Collector Intake
     new JoystickButton(gamepad_base, Constants.JOYSTICK_RIGHT_BUMPER)

@@ -38,7 +38,7 @@ public class PrimitiveShooterTuning extends CommandBase {
     this.m_hood = m_hood;
     this.button_id = button_id;
     this.joystick = joystick;
-    addRequirements(m_shooter, m_limelight, m_hood);
+    addRequirements(m_shooter, m_hood);
   }
 
   // Called when the command is initially scheduled.
@@ -48,7 +48,6 @@ public class PrimitiveShooterTuning extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-   
     boolean low = joystick.getPOV() == Constants.JOYSTICK_POV_DOWN;
     boolean tarmac = joystick.getPOV() == Constants.JOYSTICK_POV_LEFT;
     boolean high = joystick.getPOV() == Constants.JOYSTICK_POV_UP;
