@@ -4,23 +4,20 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.ExampleSubsystem;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Hood;
 
-/** An example command that uses an example subsystem. */
-public class ExampleCommand extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final ExampleSubsystem m_subsystem;
+public class DisableHoodControl extends CommandBase {
 
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
-  public ExampleCommand(ExampleSubsystem subsystem) {
-    m_subsystem = subsystem;
+  Hood m_hood;
+  Joystick joystick;
+
+  /** Creates a new CommandHood. */
+  public DisableHoodControl(Hood m_hood) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    this.m_hood = m_hood;
+    addRequirements(m_hood);
   }
 
   // Called when the command is initially scheduled.
@@ -29,7 +26,11 @@ public class ExampleCommand extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    //Enables the speed controller closed loop control.
+    //This command does not have to continue after setting this on.
+    this.m_hood.disableCloseLoopControl();
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -38,6 +39,7 @@ public class ExampleCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    //This command set simply disables the closed loop control of the hood and leaves it where it is.
+    return true;
   }
 }
