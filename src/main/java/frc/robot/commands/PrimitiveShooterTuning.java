@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.HoodConstants;
 import frc.robot.TargetPackage;
 import frc.robot.TargetPackageFactory;
 import frc.robot.subsystems.Dashboard;
@@ -43,7 +44,13 @@ public class PrimitiveShooterTuning extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_hood.setPID(
+      HoodConstants.kGains.kP,
+      HoodConstants.kGains.kI,
+      HoodConstants.kGains.kD
+    );
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -63,6 +70,7 @@ public class PrimitiveShooterTuning extends CommandBase {
       System.out.println("High Hub Package");
     } else {
       double distance = m_limelight.getDistanceSupplier().get();
+
       System.out.println("Custom Package Distance: " + distance);
       currentPackage = TargetPackageFactory.getCustomPackage(distance);
     }
@@ -93,6 +101,7 @@ public class PrimitiveShooterTuning extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_shooter.command(0);
+    m_hood.disableCloseLoopControl();
   }
 
   // Returns true when the command should end.

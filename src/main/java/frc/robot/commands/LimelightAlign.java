@@ -73,17 +73,6 @@ public class LimelightAlign extends CommandBase {
     alignController.enableContinuousInput(-180.0, 180.0);
     alignController.setTolerance(this.ANGLE_TOLERANCE);
 
-    base.zeroGyro();
-    timer.reset();
-    timer.start();
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    boolean right = joystick.getPOV() == Constants.JOYSTICK_POV_RIGHT;
-    boolean left = joystick.getPOV() == Constants.JOYSTICK_POV_LEFT;
-
     alignController.setP(
       SmartDashboard.getNumber(
         Dashboard.DASH_TARGET_TRACKER_KP,
@@ -104,6 +93,17 @@ public class LimelightAlign extends CommandBase {
         BaseConstants.targetTrackerGains.kD
       )
     );
+
+    base.zeroGyro();
+    timer.reset();
+    timer.start();
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    boolean right = joystick.getPOV() == Constants.JOYSTICK_POV_RIGHT;
+    boolean left = joystick.getPOV() == Constants.JOYSTICK_POV_LEFT;
 
     boolean availableTarget = limelight.isTarget();
     if (availableTarget == true) {

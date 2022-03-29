@@ -42,7 +42,7 @@ public class CollectGroup extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    this.m_collector.setSolenoid(Value.kForward);
+    this.m_collector.setSolenoid(Collector.COLLECTOR_OPEN);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -66,7 +66,7 @@ public class CollectGroup extends CommandBase {
   public void end(boolean interrupted) {
     this.m_collector.SetSpeedCollector(0);
     this.m_collector.SetSpeedTowerForOverride(0);
-    this.m_collector.setSolenoid(Value.kReverse);
+    this.m_collector.setSolenoid(Collector.COLLECTOR_CLOSE);
   }
 
   // Returns true when the command should end.

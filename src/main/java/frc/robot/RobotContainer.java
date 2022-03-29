@@ -18,6 +18,7 @@ import frc.robot.commands.CollectGroup;
 import frc.robot.commands.CommandHoodTuning;
 import frc.robot.commands.CommandShooterTuning;
 import frc.robot.commands.Drive;
+import frc.robot.commands.JoystickClimb;
 import frc.robot.commands.LeaveTarmack;
 import frc.robot.commands.LimelightAlign;
 import frc.robot.commands.MoveTower;
@@ -121,9 +122,9 @@ public class RobotContainer {
     m_dashboard.publishInitialDashboard(); //DO NOT REMOVE and DO NOT COMMENT OUT
 
     this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
-    // this.m_climbers.setDefaultCommand(
-    //      new JoystickClimb(m_climbers, this.gamepad_tower)
-    //  );
+    this.m_climbers.setDefaultCommand(
+        new JoystickClimb(m_climbers, this.gamepad_tower)
+      );
   }
 
   /**
