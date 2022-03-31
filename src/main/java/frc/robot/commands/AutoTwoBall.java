@@ -32,7 +32,7 @@ public class AutoTwoBall extends SequentialCommandGroup {
     double shootSeconds = 2;
     double targetAcquireSeconds = 0.75;
     TargetPackage tp = TargetPackageFactory.getTwoBallPackage();
-    boolean bUseLimelightInstead = true;
+    boolean bUseLimelightInstead = false;
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
@@ -44,7 +44,7 @@ public class AutoTwoBall extends SequentialCommandGroup {
           new AutoHood(m_hood, tp.hoodPosition)
         ),
       //align before shooting
-      new LimelightAlign(m_base, m_limelight, targetAcquireSeconds),
+      new LimelightAlignAuto(m_base, m_limelight, targetAcquireSeconds),
       //Shoot both balls
       new AutoShoot(m_shooter, m_collector, m_hood, m_limelight, tp, shootSeconds, bUseLimelightInstead),
       new AutoHood(m_hood, HoodConstants.IDLE_TICK_COUNT)

@@ -78,8 +78,6 @@ public class JoystickClimb extends CommandBase {
     }
     leftYstick = Math.copySign(leftYstick * leftYstick, leftYstick);
     double limiter = SmartDashboard.getNumber(Dashboard.DASH_CLIMBER_LIMITER, ClimberModule.CLIMBER_LIMITER);
-    leftYstick = leftYstick * Math.abs(limiter);
-    climbers.shortClimberModule.moveArms(leftYstick);
 
     double rightYstick = joystick.getRawAxis(Constants.JOYSTICK_RIGHT_Y_AXIS);
     /* Deadband gamepad, long climbers */
@@ -88,8 +86,21 @@ public class JoystickClimb extends CommandBase {
       rightYstick = 0;
     }
     rightYstick = Math.copySign(rightYstick * rightYstick, rightYstick);
-    rightYstick = rightYstick * Math.abs(limiter);
+
+    if (rightYstick < -0) {
+      rightYstick = rightYstick * Math.abs(1.0);
+    } else {
+      rightYstick = rightYstick * Math.abs(limiter);
+    }
+
+    if (rightYstick < -0) {
+      leftYstick = leftYstick * Math.abs(1.0);
+    } else {
+      leftYstick = leftYstick * Math.abs(limiter);
+    }
+
     climbers.longClimberModule.moveArms(rightYstick);
+    climbers.shortClimberModule.moveArms(leftYstick);
 
     SmartDashboard.putBoolean(
       "short left",
