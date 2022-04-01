@@ -58,6 +58,10 @@ public class Dashboard extends SubsystemBase {
 
   public static String DASH_LIMELIGHT_ANGLE_OFFSET = "Limelight Angle Offset";
 
+  public static String DASH_NAVIGATE_kP_ANGLE_OFFSET = "Navigate kP";
+  public static String DASH_NAVIGATE_kI_ANGLE_OFFSET = "Navigate kD";
+  public static String DASH_NAVIGATE_kD_ANGLE_OFFSET = "Navigate kI";
+
   private Base base;
   private Collector collector;
   private Shooter shooter;
@@ -76,9 +80,7 @@ public class Dashboard extends SubsystemBase {
     this.climbers = climbers;
   }
 
-  public void initialize() {
-    
-  }
+  public void initialize() {}
 
   public void publishInitialDashboard() {
     //public information about subsystems
@@ -101,18 +103,16 @@ public class Dashboard extends SubsystemBase {
         DASH_BASE_BRPOS,
         this.base.backRightModule.getDrivePosition()
       );
-    } else if (collector != null) { } 
-    else if (shooter != null) {
+    } else if (collector != null) {} else if (shooter != null) {
       SmartDashboard.putNumber(
         Dashboard.DASH_SHOOTER_VELOCITY,
         this.shooter.getMotorOutputPercent()
       );
       SmartDashboard.putNumber(
-      Dashboard.DASH_SHOOTER_RPMS,
-      this.shooter.getMotorRpms()
-    );
-    }
-    else if (climbers != null) {
+        Dashboard.DASH_SHOOTER_RPMS,
+        this.shooter.getMotorRpms()
+      );
+    } else if (climbers != null) {
       SmartDashboard.putNumber(
         Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
         this.climbers.longClimberModule.getPosition()
@@ -121,7 +121,7 @@ public class Dashboard extends SubsystemBase {
         Dashboard.DASH_CLIMBER_SHORT_ARM_POSITION,
         this.climbers.shortClimberModule.getPosition()
       );
-     }
+    }
 
     SmartDashboard.putNumber(Dashboard.DASH_HOOD_P, HoodConstants.kGains.kP);
     SmartDashboard.putNumber(Dashboard.DASH_HOOD_I, HoodConstants.kGains.kI);
@@ -149,7 +149,10 @@ public class Dashboard extends SubsystemBase {
       Dashboard.DASH_CLIMBER_LIMITER,
       ClimberModule.CLIMBER_LIMITER
     );
-    SmartDashboard.putNumber(Dashboard.BASE_ALIGN_LIMIT, LimelightAlign.TRACKER_LIMIT_DEFAULT);
+    SmartDashboard.putNumber(
+      Dashboard.BASE_ALIGN_LIMIT,
+      LimelightAlign.TRACKER_LIMIT_DEFAULT
+    );
     SmartDashboard.putNumber(
       DASH_SHOOTER_RPMS,
       ShooterConstants.SHOOTER_POWER_HUB_HIGH
@@ -168,7 +171,10 @@ public class Dashboard extends SubsystemBase {
       Dashboard.DASH_SHOOTER_FF,
       ShooterConstants.kGains.kF
     );
-    SmartDashboard.putNumber(DASH_LIMELIGHT_ANGLE_OFFSET, LimelightAlign.TRACKER_OFFSET);
+    SmartDashboard.putNumber(
+      DASH_LIMELIGHT_ANGLE_OFFSET,
+      LimelightAlign.TRACKER_OFFSET
+    );
   }
 
   @Override

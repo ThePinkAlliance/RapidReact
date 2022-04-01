@@ -23,7 +23,7 @@ public class MoveLongArms extends CommandBase {
     this.position = position;
     this.power = power;
 
-    addRequirements(this.climbers);
+    addRequirements();
   }
 
   // Called when the command is initially scheduled.

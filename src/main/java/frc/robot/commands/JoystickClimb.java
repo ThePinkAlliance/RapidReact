@@ -22,6 +22,7 @@ public class JoystickClimb extends CommandBase {
   private final double MAX_SHORT_CLIMBER_POSITION = 213077.3; //needs to be checked
   private final double MIN_LONG_CLIMBER_POSITION = 6240; //needs to be checked
   private final double MAX_LONG_CLIMBER_POSITION = 213077.3;  //needs to be checked
+  private final double MIN_CLIMBER_POSITION = 0;
 
   enum engagedSides {
     IN,
@@ -69,6 +70,7 @@ public class JoystickClimb extends CommandBase {
 
     double leftYstick = joystick.getRawAxis(Constants.JOYSTICK_LEFT_Y_AXIS);
     double shortPosition = Math.abs(climbers.shortClimberModule.getPosition());
+    double longPosition = Math.abs(climbers.longClimberModule.getPosition());
     /* Deadband gamepad, short climbers */
     if (
       Math.abs(leftYstick) < 0.10
@@ -78,8 +80,6 @@ public class JoystickClimb extends CommandBase {
     }
     leftYstick = Math.copySign(leftYstick * leftYstick, leftYstick);
     double limiter = SmartDashboard.getNumber(Dashboard.DASH_CLIMBER_LIMITER, ClimberModule.CLIMBER_LIMITER);
-    leftYstick = leftYstick * Math.abs(limiter);
-    climbers.shortClimberModule.moveArms(leftYstick);
 
     double rightYstick = joystick.getRawAxis(Constants.JOYSTICK_RIGHT_Y_AXIS);
     /* Deadband gamepad, long climbers */
@@ -88,8 +88,29 @@ public class JoystickClimb extends CommandBase {
       rightYstick = 0;
     }
     rightYstick = Math.copySign(rightYstick * rightYstick, rightYstick);
-    rightYstick = rightYstick * Math.abs(limiter);
+
+    if (rightYstick < -0) {
+      rightYstick = rightYstick * Math.abs(1.0);
+    } else {
+      rightYstick = rightYstick * Math.abs(limiter);
+    }
+
+    if (leftYstick < -0) {
+      leftYstick = leftYstick * Math.abs(1.0);
+    } else {
+      leftYstick = leftYstick * Math.abs(limiter);
+    }
+
+    if (shortPosition <= MIN_CLIMBER_POSITION && leftYstick > 0) {
+      leftYstick = 0;
+    }
+
+    if (longPosition <= MIN_CLIMBER_POSITION && rightYstick > 0) {
+      rightYstick = 0;
+    }
+
     climbers.longClimberModule.moveArms(rightYstick);
+    climbers.shortClimberModule.moveArms(leftYstick);
 
     SmartDashboard.putBoolean(
       "short left",

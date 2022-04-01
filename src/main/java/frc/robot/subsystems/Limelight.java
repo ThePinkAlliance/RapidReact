@@ -10,7 +10,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.Supplier;
-import org.opencv.core.Mat;
 
 // ADDRESS FOR THE LIMELIGHT FEED: http://limelight.local:5801/
 
@@ -23,6 +22,8 @@ public class Limelight extends SubsystemBase {
   private Supplier<Double> angleSupplier = () -> 0.0;
 
   double errorAccDistance = 0;
+  double limelightMountedAngle = 50; //this can change a static number though once we have found it
+
 
   /** Creates a new Limelight. */
   public Limelight() {
@@ -97,8 +98,9 @@ public class Limelight extends SubsystemBase {
 
     double offsetX = tx.getDouble(0.0) + horzontalOffset.get();
 
-    double limelightMountedAngle = 50; //this can change a static number though once we have found it
     double limelightLensHeight = 33.5; //this can change (in) will be static, should NEVER change
+    // double changeAngle = SmartDashboard.getNumber("LIMELIGHT SET ANGLE: ", limelightMountedAngle);
+
     double reflectiveTapeHeight = 102.375; //this is static (in) to CENTER of reflective tape
     double verticalOffsetAngle = ty.getDouble(0.0); //angle calculated by the limelight.
 
@@ -165,13 +167,14 @@ public class Limelight extends SubsystemBase {
     if (188.41 <= errorAccDistance && errorAccDistance <= 210.2) {
       errorAccDistance = errorAccDistance * 0.94147961;
     } else {
-      error = 0.612649568;
       errorAccDistance = distance / error;
     }
+
+    errorAccDistance = errorAccDistance * 0.73;
+
     double height = (reflectiveTapeHeight - limelightLensHeight);
 
-    double squared =
-      ((height * height) + (errorAccDistance * errorAccDistance));
+    double squared = ((height * height) + (errorAccDistance * errorAccDistance));
 
     double hypotenuseDistance = Math.sqrt(squared);
 
@@ -216,9 +219,9 @@ public class Limelight extends SubsystemBase {
     SmartDashboard.putNumber("Limelight Area: ", objectArea);
     SmartDashboard.putNumber("Limelight Skew: ", robotSkew);
     SmartDashboard.putBoolean("Limelight On: ", limelightLedOn);
+    SmartDashboard.putNumber("LIMELIGHT SET ANGLE: ", limelightMountedAngle);
 
     SmartDashboard.getNumber("limelight angle offset", horzontalOffset.get());
-
     if (limelightLedOn == true) {
       getDistance();
     }

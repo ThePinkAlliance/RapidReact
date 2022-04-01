@@ -4,25 +4,15 @@
 
 package frc.robot.commands.paths;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.AutoShootHood;
-import frc.robot.HoodConstants;
-import frc.robot.ShooterConstants;
-import frc.robot.TargetPackage;
-import frc.robot.TargetPackageFactory;
 import frc.robot.commands.AutoCollectGroup;
-import frc.robot.commands.AutoHood;
 import frc.robot.commands.AutoShoot;
-import frc.robot.commands.LeaveTarmack;
-import frc.robot.commands.LimelightAlign;
 import frc.robot.commands.Navigate;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
-import java.util.function.Supplier;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -52,10 +42,20 @@ public class Threeball extends SequentialCommandGroup {
           //new AutoHood(m_hood, shooter_tp.hoodPosition)
         ),
       // Shoot both balls
-      new AutoShoot(m_shooter, m_collector, m_hood, m_limelight, null, shootSeconds, true),
+      new AutoShoot(
+        m_shooter,
+        m_collector,
+        m_hood,
+        m_limelight,
+        null,
+        shootSeconds,
+        true
+      ),
       new Navigate(m_base, 0, 95, false),
       new Navigate(m_base, 105, 0, false)
-      .alongWith(new AutoCollectGroup(m_collector, autoCollectSecondsThirdBall, true))//,
+      .alongWith(
+          new AutoCollectGroup(m_collector, autoCollectSecondsThirdBall, true)
+        ) //,
       //new Navigate(m_base, 0, 25),
       //new LimelightAlign(m_base, m_limelight, targetAcquireSeconds)
       //new AutoShoot(m_shooter, m_collector, m_hood, m_limelight, null, shootSecondsThirdBall, true)

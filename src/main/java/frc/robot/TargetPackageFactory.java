@@ -3,8 +3,8 @@ package frc.robot;
 
 public class TargetPackageFactory {
 	
-private static final double RPM_CONSTANT_1 = 8.456;
-private static final double RPM_CONSTANT_2 = 2118;
+private static final double RPM_CONSTANT_1 = 7.5; //8.456;
+private static final double RPM_CONSTANT_2 = 2000;//2118;
 private static final double HOOD_POSITION_CONSTANT_1 =  -244.8;
 private static final double HOOD_POSITION_CONSTANT_2 = 37634;
 private static final double HOOD_POSITION_MAX = -78000;
@@ -35,7 +35,7 @@ private static final double HOOD_POSITION_MIN = -200;
     ShooterConstants.SHOOTER_Kp_AUTO_TWO_BALL,
     ShooterConstants.SHOOTER_FF_AUTO_TWO_BALL,
     HoodConstants.AUTO_SHOT_TWOBALL_TICK_COUNT,
-    ShooterConstants.SHOOTER_POWER_TARMAC_HIGH
+    ShooterConstants.SHOOTER_POWER_TARMAC_HIGH + 50
   );
 
   private static TargetPackage threeBallPackage = new TargetPackage(

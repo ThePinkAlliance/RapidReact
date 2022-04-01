@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -61,7 +60,7 @@ public class AutoCollectGroup extends CommandBase {
           Collector.TOWER_MOTOR_FULL_SPEED
         );
     }
-    this.m_collector.setSolenoid(Value.kForward);
+    this.m_collector.setSolenoid(Collector.COLLECTOR_OPEN);
   }
 
   // Called once the command ends or is interrupted.
@@ -69,7 +68,7 @@ public class AutoCollectGroup extends CommandBase {
   public void end(boolean interrupted) {
     this.m_collector.SetSpeedCollector(0);
     this.m_collector.SetSpeedTowerForOverride(0);
-    this.m_collector.setSolenoid(Value.kReverse);
+    this.m_collector.setSolenoid(Collector.COLLECTOR_CLOSE);
     this.timer.stop();
   }
 

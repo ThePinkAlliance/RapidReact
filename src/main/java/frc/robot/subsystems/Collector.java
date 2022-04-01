@@ -26,7 +26,7 @@ public class Collector extends SubsystemBase {
   public static final double TOWER_SENSOR_TRIGGER_DISTANCE = 150.0; // millimeters
   private final int TOWER_MOTOR_PORT = 20;
   private final int SOLENOID_ID_CLOSE = 0;
-  private final int SOLENOID_ID_OPEN = 0;
+  private final int SOLENOID_ID_OPEN = 6;
 
   // Collector
   private CANSparkMax collectorMotor;
@@ -38,12 +38,12 @@ public class Collector extends SubsystemBase {
   private boolean towerOverride = false;
   private boolean towerReverse = false;
 
-  private Value OPEN = Value.kForward;
-  private Value CLOSE = Value.kReverse;
+  public static Value COLLECTOR_OPEN = Value.kReverse;
+  public static Value COLLECTOR_CLOSE = Value.kForward;
 
   /** Creates a new Collector. */
   public Collector() {
-    //Collector
+    // Collector
     this.collectorMotor =
       new CANSparkMax(Collector.COLLECTOR_MOTOR_PORT, MotorType.kBrushless);
     this.solenoid =
@@ -53,7 +53,7 @@ public class Collector extends SubsystemBase {
         SOLENOID_ID_CLOSE
       );
     this.collectorMotor.setInverted(true);
-    //Tower
+    // Tower
     this.towerMotor = new TalonFX(TOWER_MOTOR_PORT);
     this.towerMotor.setInverted(true);
     this.towerMotor.setNeutralMode(NeutralMode.Brake);
@@ -74,7 +74,7 @@ public class Collector extends SubsystemBase {
 
   public void dropCollector() {
     this.collectorMotor.set(1);
-    this.solenoid.set(OPEN);
+    this.solenoid.set(COLLECTOR_OPEN);
   }
 
   public void setSolenoid(Value on) {
@@ -104,7 +104,7 @@ public class Collector extends SubsystemBase {
   public void SetSpeedTowerForOverride(double towerSpeed) {
     boolean ballFound = ballDetected();
     System.out.println("OUTPUT: " + collectorRunning + ", BALL: " + ballFound);
-    //towerMotor.set(ControlMode.PercentOutput, TOWER_MOTOR_FULL_SPEED);
+    // towerMotor.set(ControlMode.PercentOutput, TOWER_MOTOR_FULL_SPEED);
     if (this.towerOverride) {
       towerMotor.set(ControlMode.PercentOutput, towerSpeed);
     } else if (collectorRunning && ballFound == false) {
@@ -121,6 +121,5 @@ public class Collector extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
   }
 }

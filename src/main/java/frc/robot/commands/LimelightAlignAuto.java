@@ -16,7 +16,7 @@ import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Limelight;
 
-public class LimelightAlign extends CommandBase {
+public class LimelightAlignAuto extends CommandBase {
 
   Base base;
   Limelight limelight;
@@ -29,7 +29,6 @@ public class LimelightAlign extends CommandBase {
     BaseConstants.targetTrackerGains.kD
   );
 
-  private int buttonId;
   private final double MAX_TIME = 0.75; //Arbitrary
   double maxSecondsToAcquireTarget = MAX_TIME;
   private final double ANGLE_TOLERANCE = 0.5; //Tuned at SLF
@@ -37,23 +36,7 @@ public class LimelightAlign extends CommandBase {
   public static final double TRACKER_OFFSET = -2;
   private double setPoint = 0;
 
-  public LimelightAlign(
-    Base baseSubsystem,
-    Limelight limelightSubsystem,
-    Joystick joystick,
-    int buttonId
-  ) {
-    base = baseSubsystem;
-    limelight = limelightSubsystem;
-    this.joystick = joystick;
-    this.buttonId = buttonId;
-    this.maxSecondsToAcquireTarget = MAX_TIME;
-    timer = new Timer();
-
-    addRequirements(baseSubsystem, limelightSubsystem);
-  }
-
-  public LimelightAlign(
+  public LimelightAlignAuto(
     Base baseSubsystem,
     Limelight limelightSubsystem,
     double maxSecondsToAcquireTarget
@@ -102,22 +85,9 @@ public class LimelightAlign extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    boolean right = joystick.getPOV() == Constants.JOYSTICK_POV_RIGHT;
-    boolean left = joystick.getPOV() == Constants.JOYSTICK_POV_LEFT;
-
     boolean availableTarget = limelight.isTarget();
     if (availableTarget == true) {
       double offset = 0;
-      if (right) offset =
-        SmartDashboard.getNumber(
-          Dashboard.DASH_LIMELIGHT_ANGLE_OFFSET,
-          TRACKER_OFFSET
-        ); else if (left) offset =
-        SmartDashboard.getNumber(
-          Dashboard.DASH_LIMELIGHT_ANGLE_OFFSET,
-          TRACKER_OFFSET
-        ) *
-        -1.0;
 
       double output = alignController.calculate(
         limelight.getOffset(),
@@ -162,10 +132,6 @@ public class LimelightAlign extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (this.joystick != null) {
-      return (!joystick.getRawButton(this.buttonId));
-    } else {
-      return alignController.atSetpoint() || timer.hasElapsed(MAX_TIME);
-    }
+    return alignController.atSetpoint() || timer.hasElapsed(MAX_TIME);
   }
 }

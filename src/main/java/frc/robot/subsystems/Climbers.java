@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.ClimberModule;
 import frc.robot.ClimberModule.SOLENOID_STATE;
@@ -35,6 +37,9 @@ public class Climbers extends SubsystemBase {
 
   public ClimberModule shortClimberModule;
   public ClimberModule longClimberModule;
+
+  private Supplier<Double> longClimberSupplier = () -> 0.0;
+  private Supplier<Double> shortClimberSupplier = () -> 0.0;
 
   /** Creates a new Climbers. */
   public Climbers() {
@@ -94,8 +99,22 @@ public class Climbers extends SubsystemBase {
     closeArmLocks(longClimberModule);
   }
 
+  public Supplier<Double> getLongClimberSupplier() {
+    return longClimberSupplier;
+  }
+
+  public Supplier<Double> getShortClimberSupplier() {
+    return shortClimberSupplier;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    if (longClimberModule != null && shortClimberModule != null) {
+      longClimberSupplier = () -> longClimberModule.getPosition();
+      shortClimberSupplier = () -> shortClimberModule.getPosition(); 
+    }
+
   }
 }

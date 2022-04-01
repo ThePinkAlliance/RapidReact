@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -14,12 +16,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.AutoShootLeaveTarmac;
 import frc.robot.commands.AutoTwoBall;
+import frc.robot.commands.ClimbDrive;
 import frc.robot.commands.CollectGroup;
 import frc.robot.commands.CommandHoodTuning;
 import frc.robot.commands.CommandShooterTuning;
 import frc.robot.commands.Drive;
+import frc.robot.commands.JoystickClimb;
 import frc.robot.commands.LeaveTarmack;
 import frc.robot.commands.LimelightAlign;
+import frc.robot.commands.MoveLongArms;
+import frc.robot.commands.MoveShortArms;
 import frc.robot.commands.MoveTower;
 import frc.robot.commands.paths.Threeball;
 import frc.robot.subsystems.Base;
@@ -50,6 +56,8 @@ public class RobotContainer {
   private final Shooter m_shooter = new Shooter();
   private final Hood m_hood = new Hood();
   private final Climbers m_climbers = new Climbers();
+
+
   // DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
   private final Dashboard m_dashboard = new Dashboard(
     m_base,
@@ -121,9 +129,9 @@ public class RobotContainer {
     m_dashboard.publishInitialDashboard(); //DO NOT REMOVE and DO NOT COMMENT OUT
 
     this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
-    // this.m_climbers.setDefaultCommand(
-    //      new JoystickClimb(m_climbers, this.gamepad_tower)
-    //  );
+    this.m_climbers.setDefaultCommand(
+        new JoystickClimb(m_climbers, this.gamepad_tower)
+      );
   }
 
   /**
@@ -197,24 +205,24 @@ public class RobotContainer {
         )
       );
     // Climbers
-    // new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
-    // .whenPressed(
-    //     new MoveShortArms(
-    //       m_climbers,
-    //       ClimberModule.SHORT_ARM_MID_CLIMB_START,
-    //       MoveShortArms.ARM_MOVE_UP
-    //     )
-    //     .andThen(
-    //         // .andThen(
-    //         //     new MoveLongArms(
-    //         //       m_climbers,
-    //         //       ClimberModule.LONG_ARM_MID_CLIMB_START,s
-    //         //       MoveLongArms.ARM_MOVE_UP
-    //         //     )
-    //         //   )
-    //         new ClimbDrive(m_base, m_climbers, 0, 0.4, false)
-    //       )
-    //   );
+    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
+    .whenPressed(
+        new MoveShortArms(
+          m_climbers,
+          ClimberModule.SHORT_ARM_MID_CLIMB_START,
+          MoveShortArms.ARM_MOVE_UP
+        ).alongWith(new MoveLongArms(m_climbers, ClimberModule.LONG_ARM_MID_CLIMB_START, MoveLongArms.ARM_MOVE_UP))
+        // .andThen(
+        //     // .andThen(
+        //     //     new MoveLongArms(
+        //     //       m_climbers,
+        //     //       ClimberModule.LONG_ARM_MID_CLIMB_START,s
+        //     //       MoveLongArms.ARM_MOVE_UP
+        //     //     )
+        //     //   )
+        //     // new ClimbDrive(m_base, m_climbers, 0, 0.4, false)
+        //   )
+      );
   }
 
   public void selectTrajectory(SelectableTrajectory selectableTrajectory) {
