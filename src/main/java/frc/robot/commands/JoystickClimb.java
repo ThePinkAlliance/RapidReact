@@ -18,11 +18,12 @@ public class JoystickClimb extends CommandBase {
   private Joystick joystick;
 
   private final double BUMPER_DEADZONE = 0.5;
-  private final double MIN_SHORT_CLIMBER_POSITION = 6240;  //needs to be checkeda
+  private final double MIN_SHORT_CLIMBER_POSITION = 6240; //needs to be checkeda
   private final double MAX_SHORT_CLIMBER_POSITION = 213077.3; //needs to be checked
   private final double MIN_LONG_CLIMBER_POSITION = 6240; //needs to be checked
-  private final double MAX_LONG_CLIMBER_POSITION = 213077.3;  //needs to be checked
+  private final double MAX_LONG_CLIMBER_POSITION = 213077.3; //needs to be checked
   private final double MIN_CLIMBER_POSITION = 0;
+  private final double MAX_CLIMBER_POSITION = -88692;
 
   enum engagedSides {
     IN,
@@ -53,7 +54,8 @@ public class JoystickClimb extends CommandBase {
     if (joystick.getRawButton(Constants.JOYSTICK_LEFT_BUMPER)) {
       climbers.openShortArms();
     }
-    if (joystick.getRawAxis(Constants.JOYSTICK_LEFT_TRIGGER) >
+    if (
+      joystick.getRawAxis(Constants.JOYSTICK_LEFT_TRIGGER) >
       Math.abs(BUMPER_DEADZONE)
     ) {
       climbers.closeShortArms();
@@ -72,14 +74,15 @@ public class JoystickClimb extends CommandBase {
     double shortPosition = Math.abs(climbers.shortClimberModule.getPosition());
     double longPosition = Math.abs(climbers.longClimberModule.getPosition());
     /* Deadband gamepad, short climbers */
-    if (
-      Math.abs(leftYstick) < 0.10
-    ) {
+    if (Math.abs(leftYstick) < 0.10) {
       /* Within 10% of zero */
       leftYstick = 0;
     }
     leftYstick = Math.copySign(leftYstick * leftYstick, leftYstick);
-    double limiter = SmartDashboard.getNumber(Dashboard.DASH_CLIMBER_LIMITER, ClimberModule.CLIMBER_LIMITER);
+    double limiter = SmartDashboard.getNumber(
+      Dashboard.DASH_CLIMBER_LIMITER,
+      ClimberModule.CLIMBER_LIMITER
+    );
 
     double rightYstick = joystick.getRawAxis(Constants.JOYSTICK_RIGHT_Y_AXIS);
     /* Deadband gamepad, long climbers */
@@ -101,11 +104,21 @@ public class JoystickClimb extends CommandBase {
       leftYstick = leftYstick * Math.abs(limiter);
     }
 
+    // Climber min stop
     if (shortPosition <= MIN_CLIMBER_POSITION && leftYstick > 0) {
       leftYstick = 0;
     }
 
     if (longPosition <= MIN_CLIMBER_POSITION && rightYstick > 0) {
+      rightYstick = 0;
+    }
+
+    // Climber backstop
+    if (shortPosition >= MAX_CLIMBER_POSITION && leftYstick < -0) {
+      leftYstick = 0;
+    }
+
+    if (longPosition >= MAX_CLIMBER_POSITION && rightYstick < -0) {
       rightYstick = 0;
     }
 
