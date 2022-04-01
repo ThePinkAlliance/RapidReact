@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -14,9 +12,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.AutoDoNothing;
+import frc.robot.commands.AutoLatchArms;
 import frc.robot.commands.AutoShootLeaveTarmac;
 import frc.robot.commands.AutoTwoBall;
-import frc.robot.commands.ClimbDrive;
 import frc.robot.commands.CollectGroup;
 import frc.robot.commands.CommandHoodTuning;
 import frc.robot.commands.CommandShooterTuning;
@@ -57,57 +56,50 @@ public class RobotContainer {
   private final Hood m_hood = new Hood();
   private final Climbers m_climbers = new Climbers();
 
-
   // DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
   private final Dashboard m_dashboard = new Dashboard(
-    m_base,
-    m_collector,
-    m_shooter,
-    m_climbers
-  );
+      m_base,
+      m_collector,
+      m_shooter,
+      m_climbers);
 
   Trajectory trajectory = new Trajectory();
   SendableChooser<SelectableTrajectory> selectedPath = new SendableChooser<SelectableTrajectory>();
   private final SelectableTrajectory LeaveTarmac = new SelectableTrajectory(
-    "Leave Tarmac",
-    new LeaveTarmack(m_base)
-  );
+      "Leave Tarmac",
+      new LeaveTarmack(m_base));
   private final SelectableTrajectory ShootLeaveTarmac = new SelectableTrajectory(
-    "Auto Shoot Leave Tarmac",
-    new AutoShootLeaveTarmac(
-      m_base,
-      m_shooter,
-      m_hood,
-      m_collector,
-      m_limelight
-    )
-  );
-  private final SelectableTrajectory TwoBallAuto = new SelectableTrajectory(
-    "Two Ball Auto",
-    new AutoTwoBall(m_base, m_shooter, m_collector, m_hood, m_limelight)
-  );
-  private final SelectableTrajectory ThreeBallAuto = new SelectableTrajectory(
-    "Three Ball Auto",
-    new Threeball(m_base, m_shooter, m_collector, m_limelight, m_hood)
-  );
+      "Auto Shoot Leave Tarmac",
+      new AutoShootLeaveTarmac(
+          m_base,
+          m_shooter,
+          m_hood,
+          m_collector,
+          m_limelight));
 
-  // private final SelectableTrajectory TwoBallBlue = new SelectableTrajectory(
-  //   "Two Ball Blue",
-  //   "output/2 Ball Blue.wpilib.json"
-  // );
+  private final SelectableTrajectory doNothing = new SelectableTrajectory("Auto Do Nothing", new AutoDoNothing());
+
+  private final SelectableTrajectory TwoBallAuto = new SelectableTrajectory(
+      "Two Ball Auto",
+      new AutoTwoBall(m_base, m_shooter, m_collector, m_hood, m_limelight));
+  private final SelectableTrajectory ThreeBallAuto = new SelectableTrajectory(
+      "Three Ball Auto",
+      new Threeball(m_base, m_shooter, m_collector, m_limelight, m_hood));
+
   // private final SelectableTrajectory autoMidClimb = new SelectableTrajectory(
-  //   "AutoMidClimb",
-  //   new AutoMidClimb(m_base, m_climbers)
+  // "AutoMidClimb",
+  // new AutoMidClimb(m_base, m_climbers)
   // );
 
   /**
    * This contains all the trajectories that can be selected from the dashboard.
    */
   private final SelectableTrajectory[] trajectories = {
-    LeaveTarmac,
-    ShootLeaveTarmac,
-    TwoBallAuto,
-    ThreeBallAuto,
+      LeaveTarmac,
+      ShootLeaveTarmac,
+      TwoBallAuto,
+      ThreeBallAuto,
+      doNothing
   };
 
   /**
@@ -126,12 +118,11 @@ public class RobotContainer {
     }
 
     SmartDashboard.putData(selectedPath);
-    m_dashboard.publishInitialDashboard(); //DO NOT REMOVE and DO NOT COMMENT OUT
+    m_dashboard.publishInitialDashboard(); // DO NOT REMOVE and DO NOT COMMENT OUT
 
     this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
     this.m_climbers.setDefaultCommand(
-        new JoystickClimb(m_climbers, this.gamepad_tower)
-      );
+        new JoystickClimb(m_climbers, this.gamepad_tower));
   }
 
   /**
@@ -145,84 +136,63 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Shooter - Shoot - move tower to push ball up to shooter
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_X)
-    .whenPressed(
-        new MoveTower(
-          m_collector,
-          ShooterConstants.SHOOTER_POWER_HUB_HIGH,
-          Constants.JOYSTICK_BUTTON_X,
-          gamepad_tower,
-          true
-        )
-      );
+        .whenPressed(
+            new MoveTower(
+                m_collector,
+                ShooterConstants.SHOOTER_POWER_HUB_HIGH,
+                Constants.JOYSTICK_BUTTON_X,
+                gamepad_tower,
+                true));
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_A)
-    .whenPressed(
-        new CommandShooterTuning(
-          m_shooter,
-          m_limelight,
-          m_hood,
-          m_base,
-          gamepad_tower,
-          m_limelight.getDistanceSupplier(),
-          m_limelight.getAngleSupplier(),
-          Constants.JOYSTICK_BUTTON_A
-        )
-      );
+        .whenPressed(
+            new CommandShooterTuning(
+                m_shooter,
+                m_limelight,
+                m_hood,
+                m_base,
+                gamepad_tower,
+                m_limelight.getDistanceSupplier(),
+                m_limelight.getAngleSupplier(),
+                Constants.JOYSTICK_BUTTON_A));
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
-    .whenPressed(
-        new CommandHoodTuning(
-          m_hood,
-          gamepad_tower,
-          Constants.JOYSTICK_BUTTON_B
-        )
-      );
+        .whenPressed(
+            new CommandHoodTuning(
+                m_hood,
+                gamepad_tower,
+                Constants.JOYSTICK_BUTTON_B));
     // Collector Intake
     new JoystickButton(gamepad_base, Constants.JOYSTICK_RIGHT_BUMPER)
-    .whenPressed(
-        new CollectGroup(
-          m_collector,
-          gamepad_base,
-          Constants.JOYSTICK_RIGHT_BUMPER,
-          true
-        )
-      );
+        .whenPressed(
+            new CollectGroup(
+                m_collector,
+                gamepad_base,
+                Constants.JOYSTICK_RIGHT_BUMPER,
+                true));
     // Collector Outtake
     new JoystickButton(gamepad_base, Constants.JOYSTICK_LEFT_BUMPER)
-    .whenPressed(
-        new CollectGroup(
-          m_collector,
-          gamepad_base,
-          Constants.JOYSTICK_LEFT_BUMPER,
-          false
-        )
-      );
+        .whenPressed(
+            new CollectGroup(
+                m_collector,
+                gamepad_base,
+                Constants.JOYSTICK_LEFT_BUMPER,
+                false));
     new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_A)
-    .whenPressed(
-        new LimelightAlign(
-          m_base,
-          m_limelight,
-          gamepad_base,
-          Constants.JOYSTICK_BUTTON_A
-        )
-      );
+        .whenPressed(
+            new LimelightAlign(
+                m_base,
+                m_limelight,
+                gamepad_base,
+                Constants.JOYSTICK_BUTTON_A));
     // Climbers
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
-    .whenPressed(
-        new MoveShortArms(
-          m_climbers,
-          ClimberModule.SHORT_ARM_MID_CLIMB_START,
-          MoveShortArms.ARM_MOVE_UP
-        ).alongWith(new MoveLongArms(m_climbers, ClimberModule.LONG_ARM_MID_CLIMB_START, MoveLongArms.ARM_MOVE_UP))
-        // .andThen(
-        //     // .andThen(
-        //     //     new MoveLongArms(
-        //     //       m_climbers,
-        //     //       ClimberModule.LONG_ARM_MID_CLIMB_START,s
-        //     //       MoveLongArms.ARM_MOVE_UP
-        //     //     )
-        //     //   )
-        //     // new ClimbDrive(m_base, m_climbers, 0, 0.4, false)
-        //   )
-      );
+        .whenPressed(
+            new MoveShortArms(
+                m_climbers,
+                ClimberModule.SHORT_ARM_MID_CLIMB_START,
+                MoveShortArms.ARM_MOVE_UP)
+                .alongWith(
+                    new MoveLongArms(m_climbers, ClimberModule.LONG_ARM_MID_CLIMB_START, MoveLongArms.ARM_MOVE_UP))
+                .alongWith(new AutoLatchArms(m_climbers)));
   }
 
   public void selectTrajectory(SelectableTrajectory selectableTrajectory) {
