@@ -191,8 +191,7 @@ public class RobotContainer {
                 ClimberModule.SHORT_ARM_MID_CLIMB_START,
                 MoveShortArms.ARM_MOVE_UP)
                 .alongWith(
-                    new MoveLongArms(m_climbers, ClimberModule.LONG_ARM_MID_CLIMB_START, MoveLongArms.ARM_MOVE_UP))
-                .alongWith(new AutoLatchArms(m_climbers)));
+                    new MoveLongArms(m_climbers, ClimberModule.LONG_ARM_MID_CLIMB_START, MoveLongArms.ARM_MOVE_UP)));
   }
 
   public void selectTrajectory(SelectableTrajectory selectableTrajectory) {
