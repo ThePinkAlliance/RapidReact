@@ -15,6 +15,10 @@ public class Drive extends CommandBase {
   private Base base;
   private Joystick js;
 
+  private static final double MAX_POWER_WHILE_LIMITED = 0.6;
+
+  private boolean ALLOW_TURBO = false;
+
   /** Creates a new Drive. */
   public Drive(Base base, Joystick js) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -53,7 +57,7 @@ public class Drive extends CommandBase {
     );
 
     // Turbo
-    if (js.getRawButton(Constants.JOYSTICK_LEFT_Y_AXIS_BUTTON)) {
+    if (js.getRawButton(Constants.JOYSTICK_LEFT_Y_AXIS_BUTTON) && ALLOW_TURBO) {
       speedObject =
         new ChassisSpeeds(
           modifyAxis(axis1y) * Base.MAX_VELOCITY_METERS_PER_SECOND,
@@ -84,8 +88,8 @@ public class Drive extends CommandBase {
     // Cubing due to raw power until robot reaches competition weight.
     value = Math.copySign(value * value * value, value);
 
-    // Limit the speed to 75%
-    value = value / 1.33;
+    // Limit the speed to 60%
+    value = value * MAX_POWER_WHILE_LIMITED;
 
     return value;
   }

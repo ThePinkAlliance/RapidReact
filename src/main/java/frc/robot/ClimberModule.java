@@ -22,6 +22,7 @@ public class ClimberModule {
     RIGHT,
     BOTH,
   }
+
   public static final double CLIMBER_LIMITER = 0.5;
   public static final int SHORT_ARM_MID_CLIMB_START = -390725; //-222222;
   public static final int SHORT_ARM_MID_CLIMB_FINISH = -143195;
@@ -130,12 +131,6 @@ public class ClimberModule {
   }
 
   public void setPosition(double pos) {
-    // boolean keepGoing =
-    //   Math.abs(pos) <= MIN_ALLOWABLE_POSITION &&
-    //   Math.abs(pos) >= MAX_ALLOWABLE_POSITION;
-
-    //if (keepGoing) {
     this.motorLeft.set(ControlMode.Position, pos);
-    //}
   }
 }

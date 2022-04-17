@@ -81,9 +81,9 @@ public class AutoShootHood extends CommandBase {
     // ? this might need the gear ratio added however I don't know that right now
     double rpm = velocity / Shooter.SHOOTER_FLYWHEEL_CIRCUMFRENCE * 60;
 
-    SmartDashboard.putNumber("encoder ticks", m_hood.getHoodTicks());
-    SmartDashboard.putNumber("shooter trajectory velocity", velocity);
-    SmartDashboard.putNumber("shooter trajectory angle", angle);
+    // SmartDashboard.putNumber("encoder ticks", m_hood.getHoodTicks());
+    // SmartDashboard.putNumber("shooter trajectory velocity", velocity);
+    // SmartDashboard.putNumber("shooter trajectory angle", angle);
 
     boolean ready = m_shooter.readyToShoot(rpm, 100);
 

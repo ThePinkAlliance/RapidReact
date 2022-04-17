@@ -92,17 +92,20 @@ public class JoystickClimb extends CommandBase {
     }
     rightYstick = Math.copySign(rightYstick * rightYstick, rightYstick);
 
-    if (rightYstick < -0) {
-      rightYstick = rightYstick * Math.abs(1.0);
-    } else {
-      rightYstick = rightYstick * Math.abs(limiter);
-    }
+    // if (rightYstick < -0) {
+    //   rightYstick = rightYstick * Math.abs(1.0);
+    // } else {
+    //   rightYstick = rightYstick * Math.abs(limiter);
+    // }
 
-    if (leftYstick < -0) {
-      leftYstick = leftYstick * Math.abs(1.0);
-    } else {
-      leftYstick = leftYstick * Math.abs(limiter);
-    }
+    // if (leftYstick < -0) {
+    //   leftYstick = leftYstick * Math.abs(1.0);
+    // } else {
+    //   leftYstick = leftYstick * Math.abs(limiter);
+    // }
+
+    rightYstick = rightYstick * Math.abs(limiter);
+    leftYstick = leftYstick * Math.abs(limiter);
 
     // Climber min stop
     if (shortPosition <= MIN_CLIMBER_POSITION && leftYstick > 0) {

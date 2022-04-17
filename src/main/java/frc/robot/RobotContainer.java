@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -57,7 +55,6 @@ public class RobotContainer {
   private final Hood m_hood = new Hood();
   private final Climbers m_climbers = new Climbers();
 
-
   // DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
   private final Dashboard m_dashboard = new Dashboard(
     m_base,
@@ -90,15 +87,6 @@ public class RobotContainer {
     "Three Ball Auto",
     new Threeball(m_base, m_shooter, m_collector, m_limelight, m_hood)
   );
-
-  // private final SelectableTrajectory TwoBallBlue = new SelectableTrajectory(
-  //   "Two Ball Blue",
-  //   "output/2 Ball Blue.wpilib.json"
-  // );
-  // private final SelectableTrajectory autoMidClimb = new SelectableTrajectory(
-  //   "AutoMidClimb",
-  //   new AutoMidClimb(m_base, m_climbers)
-  // );
 
   /**
    * This contains all the trajectories that can be selected from the dashboard.
@@ -205,24 +193,21 @@ public class RobotContainer {
         )
       );
     // Climbers
-    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
-    .whenPressed(
-        new MoveShortArms(
-          m_climbers,
-          ClimberModule.SHORT_ARM_MID_CLIMB_START,
-          MoveShortArms.ARM_MOVE_UP
-        ).alongWith(new MoveLongArms(m_climbers, ClimberModule.LONG_ARM_MID_CLIMB_START, MoveLongArms.ARM_MOVE_UP))
-        // .andThen(
-        //     // .andThen(
-        //     //     new MoveLongArms(
-        //     //       m_climbers,
-        //     //       ClimberModule.LONG_ARM_MID_CLIMB_START,s
-        //     //       MoveLongArms.ARM_MOVE_UP
-        //     //     )
-        //     //   )
-        //     // new ClimbDrive(m_base, m_climbers, 0, 0.4, false)
-        //   )
-      );
+    // new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
+    // .whenPressed(
+    //     new MoveShortArms(
+    //       m_climbers,
+    //       ClimberModule.SHORT_ARM_MID_CLIMB_START,
+    //       MoveShortArms.ARM_MOVE_UP
+    //     )
+    //     .alongWith(
+    //         new MoveLongArms(
+    //           m_climbers,
+    //           ClimberModule.LONG_ARM_MID_CLIMB_START,
+    //           MoveLongArms.ARM_MOVE_UP
+    //         )
+    //       )
+    //   );
   }
 
   public void selectTrajectory(SelectableTrajectory selectableTrajectory) {

@@ -1,7 +1,7 @@
 {
-    "fileName": "pink-core.json",
+    "fileName": "ThePinkAlliance.json",
     "name": "ThePinkAlliance",
-    "version": "2.0.5",
+    "version": "2.0.8",
     "uuid": "9619F7EA-7F96-4236-9D94-02338DFED572",
     "mavenUrls": [
         "https://jitpack.io"
@@ -11,7 +11,7 @@
         {
             "groupId": "com.github.ThePinkAlliance",
             "artifactId": "core",
-            "version": "2.0.5"
+            "version": "2.0.8"
         }
     ],
     "jniDependencies": [],
