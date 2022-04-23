@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ThePinkAlliance.core.util.joystick.JoystickMap;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -14,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.AutoShootLeaveTarmac;
 import frc.robot.commands.AutoTwoBall;
-import frc.robot.commands.ClimbDrive;
 import frc.robot.commands.CollectGroup;
 import frc.robot.commands.CommandHoodTuning;
 import frc.robot.commands.CommandShooterTuning;
@@ -22,10 +22,7 @@ import frc.robot.commands.Drive;
 import frc.robot.commands.JoystickClimb;
 import frc.robot.commands.LeaveTarmack;
 import frc.robot.commands.LimelightAlign;
-import frc.robot.commands.MoveLongArms;
-import frc.robot.commands.MoveShortArms;
 import frc.robot.commands.MoveTower;
-import frc.robot.commands.paths.Threeball;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Collector;
@@ -83,10 +80,6 @@ public class RobotContainer {
     "Two Ball Auto",
     new AutoTwoBall(m_base, m_shooter, m_collector, m_hood, m_limelight)
   );
-  private final SelectableTrajectory ThreeBallAuto = new SelectableTrajectory(
-    "Three Ball Auto",
-    new Threeball(m_base, m_shooter, m_collector, m_limelight, m_hood)
-  );
 
   /**
    * This contains all the trajectories that can be selected from the dashboard.
@@ -95,7 +88,6 @@ public class RobotContainer {
     LeaveTarmac,
     ShootLeaveTarmac,
     TwoBallAuto,
-    ThreeBallAuto,
   };
 
   /**
@@ -132,17 +124,18 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Shooter - Shoot - move tower to push ball up to shooter
-    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_X)
+    new JoystickButton(gamepad_tower, JoystickMap.BUTTON_X)
     .whenPressed(
         new MoveTower(
           m_collector,
           ShooterConstants.SHOOTER_POWER_HUB_HIGH,
-          Constants.JOYSTICK_BUTTON_X,
+          JoystickMap.BUTTON_X,
           gamepad_tower,
           true
         )
       );
-    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_A)
+    // Shooter - Rev the shooter up to requested rpm
+    new JoystickButton(gamepad_tower, JoystickMap.BUTTON_A)
     .whenPressed(
         new CommandShooterTuning(
           m_shooter,
@@ -152,62 +145,44 @@ public class RobotContainer {
           gamepad_tower,
           m_limelight.getDistanceSupplier(),
           m_limelight.getAngleSupplier(),
-          Constants.JOYSTICK_BUTTON_A
+          JoystickMap.BUTTON_A
         )
       );
-    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
+    // Hood - Commands the hood to a requested position
+    new JoystickButton(gamepad_tower, JoystickMap.BUTTON_B)
     .whenPressed(
-        new CommandHoodTuning(
-          m_hood,
-          gamepad_tower,
-          Constants.JOYSTICK_BUTTON_B
-        )
+        new CommandHoodTuning(m_hood, gamepad_tower, JoystickMap.BUTTON_B)
       );
     // Collector Intake
-    new JoystickButton(gamepad_base, Constants.JOYSTICK_RIGHT_BUMPER)
+    new JoystickButton(gamepad_base, JoystickMap.RIGHT_BUMPER)
     .whenPressed(
         new CollectGroup(
           m_collector,
           gamepad_base,
-          Constants.JOYSTICK_RIGHT_BUMPER,
+          JoystickMap.RIGHT_BUMPER,
           true
         )
       );
     // Collector Outtake
-    new JoystickButton(gamepad_base, Constants.JOYSTICK_LEFT_BUMPER)
+    new JoystickButton(gamepad_base, JoystickMap.LEFT_BUMPER)
     .whenPressed(
         new CollectGroup(
           m_collector,
           gamepad_base,
-          Constants.JOYSTICK_LEFT_BUMPER,
+          JoystickMap.LEFT_BUMPER,
           false
         )
       );
-    new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_A)
+    // Base - Align the shooter with the hub
+    new JoystickButton(gamepad_base, JoystickMap.BUTTON_A)
     .whenPressed(
         new LimelightAlign(
           m_base,
           m_limelight,
           gamepad_base,
-          Constants.JOYSTICK_BUTTON_A
+          JoystickMap.BUTTON_A
         )
       );
-    // Climbers
-    // new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
-    // .whenPressed(
-    //     new MoveShortArms(
-    //       m_climbers,
-    //       ClimberModule.SHORT_ARM_MID_CLIMB_START,
-    //       MoveShortArms.ARM_MOVE_UP
-    //     )
-    //     .alongWith(
-    //         new MoveLongArms(
-    //           m_climbers,
-    //           ClimberModule.LONG_ARM_MID_CLIMB_START,
-    //           MoveLongArms.ARM_MOVE_UP
-    //         )
-    //       )
-    //   );
   }
 
   public void selectTrajectory(SelectableTrajectory selectableTrajectory) {

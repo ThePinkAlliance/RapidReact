@@ -52,7 +52,11 @@ public class Hood extends SubsystemBase {
     // this.hoodPid.setD(0);
     // this.hoodPid.setFF(0);
 
-    this.hoodMotor.setSmartCurrentLimit(30);
+    /* 
+      The suggested current limit for the neo's is 20 Amps at max.
+      This is most likely the cause of the hood motor buring out during our last match
+    */
+    this.hoodMotor.setSmartCurrentLimit(20);
   }
 
   public double getCurrentDraw() {

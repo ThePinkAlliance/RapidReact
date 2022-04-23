@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import com.ThePinkAlliance.core.util.joystick.JoystickMap;
+import com.ThePinkAlliance.core.util.joystick.JoystickUtils;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -36,16 +38,13 @@ public class Drive extends CommandBase {
   }
 
   // Called every time the scheduler runs while the command is scheduled.
-  /**
-   * NOTE: strafing has an issue when driving as it gets closer to the end of the joystick it gets exponetialy faster
-   */
   @Override
   public void execute() {
     double axis0x = js.getRawAxis(0);
-    double axis1y = js.getRawAxis(1);
+    double axis1y = js.getRawAxis(JoystickMap.LEFT_Y_AXIS);
     double axis4rot = js.getRawAxis(4);
 
-    //invert right joystick axis input to match clockwise, counter clockwise robot behavior
+    // invert right joystick axis input to match clockwise, counter clockwise robot behavior
     axis4rot *= -1;
     axis0x *= -1;
     axis1y *= -1;
@@ -60,46 +59,24 @@ public class Drive extends CommandBase {
     if (js.getRawButton(Constants.JOYSTICK_LEFT_Y_AXIS_BUTTON) && ALLOW_TURBO) {
       speedObject =
         new ChassisSpeeds(
-          modifyAxis(axis1y) * Base.MAX_VELOCITY_METERS_PER_SECOND,
-          modifyAxis(axis0x) * Base.MAX_VELOCITY_METERS_PER_SECOND,
-          modifyAxis(axis4rot) * Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+          JoystickUtils.modifyAxisCubed(axis1y) *
+          Base.MAX_VELOCITY_METERS_PER_SECOND,
+          JoystickUtils.modifyAxisCubed(axis0x) *
+          Base.MAX_VELOCITY_METERS_PER_SECOND,
+          JoystickUtils.modifyAxisCubed(axis4rot) *
+          Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
         );
     }
 
     this.base.drive(speedObject);
   }
 
-  private static double deadband(double value, double deadband) {
-    if (Math.abs(value) > deadband) {
-      if (value > 0.0) {
-        return (value - deadband) / (1.0 - deadband);
-      } else {
-        return (value + deadband) / (1.0 - deadband);
-      }
-    } else {
-      return 0.0;
-    }
-  }
-
   private static double modifyAxisLimited(double value) {
-    // Deadband
-    value = deadband(value, 0.05);
-
-    // Cubing due to raw power until robot reaches competition weight.
-    value = Math.copySign(value * value * value, value);
+    // Cube the input and add a deadband
+    value = JoystickUtils.modifyAxisCubed(value);
 
     // Limit the speed to 60%
     value = value * MAX_POWER_WHILE_LIMITED;
-
-    return value;
-  }
-
-  private static double modifyAxis(double value) {
-    // Deadband
-    value = deadband(value, 0.05);
-
-    // Cubing due to raw power until robot reaches competition weight.
-    value = Math.copySign(value * value * value, value);
 
     return value;
   }
