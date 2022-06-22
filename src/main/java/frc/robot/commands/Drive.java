@@ -17,7 +17,7 @@ public class Drive extends CommandBase {
   private Base base;
   private Joystick js;
 
-  private static final double MAX_POWER_WHILE_LIMITED = 0.6;
+  private static final double MAX_POWER_WHILE_LIMITED = 0.1;
 
   private boolean ALLOW_TURBO = false;
 
@@ -54,19 +54,6 @@ public class Drive extends CommandBase {
       modifyAxisLimited(axis0x) * Base.MAX_VELOCITY_METERS_PER_SECOND,
       modifyAxisLimited(axis4rot) * Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     );
-
-    // Turbo
-    if (js.getRawButton(Constants.JOYSTICK_LEFT_Y_AXIS_BUTTON) && ALLOW_TURBO) {
-      speedObject =
-        new ChassisSpeeds(
-          JoystickUtils.modifyAxisCubed(axis1y) *
-          Base.MAX_VELOCITY_METERS_PER_SECOND,
-          JoystickUtils.modifyAxisCubed(axis0x) *
-          Base.MAX_VELOCITY_METERS_PER_SECOND,
-          JoystickUtils.modifyAxisCubed(axis4rot) *
-          Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-        );
-    }
 
     this.base.drive(speedObject);
   }

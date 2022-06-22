@@ -124,7 +124,7 @@ public class Navigate extends CommandBase {
     double x_power = 0.0;
     double turnPower = 0.0;
 
-    //Drive
+    // Drive
     if (targetInches != 0) {
       // double front_left_pos = Math.abs(
       //   this.base.frontLeftModule.getDrivePosition()
@@ -133,6 +133,7 @@ public class Navigate extends CommandBase {
         this.base.frontRightModule.getDrivePosition()
       );
 
+      // 0.123825 is the swerve pod drive reduction.
       double distance_traveled_inches =
         ((0.123825) * (front_right_pos / Base.FULL_TALON_ROTATION_TICKS)) *
         12.875;
@@ -143,7 +144,7 @@ public class Navigate extends CommandBase {
       System.out.println("Navigate: " + x_power + ", Output" + x_output);
       SmartDashboard.putNumber("traveled", distance_traveled_inches);
     }
-    //Turn: PID Controller using setpoint of zero
+    // Turn: PID Controller using setpoint of zero
     else if (targetAngle != 0) {
       double currentAngle = base.getSensorYaw();
       double processVariable = Math.abs(targetAngle) - Math.abs(currentAngle);
@@ -207,7 +208,7 @@ public class Navigate extends CommandBase {
       "Straight Met: " + straightMet + "; turnMet: " + turnMet
     );
 
-    //ONLY CHECK THE CONDITION FOR THE MOVEMENT WHOSE TARGET IS NOT ZERO
+    // ONLY CHECK THE CONDITION FOR THE MOVEMENT WHOSE TARGET IS NOT ZERO
     if (targetInches == 0) return turnMet; else return straightMet;
   }
 }

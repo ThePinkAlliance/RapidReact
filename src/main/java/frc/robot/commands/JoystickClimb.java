@@ -18,7 +18,7 @@ public class JoystickClimb extends CommandBase {
   private Joystick joystick;
 
   private final double BUMPER_DEADZONE = 0.5;
-  private final double MIN_SHORT_CLIMBER_POSITION = 6240; //needs to be checkeda
+  private final double MIN_SHORT_CLIMBER_POSITION = 6240; //needs to be checked
   private final double MAX_SHORT_CLIMBER_POSITION = 213077.3; //needs to be checked
   private final double MIN_LONG_CLIMBER_POSITION = 6240; //needs to be checked
   private final double MAX_LONG_CLIMBER_POSITION = 213077.3; //needs to be checked
@@ -92,6 +92,7 @@ public class JoystickClimb extends CommandBase {
     }
     rightYstick = Math.copySign(rightYstick * rightYstick, rightYstick);
 
+    // Allows the climber to go up at full speed.
     // if (rightYstick < -0) {
     //   rightYstick = rightYstick * Math.abs(1.0);
     // } else {
@@ -104,6 +105,7 @@ public class JoystickClimb extends CommandBase {
     //   leftYstick = leftYstick * Math.abs(limiter);
     // }
 
+    // Limits the climber power to 50%
     rightYstick = rightYstick * Math.abs(limiter);
     leftYstick = leftYstick * Math.abs(limiter);
 
