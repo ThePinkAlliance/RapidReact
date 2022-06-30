@@ -9,7 +9,6 @@ import com.ThePinkAlliance.core.util.joystick.JoystickUtils;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.Base;
 
 public class Drive extends CommandBase {
@@ -17,9 +16,7 @@ public class Drive extends CommandBase {
   private Base base;
   private Joystick js;
 
-  private static final double MAX_POWER_WHILE_LIMITED = 0.1;
-
-  private boolean ALLOW_TURBO = false;
+  private static final double MAX_POWER_WHILE_LIMITED = 1;
 
   /** Creates a new Drive. */
   public Drive(Base base, Joystick js) {
@@ -62,7 +59,7 @@ public class Drive extends CommandBase {
     // Cube the input and add a deadband
     value = JoystickUtils.modifyAxisCubed(value);
 
-    // Limit the speed to 60%
+    // Limit the speed to 10%
     value = value * MAX_POWER_WHILE_LIMITED;
 
     return value;

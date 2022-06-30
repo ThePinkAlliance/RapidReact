@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.AutoShootLeaveTarmac;
 import frc.robot.commands.AutoTwoBall;
@@ -199,11 +200,13 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    if (selectedPath.getSelected() == null) {
-      selectedPath.setDefaultOption(TwoBallAuto.name, TwoBallAuto);
-    }
+    // if (selectedPath.getSelected() == null) {
+    //   selectedPath.setDefaultOption(TwoBallAuto.name, TwoBallAuto);
+    // }
 
-    return selectedPath.getSelected().getDefualtCommand();
+    //return selectedPath.getSelected().getDefualtCommand();
+
+    return new InstantCommand();
   }
 
   public void enableLimelight() {
