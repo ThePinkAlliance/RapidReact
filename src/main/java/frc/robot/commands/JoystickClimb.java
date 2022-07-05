@@ -119,13 +119,13 @@ public class JoystickClimb extends CommandBase {
     }
 
     // Climber backstop
-    if (shortPosition >= MAX_CLIMBER_POSITION && leftYstick < -0) {
-      leftYstick = 0;
-    }
+    // if (shortPosition >= MAX_CLIMBER_POSITION && leftYstick < -0) {
+    //   leftYstick = 0;
+    // }
 
-    if (longPosition >= MAX_CLIMBER_POSITION && rightYstick < -0) {
-      rightYstick = 0;
-    }
+    // if (longPosition >= MAX_CLIMBER_POSITION && rightYstick < -0) {
+    //   rightYstick = 0;
+    // }
 
     climbers.longClimberModule.moveArms(rightYstick);
     climbers.shortClimberModule.moveArms(leftYstick);
