@@ -18,10 +18,10 @@ public class JoystickClimb extends CommandBase {
   private Joystick joystick;
 
   private final double BUMPER_DEADZONE = 0.5;
-  private final double MIN_SHORT_CLIMBER_POSITION = 6240; //needs to be checked
-  private final double MAX_SHORT_CLIMBER_POSITION = 213077.3; //needs to be checked
-  private final double MIN_LONG_CLIMBER_POSITION = 6240; //needs to be checked
-  private final double MAX_LONG_CLIMBER_POSITION = 213077.3; //needs to be checked
+  private final double MIN_SHORT_CLIMBER_POSITION = 6240; // needs to be checked
+  private final double MAX_SHORT_CLIMBER_POSITION = 213077.3; // needs to be checked
+  private final double MIN_LONG_CLIMBER_POSITION = 6240; // needs to be checked
+  private final double MAX_LONG_CLIMBER_POSITION = 213077.3; // needs to be checked
   private final double MIN_CLIMBER_POSITION = 0;
   private final double MAX_CLIMBER_POSITION = -88692;
 
@@ -54,19 +54,13 @@ public class JoystickClimb extends CommandBase {
     if (joystick.getRawButton(Constants.JOYSTICK_LEFT_BUMPER)) {
       climbers.openShortArms();
     }
-    if (
-      joystick.getRawAxis(Constants.JOYSTICK_LEFT_TRIGGER) >
-      Math.abs(BUMPER_DEADZONE)
-    ) {
+    if (joystick.getRawAxis(Constants.JOYSTICK_LEFT_TRIGGER) > Math.abs(BUMPER_DEADZONE)) {
       climbers.closeShortArms();
     }
     if (joystick.getRawButton(Constants.JOYSTICK_RIGHT_BUMPER)) {
       climbers.openLongArms();
     }
-    if (
-      joystick.getRawAxis(Constants.JOYSTICK_RIGHT_TRIGGER) >
-      Math.abs(BUMPER_DEADZONE)
-    ) {
+    if (joystick.getRawAxis(Constants.JOYSTICK_RIGHT_TRIGGER) > Math.abs(BUMPER_DEADZONE)) {
       climbers.closeLongArms();
     }
 
@@ -80,9 +74,8 @@ public class JoystickClimb extends CommandBase {
     }
     leftYstick = Math.copySign(leftYstick * leftYstick, leftYstick);
     double limiter = SmartDashboard.getNumber(
-      Dashboard.DASH_CLIMBER_LIMITER,
-      ClimberModule.CLIMBER_LIMITER
-    );
+        Dashboard.DASH_CLIMBER_LIMITER,
+        ClimberModule.CLIMBER_LIMITER);
 
     double rightYstick = joystick.getRawAxis(Constants.JOYSTICK_RIGHT_Y_AXIS);
     /* Deadband gamepad, long climbers */
@@ -94,15 +87,15 @@ public class JoystickClimb extends CommandBase {
 
     // Allows the climber to go up at full speed.
     // if (rightYstick < -0) {
-    //   rightYstick = rightYstick * Math.abs(1.0);
+    // rightYstick = rightYstick * Math.abs(1.0);
     // } else {
-    //   rightYstick = rightYstick * Math.abs(limiter);
+    // rightYstick = rightYstick * Math.abs(limiter);
     // }
 
     // if (leftYstick < -0) {
-    //   leftYstick = leftYstick * Math.abs(1.0);
+    // leftYstick = leftYstick * Math.abs(1.0);
     // } else {
-    //   leftYstick = leftYstick * Math.abs(limiter);
+    // leftYstick = leftYstick * Math.abs(limiter);
     // }
 
     // Limits the climber power to 50%
@@ -118,49 +111,44 @@ public class JoystickClimb extends CommandBase {
       rightYstick = 0;
     }
 
-    // Climber backstop
+    // // Climber backstop
     // if (shortPosition >= MAX_CLIMBER_POSITION && leftYstick < -0) {
-    //   leftYstick = 0;
+    // leftYstick = 0;
     // }
 
     // if (longPosition >= MAX_CLIMBER_POSITION && rightYstick < -0) {
-    //   rightYstick = 0;
+    // rightYstick = 0;
     // }
 
     climbers.longClimberModule.moveArms(rightYstick);
     climbers.shortClimberModule.moveArms(leftYstick);
 
     SmartDashboard.putBoolean(
-      "short left",
-      climbers.shortClimberModule.contactedLeftPole()
-    );
+        "short left",
+        climbers.shortClimberModule.contactedLeftPole());
     SmartDashboard.putBoolean(
-      "short right",
-      climbers.shortClimberModule.contactedRightPole()
-    );
+        "short right",
+        climbers.shortClimberModule.contactedRightPole());
 
     SmartDashboard.putBoolean(
-      "long left",
-      climbers.longClimberModule.contactedLeftPole()
-    );
+        "long left",
+        climbers.longClimberModule.contactedLeftPole());
     SmartDashboard.putBoolean(
-      "long right",
-      climbers.longClimberModule.contactedRightPole()
-    );
+        "long right",
+        climbers.longClimberModule.contactedRightPole());
 
     SmartDashboard.putNumber(
-      Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
-      climbers.longClimberModule.getPosition()
-    );
+        Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
+        climbers.longClimberModule.getPosition());
     SmartDashboard.putNumber(
-      Dashboard.DASH_CLIMBER_SHORT_ARM_POSITION,
-      climbers.shortClimberModule.getPosition()
-    );
+        Dashboard.DASH_CLIMBER_SHORT_ARM_POSITION,
+        climbers.shortClimberModule.getPosition());
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override

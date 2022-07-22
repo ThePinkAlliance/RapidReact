@@ -130,14 +130,14 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Shooter - Shoot - move tower to push ball up to shooter
-    // new JoystickButton(gamepad_tower, JoystickMap.BUTTON_X)
-    // .whenPressed(
-    // new MoveTower(
-    // m_collector,
-    // ShooterConstants.SHOOTER_POWER_HUB_HIGH,
-    // JoystickMap.BUTTON_X,
-    // gamepad_tower,
-    // true));
+    new JoystickButton(gamepad_tower, JoystickMap.BUTTON_X)
+        .whenPressed(
+            new MoveTower(
+                m_collector,
+                ShooterConstants.SHOOTER_POWER_HUB_HIGH,
+                JoystickMap.BUTTON_X,
+                gamepad_tower,
+                true));
     // Shooter - Rev the shooter up to requested rpm
     new JoystickButton(gamepad_tower, JoystickMap.BUTTON_A)
         .whenPressed(
@@ -151,9 +151,9 @@ public class RobotContainer {
                 m_limelight.getAngleSupplier(),
                 JoystickMap.BUTTON_A));
     // Hood - Commands the hood to a requested position
-    // new JoystickButton(gamepad_tower, JoystickMap.BUTTON_B)
-    // .whenPressed(
-    // new CommandHoodTuning(m_hood, gamepad_tower, JoystickMap.BUTTON_B));
+    new JoystickButton(gamepad_tower, JoystickMap.BUTTON_B)
+        .whenPressed(
+            new CommandHoodTuning(m_hood, gamepad_tower, JoystickMap.BUTTON_B));
     // Collector Intake
     new JoystickButton(gamepad_base, JoystickMap.RIGHT_BUMPER)
         .whenPressed(
@@ -205,7 +205,8 @@ public class RobotContainer {
 
   public void enableLimelight() {
     if (m_limelight != null) {
-      m_limelight.setLedState(LimelightLedMode.FORCE_ON);
+      // Save peoples eye.
+      m_limelight.setLedState(LimelightLedMode.FORCE_OFF);
     }
   }
 
