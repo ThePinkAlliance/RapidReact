@@ -1,17 +1,19 @@
 {
-    "fileName": "pink-core.json",
+    "fileName": "ThePinkAlliance.json",
     "name": "ThePinkAlliance",
-    "version": "2.0.5",
+    "version": "2.0.15",
     "uuid": "9619F7EA-7F96-4236-9D94-02338DFED572",
     "mavenUrls": [
-        "https://jitpack.io"
+        "https://jitpack.io",
+        "https://maven.revrobotics.com/",
+        "https://maven.ctr-electronics.com/release/"
     ],
     "jsonUrl": "https://raw.githubusercontent.com/ThePinkAlliance/core/main/ThePinkAlliance.json",
     "javaDependencies": [
         {
             "groupId": "com.github.ThePinkAlliance",
             "artifactId": "core",
-            "version": "2.0.5"
+            "version": "2.0.15"
         }
     ],
     "jniDependencies": [],
