@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -108,6 +109,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
+    configureNetwork();
     configureButtonBindings();
 
     for (SelectableTrajectory t : trajectories) {
@@ -124,6 +126,13 @@ public class RobotContainer {
     this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
     this.m_climbers.setDefaultCommand(
         new JoystickClimb(m_climbers, this.gamepad_tower));
+  }
+
+  /**
+   * This is where you can configure the roboRIO's port forwarding over usb.
+   */
+  public void configureNetwork() {
+    PortForwarder.add(5800, "photonvision.local", 5800);
   }
 
   /**

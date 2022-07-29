@@ -17,10 +17,9 @@ public class Shooter extends SubsystemBase {
   public double CURRENT_HOOD_ANGLE = 45;
 
   public static final double SHOOTER_FLYWHEEL_DIAMETER = 4.063;
-  public static final double SHOOTER_FLYWHEEL_CIRCUMFRENCE =
-    (SHOOTER_FLYWHEEL_DIAMETER / 2) * Math.PI;
+  public static final double SHOOTER_FLYWHEEL_CIRCUMFRENCE = (SHOOTER_FLYWHEEL_DIAMETER / 2) * Math.PI;
 
-  private double RAMP_RATE = 0;
+  private double RAMP_RATE = 0.03;
   private double NOMINAL_FORWARD = 0;
   private double NOMINAL_REVERSE = 0;
   public static double GEAR_MULTIPLYER = 1.6;
@@ -51,17 +50,10 @@ public class Shooter extends SubsystemBase {
   }
 
   public double getMotorRpms() {
-    double velocity =
-      (
-        (
-          (
-            (this.motor.getSelectedSensorVelocity()) /
-            Base.FULL_TALON_ROTATION_TICKS
-          ) /
-          Shooter.GEAR_MULTIPLYER
-        ) *
-        600
-      );
+    double velocity = ((((this.motor.getSelectedSensorVelocity()) /
+        Base.FULL_TALON_ROTATION_TICKS) /
+        Shooter.GEAR_MULTIPLYER) *
+        600);
     return Math.abs(velocity);
   }
 
@@ -77,20 +69,24 @@ public class Shooter extends SubsystemBase {
   public void command(double power) {
     // apply power
     motor.set(ControlMode.PercentOutput, power);
-    // when power is being applied:  isActivated needs to be true
+    // when power is being applied: isActivated needs to be true
     this.isActivated = (power != 0) ? true : false;
   }
 
   public void commandRpm(double rpm) {
     double velo = ((rpm * 2048) * GEAR_MULTIPLYER) / 600;
     motor.set(ControlMode.Velocity, velo);
-    // when power is being applied:  isActivated needs to be true
+    // when power is being applied: isActivated needs to be true
     this.isActivated = (rpm != 0) ? true : false;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public void configureRampRate(double rate) {
+    this.RAMP_RATE = rate;
   }
 
   private void configureMotor() {
@@ -100,66 +96,54 @@ public class Shooter extends SubsystemBase {
     this.motor.configSelectedFeedbackSensor(
         TalonFXFeedbackDevice.IntegratedSensor,
         ShooterConstants.kPIDLoopIdx,
-        ShooterConstants.kTimeoutMs
-      );
-    //this.motor.setSensorPhase(true);  //NOT NEEDED SINCE ITS INTEGRATED SENSOR
+        ShooterConstants.kTimeoutMs);
+    // this.motor.setSensorPhase(true); //NOT NEEDED SINCE ITS INTEGRATED SENSOR
     this.motor.configClosedloopRamp(RAMP_RATE);
     this.motor.configNominalOutputForward(
         NOMINAL_FORWARD,
-        ShooterConstants.kTimeoutMs
-      );
+        ShooterConstants.kTimeoutMs);
     this.motor.configNominalOutputReverse(
         NOMINAL_REVERSE,
-        ShooterConstants.kTimeoutMs
-      );
+        ShooterConstants.kTimeoutMs);
     this.motor.configPeakOutputForward(
         PEAK_FORWARD,
-        ShooterConstants.kTimeoutMs
-      );
+        ShooterConstants.kTimeoutMs);
     this.motor.configPeakOutputReverse(
         PEAK_REVERSE,
-        ShooterConstants.kTimeoutMs
-      );
+        ShooterConstants.kTimeoutMs);
     this.motor.configAllowableClosedloopError(
         ShooterConstants.kPIDLoopIdx,
         ShooterConstants.ALLOWABLE_CLOSELOOP_ERROR,
-        ShooterConstants.kTimeoutMs
-      );
+        ShooterConstants.kTimeoutMs);
     this.motor.config_kF(
         ShooterConstants.kPIDLoopIdx,
         ShooterConstants.kGains.kF,
-        ShooterConstants.kTimeoutMs
-      );
+        ShooterConstants.kTimeoutMs);
     this.motor.config_kP(
         ShooterConstants.kPIDLoopIdx,
         ShooterConstants.kGains.kP,
-        ShooterConstants.kTimeoutMs
-      );
+        ShooterConstants.kTimeoutMs);
     this.motor.config_kI(
         ShooterConstants.kPIDLoopIdx,
         ShooterConstants.kGains.kI,
-        ShooterConstants.kTimeoutMs
-      );
+        ShooterConstants.kTimeoutMs);
     this.motor.config_kD(
         ShooterConstants.kPIDLoopIdx,
         ShooterConstants.kGains.kD,
-        ShooterConstants.kTimeoutMs
-      );
+        ShooterConstants.kTimeoutMs);
   }
 
   public void configFeedForward(double ff) {
     this.motor.config_kF(
         ShooterConstants.kPIDLoopIdx,
         ff,
-        ShooterConstants.kTimeoutMs
-      );
+        ShooterConstants.kTimeoutMs);
   }
 
   public void configKp(double Kp) {
     this.motor.config_kP(
         ShooterConstants.kPIDLoopIdx,
         Kp,
-        ShooterConstants.kTimeoutMs
-      );
+        ShooterConstants.kTimeoutMs);
   }
 }
