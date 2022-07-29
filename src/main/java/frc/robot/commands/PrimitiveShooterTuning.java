@@ -64,7 +64,7 @@ public class PrimitiveShooterTuning extends CommandBase {
       currentPackage = TargetPackageFactory.getTarmacPackage();
       System.out.println("Tarmac Package");
     } else if (high) {
-      currentPackage = TargetPackageFactory.getHighHubPackage();
+      currentPackage = TargetPackageFactory.getCustomPackage(12 * 30); // TargetPackageFactory.getHighHubPackage();
       System.out.println("High Hub Package");
     } else {
       double distance = m_limelight.getDistanceSupplier().get();
