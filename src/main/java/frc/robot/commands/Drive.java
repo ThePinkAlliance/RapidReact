@@ -16,7 +16,7 @@ public class Drive extends CommandBase {
   private Base base;
   private Joystick js;
 
-  private static final double MAX_POWER_WHILE_LIMITED = 1;
+  private static final double MAX_POWER_WHILE_LIMITED = 0.085;
 
   /** Creates a new Drive. */
   public Drive(Base base, Joystick js) {
@@ -41,16 +41,16 @@ public class Drive extends CommandBase {
     double axis1y = js.getRawAxis(JoystickMap.LEFT_Y_AXIS);
     double axis4rot = js.getRawAxis(4);
 
-    // invert right joystick axis input to match clockwise, counter clockwise robot behavior
+    // invert right joystick axis input to match clockwise, counter clockwise robot
+    // behavior
     axis4rot *= -1;
     axis0x *= -1;
     axis1y *= -1;
 
     ChassisSpeeds speedObject = new ChassisSpeeds(
-      modifyAxisLimited(axis1y) * Base.MAX_VELOCITY_METERS_PER_SECOND,
-      modifyAxisLimited(axis0x) * Base.MAX_VELOCITY_METERS_PER_SECOND,
-      modifyAxisLimited(axis4rot) * Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-    );
+        (modifyAxisLimited(axis1y) * Base.MAX_VELOCITY_METERS_PER_SECOND),
+        (modifyAxisLimited(axis0x) * Base.MAX_VELOCITY_METERS_PER_SECOND),
+        (modifyAxisLimited(axis4rot) * Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
 
     this.base.drive(speedObject);
   }

@@ -48,6 +48,8 @@ public class PrimitiveShooterTuning extends CommandBase {
         HoodConstants.kGains.kP,
         HoodConstants.kGains.kI,
         HoodConstants.kGains.kD);
+    // m_shooter.stopMusic();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -64,13 +66,14 @@ public class PrimitiveShooterTuning extends CommandBase {
       currentPackage = TargetPackageFactory.getTarmacPackage();
       System.out.println("Tarmac Package");
     } else if (high) {
-      currentPackage = TargetPackageFactory.getCustomPackage(12 * 30); // TargetPackageFactory.getHighHubPackage();
+      currentPackage = TargetPackageFactory.getCustomPackage(12 * 15); // TargetPackageFactory.getHighHubPackage();
       System.out.println("High Hub Package");
     } else {
       double distance = m_limelight.getDistanceSupplier().get();
 
       System.out.println("Custom Package Distance: " + distance);
       currentPackage = TargetPackageFactory.getCustomPackage(12);
+      currentPackage = new TargetPackage(currentPackage.Kp, currentPackage.Kp, currentPackage.hoodPosition, 2770);
     }
 
     m_hood.setPosition(currentPackage.hoodPosition);
@@ -78,17 +81,8 @@ public class PrimitiveShooterTuning extends CommandBase {
     SmartDashboard.putBoolean(Dashboard.DASH_SHOOTER_READY, ready);
 
     this.m_shooter.configKp(currentPackage.Kp);
-    // System.out.println("RPM: " + rpm + "; shooter ff: " + shooterFf);
     this.m_shooter.configFeedForward(currentPackage.Kf);
     this.m_shooter.commandRpm(currentPackage.rpm);
-
-    SmartDashboard.putNumber(
-        Dashboard.DASH_SHOOTER_VELOCITY,
-        this.m_shooter.getMotorOutputPercent());
-
-    SmartDashboard.putNumber(
-        Dashboard.DASH_SHOOTER_RPMS,
-        this.m_shooter.getMotorRpms());
     SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_P, currentPackage.Kp);
     SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_FF, currentPackage.Kf);
   }

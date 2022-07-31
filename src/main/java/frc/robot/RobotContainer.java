@@ -115,7 +115,7 @@ public class RobotContainer {
     SmartDashboard.putData(selectedPath);
     m_dashboard.publishInitialDashboard(); // DO NOT REMOVE and DO NOT COMMENT OUT
 
-    // this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
+    this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
     this.m_climbers.setDefaultCommand(
         new JoystickClimb(m_climbers, this.gamepad_tower));
   }
@@ -154,6 +154,7 @@ public class RobotContainer {
     new JoystickButton(gamepad_tower, JoystickMap.BUTTON_B)
         .whenPressed(
             new CommandHoodTuning(m_hood, gamepad_tower, JoystickMap.BUTTON_B));
+    new JoystickButton(gamepad_tower, JoystickMap.BUTTON_Y).whenPressed(() -> this.m_shooter.playMusic());
     // Collector Intake
     new JoystickButton(gamepad_base, JoystickMap.RIGHT_BUMPER)
         .whenPressed(
