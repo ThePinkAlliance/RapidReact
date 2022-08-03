@@ -26,6 +26,7 @@ import frc.robot.commands.LimelightAlign;
 import frc.robot.commands.MoveLongArms;
 import frc.robot.commands.MoveShortArms;
 import frc.robot.commands.MoveTower;
+import frc.robot.commands.PhotonShooter;
 import frc.robot.commands.paths.Threeball;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Climbers;
@@ -81,18 +82,6 @@ public class RobotContainer {
   private final SelectableTrajectory TwoBallAuto = new SelectableTrajectory(
       "Two Ball Auto",
       new AutoTwoBall(m_base, m_shooter, m_collector, m_hood, m_limelight));
-  private final SelectableTrajectory ThreeBallAuto = new SelectableTrajectory(
-      "Three Ball Auto",
-      new Threeball(m_base, m_shooter, m_collector, m_limelight, m_hood));
-
-  // private final SelectableTrajectory TwoBallBlue = new SelectableTrajectory(
-  // "Two Ball Blue",
-  // "output/2 Ball Blue.wpilib.json"
-  // );
-  // private final SelectableTrajectory autoMidClimb = new SelectableTrajectory(
-  // "AutoMidClimb",
-  // new AutoMidClimb(m_base, m_climbers)
-  // );
 
   /**
    * This contains all the trajectories that can be selected from the dashboard.
@@ -101,7 +90,6 @@ public class RobotContainer {
       LeaveTarmac,
       ShootLeaveTarmac,
       TwoBallAuto,
-      ThreeBallAuto,
   };
 
   /**
@@ -155,15 +143,7 @@ public class RobotContainer {
                 true));
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_A)
         .whenPressed(
-            new CommandShooterTuning(
-                m_shooter,
-                m_limelight,
-                m_hood,
-                m_base,
-                gamepad_tower,
-                m_limelight.getDistanceSupplier(),
-                m_limelight.getAngleSupplier(),
-                Constants.JOYSTICK_BUTTON_A));
+            new PhotonShooter(m_camera, m_shooter, m_hood, gamepad_tower, Constants.JOYSTICK_BUTTON_A));
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
         .whenPressed(
             new CommandHoodTuning(
@@ -200,18 +180,7 @@ public class RobotContainer {
                 m_climbers,
                 ClimberModule.SHORT_ARM_MID_CLIMB_START,
                 MoveShortArms.ARM_MOVE_UP).alongWith(
-                    new MoveLongArms(m_climbers, ClimberModule.LONG_ARM_MID_CLIMB_START, MoveLongArms.ARM_MOVE_UP))
-        // .andThen(
-        // // .andThen(
-        // // new MoveLongArms(
-        // // m_climbers,
-        // // ClimberModule.LONG_ARM_MID_CLIMB_START,s
-        // // MoveLongArms.ARM_MOVE_UP
-        // // )
-        // // )
-        // // new ClimbDrive(m_base, m_climbers, 0, 0.4, false)
-        // )
-        );
+                    new MoveLongArms(m_climbers, ClimberModule.LONG_ARM_MID_CLIMB_START, MoveLongArms.ARM_MOVE_UP)));
   }
 
   public void selectTrajectory(SelectableTrajectory selectableTrajectory) {

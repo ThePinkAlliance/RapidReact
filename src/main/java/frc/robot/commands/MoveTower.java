@@ -18,18 +18,18 @@ public class MoveTower extends CommandBase {
 
   /**
    * NOTE bIntake won't be updated if this command is not being called repeatedly
+   * 
    * @param m_collector
    * @param shooterPowerCloseHigh
    * @param JOYSTICK_BUTTON
    * @param gamepad_tower
    */
   public MoveTower(
-    Collector m_collector,
-    double shooterPowerCloseHigh,
-    int JOYSTICK_BUTTON,
-    Joystick gamepad_tower,
-    boolean bIntake
-  ) {
+      Collector m_collector,
+      double shooterPowerCloseHigh,
+      int JOYSTICK_BUTTON,
+      Joystick gamepad_tower,
+      boolean bIntake) {
     // Use addRequirements() here to declare subsystem dependencies.
 
     this.m_collector = m_collector;
@@ -43,7 +43,8 @@ public class MoveTower extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -57,7 +58,7 @@ public class MoveTower extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    this.m_collector.SetSpeedTowerForOverride(0); 
+    this.m_collector.SetSpeedTowerForOverride(0);
   }
 
   // Returns true when the command should end.

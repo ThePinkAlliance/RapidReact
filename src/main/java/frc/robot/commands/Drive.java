@@ -33,7 +33,8 @@ public class Drive extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   /**
-   * NOTE: strafing has an issue when driving as it gets closer to the end of the joystick it gets exponetialy faster
+   * NOTE: strafing has an issue when driving as it gets closer to the end of the
+   * joystick it gets exponetialy faster
    */
   @Override
   public void execute() {
@@ -41,25 +42,23 @@ public class Drive extends CommandBase {
     double axis1y = js.getRawAxis(1);
     double axis4rot = js.getRawAxis(4);
 
-    //invert right joystick axis input to match clockwise, counter clockwise robot behavior
+    // invert right joystick axis input to match clockwise, counter clockwise robot
+    // behavior
     axis4rot *= -1;
     axis0x *= -1;
     axis1y *= -1;
 
     ChassisSpeeds speedObject = new ChassisSpeeds(
-      modifyAxisLimited(axis1y) * Base.MAX_VELOCITY_METERS_PER_SECOND,
-      modifyAxisLimited(axis0x) * Base.MAX_VELOCITY_METERS_PER_SECOND,
-      modifyAxisLimited(axis4rot) * Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-    );
+        modifyAxisLimited(axis1y) * Base.MAX_VELOCITY_METERS_PER_SECOND,
+        modifyAxisLimited(axis0x) * Base.MAX_VELOCITY_METERS_PER_SECOND,
+        modifyAxisLimited(axis4rot) * Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
 
     // Turbo
     if (js.getRawButton(Constants.JOYSTICK_LEFT_Y_AXIS_BUTTON)) {
-      speedObject =
-        new ChassisSpeeds(
+      speedObject = new ChassisSpeeds(
           modifyAxis(axis1y) * Base.MAX_VELOCITY_METERS_PER_SECOND,
           modifyAxis(axis0x) * Base.MAX_VELOCITY_METERS_PER_SECOND,
-          modifyAxis(axis4rot) * Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-        );
+          modifyAxis(axis4rot) * Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
     }
 
     this.base.drive(speedObject);
@@ -85,7 +84,7 @@ public class Drive extends CommandBase {
     value = Math.copySign(value * value * value, value);
 
     // Limit the speed to 75%
-    value = value / 1.33;
+    value = value * 0.75;
 
     return value;
   }

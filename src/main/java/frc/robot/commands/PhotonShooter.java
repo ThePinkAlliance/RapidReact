@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-import com.ThePinkAlliance.core.limelight.Limelight.GAME_TARGET_HEIGHTS;
+import com.ThePinkAlliance.core.limelight.GameTargetHeights;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
@@ -73,15 +73,16 @@ public class PhotonShooter extends CommandBase {
     } else if (high) {
       currentPackage = TargetPackageFactory.getHighHubPackage();
       System.out.println("High Hub Package");
-    } else {
+    } else if (m_camera.getLatestResult().hasTargets()) {
       PhotonTrackedTarget pipelineResult = m_camera.getLatestResult().getBestTarget();
       double distance = PhotonUtils.calculateDistanceToTargetMeters(Units.inchesToMeters(CameraConstants.CAMERA_HIGHT),
-          Units.inchesToMeters(GAME_TARGET_HEIGHTS.RAPID_REACT_TOP_HUB.get()),
+          Units.inchesToMeters(GameTargetHeights.RAPID_REACT_TOP_HUB.get()),
           Units.degreesToRadians(CameraConstants.CAMERA_MOUNTED_ANGLE),
-          Rotation2d.fromDegrees(-pipelineResult.getYaw()).getRadians());
+          Rotation2d.fromDegrees(-pipelineResult.getPitch()).getRadians());
 
-      System.out.println("Custom Package Distance: " + distance);
       currentPackage = TargetPackageFactory.getCustomPackage(distance);
+      System.out.println("Custom Package Distance: " + distance + ", Kp: " + currentPackage.Kp + ", Kf: "
+          + currentPackage.Kf + ", Hood: " + currentPackage.hoodPosition + ", Rpm: " + currentPackage.rpm);
     }
 
     m_hood.setPosition(currentPackage.hoodPosition);
@@ -89,7 +90,6 @@ public class PhotonShooter extends CommandBase {
     SmartDashboard.putBoolean(Dashboard.DASH_SHOOTER_READY, ready);
 
     this.m_shooter.configKp(currentPackage.Kp);
-    // System.out.println("RPM: " + rpm + "; shooter ff: " + shooterFf);
     this.m_shooter.configFeedForward(currentPackage.Kf);
     this.m_shooter.commandRpm(currentPackage.rpm);
 
