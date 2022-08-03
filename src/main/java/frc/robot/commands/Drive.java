@@ -53,14 +53,6 @@ public class Drive extends CommandBase {
         modifyAxisLimited(axis0x) * Base.MAX_VELOCITY_METERS_PER_SECOND,
         modifyAxisLimited(axis4rot) * Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
 
-    // Turbo
-    if (js.getRawButton(Constants.JOYSTICK_LEFT_Y_AXIS_BUTTON)) {
-      speedObject = new ChassisSpeeds(
-          modifyAxis(axis1y) * Base.MAX_VELOCITY_METERS_PER_SECOND,
-          modifyAxis(axis0x) * Base.MAX_VELOCITY_METERS_PER_SECOND,
-          modifyAxis(axis4rot) * Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
-    }
-
     this.base.drive(speedObject);
   }
 
