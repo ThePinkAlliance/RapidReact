@@ -75,10 +75,11 @@ public class PhotonShooter extends CommandBase {
       System.out.println("High Hub Package");
     } else if (m_camera.getLatestResult().hasTargets()) {
       PhotonTrackedTarget pipelineResult = m_camera.getLatestResult().getBestTarget();
-      double distance = PhotonUtils.calculateDistanceToTargetMeters(Units.inchesToMeters(CameraConstants.CAMERA_HIGHT),
-          Units.inchesToMeters(GameTargetHeights.RAPID_REACT_TOP_HUB.get()),
-          Units.degreesToRadians(CameraConstants.CAMERA_MOUNTED_ANGLE),
-          Rotation2d.fromDegrees(-pipelineResult.getPitch()).getRadians());
+      double distance = Units.metersToInches(
+          PhotonUtils.calculateDistanceToTargetMeters(Units.inchesToMeters(CameraConstants.CAMERA_HIGHT),
+              Units.inchesToMeters(86),
+              Units.degreesToRadians(CameraConstants.CAMERA_MOUNTED_ANGLE),
+              Rotation2d.fromDegrees(-pipelineResult.getPitch()).getRadians()));
 
       currentPackage = TargetPackageFactory.getCustomPackage(distance);
       System.out.println("Custom Package Distance: " + distance + ", Kp: " + currentPackage.Kp + ", Kf: "

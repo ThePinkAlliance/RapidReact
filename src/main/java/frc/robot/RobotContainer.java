@@ -37,6 +37,7 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.LimelightLedMode;
 import frc.robot.subsystems.Shooter;
 import org.photonvision.PhotonCamera;
+import org.photonvision.common.hardware.VisionLEDMode;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -57,7 +58,7 @@ public class RobotContainer {
   private final Shooter m_shooter = new Shooter();
   private final Hood m_hood = new Hood();
   private final Climbers m_climbers = new Climbers();
-  private final PhotonCamera m_camera = new PhotonCamera(NetworkTableInstance.getDefault(), "limelight");
+  private final PhotonCamera m_camera = new PhotonCamera(NetworkTableInstance.getDefault(), "gloworm");
 
   // DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
   private final Dashboard m_dashboard = new Dashboard(
@@ -99,6 +100,7 @@ public class RobotContainer {
     // Configure the button bindings
     configureNetwork();
     configureButtonBindings();
+    
 
     for (SelectableTrajectory t : trajectories) {
       if (t.location == TwoBallAuto.name) {

@@ -45,6 +45,7 @@ public class Shooter extends SubsystemBase {
     return this.isActivated;
   }
 
+  @Deprecated
   public double calculateOptimalTrajectory(double distance) {
     return Projectile.calculateRange(CURRENT_HOOD_ANGLE, distance);
   }

@@ -76,7 +76,7 @@ public class Drive extends CommandBase {
     value = Math.copySign(value * value * value, value);
 
     // Limit the speed to 75%
-    value = value * 0.75;
+    value = value * 0.20;
 
     return value;
   }
