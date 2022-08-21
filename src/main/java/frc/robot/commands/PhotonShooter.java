@@ -4,10 +4,10 @@
 
 package frc.robot.commands;
 
-import com.ThePinkAlliance.core.limelight.GameTargetHeights;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.drive.Vector2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.CameraConstants;
@@ -75,15 +75,28 @@ public class PhotonShooter extends CommandBase {
       System.out.println("High Hub Package");
     } else if (m_camera.getLatestResult().hasTargets()) {
       PhotonTrackedTarget pipelineResult = m_camera.getLatestResult().getBestTarget();
-      double distance = Units.metersToInches(
-          PhotonUtils.calculateDistanceToTargetMeters(Units.inchesToMeters(CameraConstants.CAMERA_HIGHT),
-              Units.inchesToMeters(86),
-              Units.degreesToRadians(CameraConstants.CAMERA_MOUNTED_ANGLE),
-              Rotation2d.fromDegrees(-pipelineResult.getPitch()).getRadians()));
 
-      currentPackage = TargetPackageFactory.getCustomPackage(distance);
+      /*
+       * Try changing the resolution to 360 or somthing smaller because some
+       * resolutions report inaccurate pitch estimations then others.
+       */
+      double distance = Units.metersToInches(
+          PhotonUtils.calculateDistanceToTargetMeters(Units.feetToMeters(4.5),
+              Units.feetToMeters(2.85),
+              Units.degreesToRadians(CameraConstants.CAMERA_MOUNTED_ANGLE),
+              Units.degreesToRadians(pipelineResult.getPitch())));
+
+      currentPackage = TargetPackageFactory
+          .getCustomPackage(distance);
       System.out.println("Custom Package Distance: " + distance + ", Kp: " + currentPackage.Kp + ", Kf: "
-          + currentPackage.Kf + ", Hood: " + currentPackage.hoodPosition + ", Rpm: " + currentPackage.rpm);
+          + currentPackage.Kf + ", Hood: " + currentPackage.hoodPosition + ", Rpm: " + currentPackage.rpm
+          + ", Raw Pitch: " + pipelineResult.getPitch() + ", x: " + Units
+              .metersToInches(pipelineResult.getCameraToTarget().getX())
+          + ", y: "
+          + Units.metersToInches(pipelineResult.getCameraToTarget().getY()) + ", vector: " + new Vector2d(
+              pipelineResult.getCameraToTarget().getX(), pipelineResult.getCameraToTarget().getY()));
+    } else {
+      currentPackage = TargetPackageFactory.getTarmacPackage();
     }
 
     m_hood.setPosition(currentPackage.hoodPosition);

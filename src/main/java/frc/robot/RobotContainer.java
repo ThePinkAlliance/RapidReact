@@ -27,6 +27,7 @@ import frc.robot.commands.MoveLongArms;
 import frc.robot.commands.MoveShortArms;
 import frc.robot.commands.MoveTower;
 import frc.robot.commands.PhotonShooter;
+import frc.robot.commands.PrimitiveShooterTuning;
 import frc.robot.commands.paths.Threeball;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Climbers;
@@ -37,7 +38,6 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.LimelightLedMode;
 import frc.robot.subsystems.Shooter;
 import org.photonvision.PhotonCamera;
-import org.photonvision.common.hardware.VisionLEDMode;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -58,7 +58,8 @@ public class RobotContainer {
   private final Shooter m_shooter = new Shooter();
   private final Hood m_hood = new Hood();
   private final Climbers m_climbers = new Climbers();
-  private final PhotonCamera m_camera = new PhotonCamera(NetworkTableInstance.getDefault(), "gloworm");
+  // private final PhotonCamera m_camera = new
+  // PhotonCamera(NetworkTableInstance.getDefault(), "gloworm");
 
   // DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
   private final Dashboard m_dashboard = new Dashboard(
@@ -98,9 +99,11 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
+
+    // m_camera.setPipelineIndex(2);
+
     configureNetwork();
     configureButtonBindings();
-    
 
     for (SelectableTrajectory t : trajectories) {
       if (t.location == TwoBallAuto.name) {
@@ -145,7 +148,7 @@ public class RobotContainer {
                 true));
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_A)
         .whenPressed(
-            new PhotonShooter(m_camera, m_shooter, m_hood, gamepad_tower, Constants.JOYSTICK_BUTTON_A));
+            new PrimitiveShooterTuning(m_shooter, m_limelight, m_hood, gamepad_tower, Constants.JOYSTICK_BUTTON_A));
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
         .whenPressed(
             new CommandHoodTuning(

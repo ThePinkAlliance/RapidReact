@@ -27,12 +27,11 @@ public class PrimitiveShooterTuning extends CommandBase {
 
   /** Creates a new PrimimitveShooter. */
   public PrimitiveShooterTuning(
-    Shooter m_shooter,
-    Limelight m_limeLight,
-    Hood m_hood,
-    Joystick joystick,
-    int button_id
-  ) {
+      Shooter m_shooter,
+      Limelight m_limeLight,
+      Hood m_hood,
+      Joystick joystick,
+      int button_id) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_shooter = m_shooter;
     this.m_limelight = m_limeLight;
@@ -46,10 +45,9 @@ public class PrimitiveShooterTuning extends CommandBase {
   @Override
   public void initialize() {
     m_hood.setPID(
-      HoodConstants.kGains.kP,
-      HoodConstants.kGains.kI,
-      HoodConstants.kGains.kD
-    );
+        HoodConstants.kGains.kP,
+        HoodConstants.kGains.kI,
+        HoodConstants.kGains.kD);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -69,7 +67,7 @@ public class PrimitiveShooterTuning extends CommandBase {
       currentPackage = TargetPackageFactory.getHighHubPackage();
       System.out.println("High Hub Package");
     } else {
-      double distance = m_limelight.getDistanceSupplier().get();
+      double distance = m_limelight.findDistance();
 
       System.out.println("Custom Package Distance: " + distance);
       currentPackage = TargetPackageFactory.getCustomPackage(distance);
@@ -80,19 +78,16 @@ public class PrimitiveShooterTuning extends CommandBase {
     SmartDashboard.putBoolean(Dashboard.DASH_SHOOTER_READY, ready);
 
     this.m_shooter.configKp(currentPackage.Kp);
-    //System.out.println("RPM: " + rpm + "; shooter ff: " + shooterFf);
     this.m_shooter.configFeedForward(currentPackage.Kf);
     this.m_shooter.commandRpm(currentPackage.rpm);
 
     SmartDashboard.putNumber(
-      Dashboard.DASH_SHOOTER_VELOCITY,
-      this.m_shooter.getMotorOutputPercent()
-    );
+        Dashboard.DASH_SHOOTER_VELOCITY,
+        this.m_shooter.getMotorOutputPercent());
 
     SmartDashboard.putNumber(
-      Dashboard.DASH_SHOOTER_RPMS,
-      this.m_shooter.getMotorRpms()
-    );
+        Dashboard.DASH_SHOOTER_RPMS,
+        this.m_shooter.getMotorRpms());
     SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_P, currentPackage.Kp);
     SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_FF, currentPackage.Kf);
   }
