@@ -4,10 +4,7 @@
 
 package frc.robot;
 
-import com.ThePinkAlliance.core.rev.commands.REV_HardStopHoming;
-import com.ThePinkAlliance.core.rev.commands.REV_HardStopHoming.MotorType;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -15,10 +12,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.AutoDoNothing;
-import frc.robot.commands.AutoLatchArms;
 import frc.robot.commands.AutoShootLeaveTarmac;
 import frc.robot.commands.AutoTwoBall;
 import frc.robot.commands.CollectGroup;
@@ -28,12 +23,11 @@ import frc.robot.commands.Drive;
 import frc.robot.commands.JoystickClimb;
 import frc.robot.commands.LeaveTarmack;
 import frc.robot.commands.LimelightAlign;
+import frc.robot.commands.LimelightCalibration;
 import frc.robot.commands.MoveLongArms;
 import frc.robot.commands.MoveShortArms;
 import frc.robot.commands.MoveTower;
-import frc.robot.commands.PhotonShooter;
 import frc.robot.commands.PrimitiveShooterTuning;
-import frc.robot.commands.paths.Threeball;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Collector;
@@ -236,8 +230,8 @@ public class RobotContainer {
     }
   }
 
-  public void testInit() {
-    m_base.setPodAngles(0);
+  public Command testCommand() {
+    return new LimelightCalibration(m_limelight);
   }
 
   public void resetHood() {

@@ -120,16 +120,17 @@ public class Robot extends TimedRobot {
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
+    CommandScheduler.getInstance().cancelAll();
+
     if (m_robotContainer != null) {
       m_robotContainer.enableLimelight();
-      m_robotContainer.testInit();
     }
-    CommandScheduler.getInstance().cancelAll();
   }
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
+    m_robotContainer.testCommand().execute();
   }
 
   @Override

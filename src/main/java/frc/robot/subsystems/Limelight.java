@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.function.Supplier;
 
 // ADDRESS FOR THE LIMELIGHT FEED: http://limelight.local:5801/
@@ -192,11 +191,11 @@ public class Limelight extends SubsystemBase {
     }
 
     /*
-     * Averaging the distance data over an array of 11 slots allows for easy
-     * noise filtering
+     * Averaging the distance data over an array of x slots allows for easy
+     * noise filtering but it does not work when more then a quarter of the cache
+     * has noisy data
      */
     double hypotenuseDistance = allHypots / cachedHypotDistances.size();
-    System.out.println(cachedHypotDistances.size());
 
     cachedHypotDistances.add(nextHypotDistance);
     cachedHypotDistances.remove(0);
