@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -29,9 +30,8 @@ public class Limelight extends SubsystemBase {
   private final double reflectiveTapeHeight = 102.375; // this is static (in) to CENTER of reflective tape
   private final double targetHeightDifference = (reflectiveTapeHeight - limelightLensHeight);
 
-  ArrayList<Double> cachedHypotDistances = new ArrayList<Double>();
-
-  private double lastHypotDistance = 0;
+  ArrayList<Double> cachedHypotDistances = new ArrayList<>(Arrays.asList(.0, .0, .0, .0, .0, .0, .0, .0, .0, .0, .0, .0,
+      .0, .0, .0, .0, .0, .0, .0, .0, .0, .0, .0, .0, .0));
 
   double errorAccDistance = 0;
   double limelightMountedAngle = 51.5; // 50 // this can change a static number though once we have found it
@@ -39,19 +39,6 @@ public class Limelight extends SubsystemBase {
   /** Creates a new Limelight. */
   public Limelight() {
     initLimelight(LimelightLedMode.FORCE_OFF);
-
-    // Populate the cache
-    cachedHypotDistances.add(0, 0.0);
-    cachedHypotDistances.add(1, 0.0);
-    cachedHypotDistances.add(2, 0.0);
-    cachedHypotDistances.add(3, 0.0);
-    cachedHypotDistances.add(4, 0.0);
-    cachedHypotDistances.add(5, 0.0);
-    cachedHypotDistances.add(6, 0.0);
-    cachedHypotDistances.add(7, 0.0);
-    cachedHypotDistances.add(8, 0.0);
-    cachedHypotDistances.add(9, 0.0);
-    cachedHypotDistances.add(10, 0.0);
   }
 
   public void initLimelight(LimelightLedMode mode) {
@@ -120,8 +107,6 @@ public class Limelight extends SubsystemBase {
         .getTable("limelight");
     NetworkTableEntry ty = table.getEntry("ty");
     NetworkTableEntry tx = table.getEntry("tx");
-
-    double offsetX = tx.getDouble(0.0) + horzontalOffset.get();
 
     double verticalOffsetAngle = ty.getDouble(0.0); // angle calculated by the limelight.
 
@@ -195,40 +180,23 @@ public class Limelight extends SubsystemBase {
     return errorAccDistance;
   }
 
-  public boolean update(double next, double... vals) {
-    int differences = 0;
-
-    for (int i = 0; i < vals.length; i++) {
-      double v = vals[i];
-
-      if (v != next) {
-        differences++;
-      }
-    }
-
-    return differences >= 2;
-  }
-
   public double calculateDistanceHypot() {
     double errorAccDistance = calculateAccountedDistance();
     double squared = ((targetHeightDifference * targetHeightDifference) + (errorAccDistance * errorAccDistance));
     double nextHypotDistance = Math.sqrt(squared);
 
-    // ill refactor this later.
-    double hypotIndex0 = Math.floor(cachedHypotDistances.get(0));
-    double hypotIndex1 = Math.floor(cachedHypotDistances.get(1));
-    double hypotIndex2 = Math.floor(cachedHypotDistances.get(2));
-    double hypotIndex3 = Math.floor(cachedHypotDistances.get(3));
-    double hypotIndex4 = Math.floor(cachedHypotDistances.get(4));
-    double hypotIndex5 = Math.floor(cachedHypotDistances.get(5));
-    double hypotIndex6 = Math.floor(cachedHypotDistances.get(6));
-    double hypotIndex7 = Math.floor(cachedHypotDistances.get(7));
-    double hypotIndex8 = Math.floor(cachedHypotDistances.get(8));
-    double hypotIndex9 = Math.floor(cachedHypotDistances.get(9));
-    double hypotIndex10 = Math.floor(cachedHypotDistances.get(10));
+    double allHypots = 0;
 
-    double hypotenuseDistance = (hypotIndex0 + hypotIndex1 + hypotIndex2 + hypotIndex3 + hypotIndex4 + hypotIndex5
-        + hypotIndex6 + hypotIndex7 + hypotIndex8 + hypotIndex9 + hypotIndex10) / 11;
+    for (double hypot : cachedHypotDistances) {
+      allHypots += hypot;
+    }
+
+    /*
+     * Averaging the distance data over an array of 11 slots allows for easy
+     * noise filtering
+     */
+    double hypotenuseDistance = allHypots / cachedHypotDistances.size();
+    System.out.println(cachedHypotDistances.size());
 
     cachedHypotDistances.add(nextHypotDistance);
     cachedHypotDistances.remove(0);
@@ -236,6 +204,7 @@ public class Limelight extends SubsystemBase {
     return hypotenuseDistance;
   }
 
+  @Deprecated
   public double findDistance() {
     // from documentation, the distance can be found using a fixed camera angle
     // distance = (height2 - height1) / tan(angle1 + angle2)
