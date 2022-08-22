@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.AutoDoNothing;
+import frc.robot.commands.AutoLatchArms;
 import frc.robot.commands.AutoShootLeaveTarmac;
 import frc.robot.commands.AutoTwoBall;
 import frc.robot.commands.CollectGroup;
@@ -40,7 +42,6 @@ import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.LimelightLedMode;
 import frc.robot.subsystems.Shooter;
-import org.photonvision.PhotonCamera;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -61,8 +62,6 @@ public class RobotContainer {
   private final Shooter m_shooter = new Shooter();
   private final Hood m_hood = new Hood();
   private final Climbers m_climbers = new Climbers();
-  // private final PhotonCamera m_camera = new
-  // PhotonCamera(NetworkTableInstance.getDefault(), "gloworm");
 
   // DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
   private final Dashboard m_dashboard = new Dashboard(
@@ -84,6 +83,9 @@ public class RobotContainer {
           m_hood,
           m_collector,
           m_limelight));
+
+  private final SelectableTrajectory doNothing = new SelectableTrajectory("Auto Do Nothing", new AutoDoNothing());
+
   private final SelectableTrajectory TwoBallAuto = new SelectableTrajectory(
       "Two Ball Auto",
       new AutoTwoBall(m_base, m_shooter, m_collector, m_hood, m_limelight));
@@ -95,6 +97,7 @@ public class RobotContainer {
       LeaveTarmac,
       ShootLeaveTarmac,
       TwoBallAuto,
+      doNothing
   };
 
   /**
@@ -102,8 +105,6 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
-
-    // m_camera.setPipelineIndex(2);
 
     configureNetwork();
     configureButtonBindings();
@@ -153,6 +154,15 @@ public class RobotContainer {
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_A)
         .whenPressed(
             new PrimitiveShooterTuning(m_shooter, m_limelight, m_hood, gamepad_tower, Constants.JOYSTICK_BUTTON_A));
+    new CommandShooterTuning(
+        m_shooter,
+        m_limelight,
+        m_hood,
+        m_base,
+        gamepad_tower,
+        m_limelight.getDistanceSupplier(),
+        m_limelight.getAngleSupplier(),
+        Constants.JOYSTICK_BUTTON_A);
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
         .whenPressed(
             new CommandHoodTuning(
@@ -188,7 +198,8 @@ public class RobotContainer {
             new MoveShortArms(
                 m_climbers,
                 ClimberModule.SHORT_ARM_MID_CLIMB_START,
-                MoveShortArms.ARM_MOVE_UP).alongWith(
+                MoveShortArms.ARM_MOVE_UP)
+                .alongWith(
                     new MoveLongArms(m_climbers, ClimberModule.LONG_ARM_MID_CLIMB_START, MoveLongArms.ARM_MOVE_UP)));
   }
 

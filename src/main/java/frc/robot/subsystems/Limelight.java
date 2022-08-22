@@ -214,6 +214,7 @@ public class Limelight extends SubsystemBase {
     double squared = ((targetHeightDifference * targetHeightDifference) + (errorAccDistance * errorAccDistance));
     double nextHypotDistance = Math.sqrt(squared);
 
+    // ill refactor this later.
     double hypotIndex0 = Math.floor(cachedHypotDistances.get(0));
     double hypotIndex1 = Math.floor(cachedHypotDistances.get(1));
     double hypotIndex2 = Math.floor(cachedHypotDistances.get(2));

@@ -13,8 +13,8 @@ import frc.robot.subsystems.Dashboard;
 public class MoveShortArms extends CommandBase {
 
  
-  public static double ARM_MOVE_UP = -0.4;
-  public static double ARM_MOVE_DOWN = 0.4;
+  public static double ARM_MOVE_UP = -1;
+  public static double ARM_MOVE_DOWN = 0.5;
   Climbers climbers;
   double position; 
   double power;
