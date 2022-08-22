@@ -7,13 +7,14 @@ package frc.robot.commands;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.Base;
 
 public class Drive extends CommandBase {
 
   private Base base;
   private Joystick js;
+
+  private static final double MAX_SPEED = 0.10;
 
   /** Creates a new Drive. */
   public Drive(Base base, Joystick js) {
@@ -75,8 +76,8 @@ public class Drive extends CommandBase {
     // Cubing due to raw power until robot reaches competition weight.
     value = Math.copySign(value * value * value, value);
 
-    // Limit the speed to 75%
-    value = value * 0.20;
+    // Limit the speed
+    value = value * MAX_SPEED;
 
     return value;
   }

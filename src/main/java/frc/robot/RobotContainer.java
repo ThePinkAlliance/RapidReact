@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.ThePinkAlliance.core.rev.commands.REV_HardStopHoming;
+import com.ThePinkAlliance.core.rev.commands.REV_HardStopHoming.MotorType;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.net.PortForwarder;
@@ -13,6 +15,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.AutoShootLeaveTarmac;
 import frc.robot.commands.AutoTwoBall;
@@ -125,6 +128,7 @@ public class RobotContainer {
    * This is where you can configure the roboRIO's port forwarding over usb.
    */
   public void configureNetwork() {
+    // no longer used
     PortForwarder.add(5800, "photonvision.local", 5800);
   }
 

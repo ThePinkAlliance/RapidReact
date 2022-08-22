@@ -41,28 +41,30 @@ public class AutoHood extends CommandBase {
   @Override
   public void execute() {
     double ticks = position;
-    //Enables the speed controller closed loop control.
-    //This command does not have to continue after setting this on.
+    // Enables the speed controller closed loop control.
+    // This command does not have to continue after setting this on.
     this.m_hood.setPosition(ticks);
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     // SmartDashboard.putNumber(
-    //   Dashboard.DASH_HOOD_OUTPUT,
-    //   this.m_hood.getHoodPower()
+    // Dashboard.DASH_HOOD_OUTPUT,
+    // this.m_hood.getHoodPower()
     // );
     // SmartDashboard.putNumber(
-    //   Dashboard.DASH_HOOD_DRAW,
-    //   this.m_hood.getCurrentDraw()
+    // Dashboard.DASH_HOOD_DRAW,
+    // this.m_hood.getCurrentDraw()
     // );
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //This command sets the closed loop control of the hood to ON.  Does not need to continue.
+    // This command sets the closed loop control of the hood to ON. Does not need to
+    // continue.
     return true;
   }
 }

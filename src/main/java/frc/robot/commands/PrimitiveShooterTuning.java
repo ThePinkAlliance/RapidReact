@@ -67,13 +67,14 @@ public class PrimitiveShooterTuning extends CommandBase {
       currentPackage = TargetPackageFactory.getHighHubPackage();
       System.out.println("High Hub Package");
     } else {
-      double distance = m_limelight.findDistance();
+      double distance = m_limelight.calculateDistanceHypot();
 
       System.out.println("Custom Package Distance: " + distance);
       currentPackage = TargetPackageFactory.getCustomPackage(distance);
     }
 
     m_hood.setPosition(currentPackage.hoodPosition);
+
     boolean ready = m_shooter.readyToShoot(currentPackage.rpm, 100);
     SmartDashboard.putBoolean(Dashboard.DASH_SHOOTER_READY, ready);
 

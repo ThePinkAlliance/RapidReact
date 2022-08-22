@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ThePinkAlliance.core.rev.RevNeo550;
+import com.ThePinkAlliance.core.rev.SparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -28,6 +29,8 @@ public class Hood extends SubsystemBase {
   private final double MAX_HOOD_SHOOTER_DIFF_X = 10.5;
   private final double HOOD_DIFF_WIDTH_INCHES_PER_TICK = HOOD_LENGTH_X / MAX_HOOD_POSITION;
   private final int HOOD_MOTOR = 31;
+
+  private double lastPosition = 0;
 
   private RevNeo550 hoodMotor = null;
   private SparkMaxPIDController hoodPid;
@@ -54,6 +57,10 @@ public class Hood extends SubsystemBase {
     return (((Math.tan(angle) * (HOOD_LENGTH_X - HOOD_PARREL_SHOOTER)) /
         HOOD_WHEEL_CIRCUMFERENCE) *
         REV_TICKS_PER_REV);
+  }
+
+  public SparkMax getController() {
+    return hoodMotor;
   }
 
   public void setPID(double p, double i, double d, double ff) {
@@ -88,7 +95,11 @@ public class Hood extends SubsystemBase {
   public void setPosition(double ticks) {
     double rotations = ticks / REV_TICKS_PER_REV;
 
-    this.hoodPid.setReference(rotations, ControlType.kPosition);
+    if (Math.abs(lastPosition - ticks) > 1000) {
+      this.hoodPid.setReference(rotations, ControlType.kPosition);
+    }
+
+    this.lastPosition = ticks;
   }
 
   public double getHoodAngle() {
@@ -120,6 +131,7 @@ public class Hood extends SubsystemBase {
 
     if (this.hoodMotor != null && this.hoodEncoder != null) {
       // SmartDashboard.putNumber("hood power", this.hoodMotor.get());
+
       SmartDashboard.putNumber(
           Dashboard.DASH_HOOD_POSITION,
           this.hoodEncoder.getPosition() * REV_TICKS_PER_REV);

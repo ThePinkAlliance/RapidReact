@@ -9,6 +9,9 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 // ADDRESS FOR THE LIMELIGHT FEED: http://limelight.local:5801/
@@ -19,14 +22,36 @@ public class Limelight extends SubsystemBase {
 
   private Supplier<Double> horzontalOffset = () -> 0.0;
   private Supplier<Double> distanceSupplier = () -> 0.0;
+  private Supplier<Double> hypotDistanceSupplier = () -> 0.0;
   private Supplier<Double> angleSupplier = () -> 0.0;
 
+  private final double limelightLensHeight = 25; // 33.5; // this can change (in) will be static, should NEVER change
+  private final double reflectiveTapeHeight = 102.375; // this is static (in) to CENTER of reflective tape
+  private final double targetHeightDifference = (reflectiveTapeHeight - limelightLensHeight);
+
+  ArrayList<Double> cachedHypotDistances = new ArrayList<Double>();
+
+  private double lastHypotDistance = 0;
+
   double errorAccDistance = 0;
-  double limelightMountedAngle = 50; // this can change a static number though once we have found it
+  double limelightMountedAngle = 51.5; // 50 // this can change a static number though once we have found it
 
   /** Creates a new Limelight. */
   public Limelight() {
     initLimelight(LimelightLedMode.FORCE_OFF);
+
+    // Populate the cache
+    cachedHypotDistances.add(0, 0.0);
+    cachedHypotDistances.add(1, 0.0);
+    cachedHypotDistances.add(2, 0.0);
+    cachedHypotDistances.add(3, 0.0);
+    cachedHypotDistances.add(4, 0.0);
+    cachedHypotDistances.add(5, 0.0);
+    cachedHypotDistances.add(6, 0.0);
+    cachedHypotDistances.add(7, 0.0);
+    cachedHypotDistances.add(8, 0.0);
+    cachedHypotDistances.add(9, 0.0);
+    cachedHypotDistances.add(10, 0.0);
   }
 
   public void initLimelight(LimelightLedMode mode) {
@@ -81,7 +106,7 @@ public class Limelight extends SubsystemBase {
     return offsetX;
   }
 
-  public void getDistance() {
+  public double calculateAccountedDistance() {
     // from documentation, the distance can be found using a fixed camera angle
     // distance = (height2 - height1) / tan(angle1 + angle2)
     // height1 is limelight elevation, height2 is target height
@@ -98,11 +123,6 @@ public class Limelight extends SubsystemBase {
 
     double offsetX = tx.getDouble(0.0) + horzontalOffset.get();
 
-    double limelightLensHeight = 33.5; // this can change (in) will be static, should NEVER change
-    // double changeAngle = SmartDashboard.getNumber("LIMELIGHT SET ANGLE: ",
-    // limelightMountedAngle);
-
-    double reflectiveTapeHeight = 102.375; // this is static (in) to CENTER of reflective tape
     double verticalOffsetAngle = ty.getDouble(0.0); // angle calculated by the limelight.
 
     double angleToGoalDeg = (limelightMountedAngle + verticalOffsetAngle);
@@ -172,19 +192,47 @@ public class Limelight extends SubsystemBase {
 
     errorAccDistance = errorAccDistance * 0.73;
 
-    double height = (reflectiveTapeHeight - limelightLensHeight);
+    return errorAccDistance;
+  }
 
-    double squared = ((height * height) + (errorAccDistance * errorAccDistance));
+  public boolean update(double next, double... vals) {
+    int differences = 0;
 
-    double hypotenuseDistance = Math.sqrt(squared);
+    for (int i = 0; i < vals.length; i++) {
+      double v = vals[i];
 
-    this.distanceSupplier = () -> errorAccDistance;
-    this.angleSupplier = () -> offsetX;
+      if (v != next) {
+        differences++;
+      }
+    }
 
-    SmartDashboard.putNumber("Distance: ", errorAccDistance);
-    SmartDashboard.putNumber("Hypotenuse Distance: ", hypotenuseDistance);
-    SmartDashboard.putNumber("Object Offset X: ", offsetX);
-    SmartDashboard.putNumber("Object Offset Y: ", verticalOffsetAngle);
+    return differences >= 2;
+  }
+
+  public double calculateDistanceHypot() {
+    double errorAccDistance = calculateAccountedDistance();
+    double squared = ((targetHeightDifference * targetHeightDifference) + (errorAccDistance * errorAccDistance));
+    double nextHypotDistance = Math.sqrt(squared);
+
+    double hypotIndex0 = Math.floor(cachedHypotDistances.get(0));
+    double hypotIndex1 = Math.floor(cachedHypotDistances.get(1));
+    double hypotIndex2 = Math.floor(cachedHypotDistances.get(2));
+    double hypotIndex3 = Math.floor(cachedHypotDistances.get(3));
+    double hypotIndex4 = Math.floor(cachedHypotDistances.get(4));
+    double hypotIndex5 = Math.floor(cachedHypotDistances.get(5));
+    double hypotIndex6 = Math.floor(cachedHypotDistances.get(6));
+    double hypotIndex7 = Math.floor(cachedHypotDistances.get(7));
+    double hypotIndex8 = Math.floor(cachedHypotDistances.get(8));
+    double hypotIndex9 = Math.floor(cachedHypotDistances.get(9));
+    double hypotIndex10 = Math.floor(cachedHypotDistances.get(10));
+
+    double hypotenuseDistance = (hypotIndex0 + hypotIndex1 + hypotIndex2 + hypotIndex3 + hypotIndex4 + hypotIndex5
+        + hypotIndex6 + hypotIndex7 + hypotIndex8 + hypotIndex9 + hypotIndex10) / 11;
+
+    cachedHypotDistances.add(nextHypotDistance);
+    cachedHypotDistances.remove(0);
+
+    return hypotenuseDistance;
   }
 
   public double findDistance() {
@@ -204,11 +252,9 @@ public class Limelight extends SubsystemBase {
 
     double offsetX = tx.getDouble(0.0) + horzontalOffset.get();
 
-    double limelightLensHeight = 33.5; // this can change (in) will be static, should NEVER change
     // double changeAngle = SmartDashboard.getNumber("LIMELIGHT SET ANGLE: ",
     // limelightMountedAngle);
 
-    double reflectiveTapeHeight = 102.375; // this is static (in) to CENTER of reflective tape
     double verticalOffsetAngle = ty.getDouble(0.0); // angle calculated by the limelight.
 
     double angleToGoalDeg = (limelightMountedAngle + verticalOffsetAngle);
@@ -284,19 +330,29 @@ public class Limelight extends SubsystemBase {
 
     double hypotenuseDistance = Math.sqrt(squared);
 
+    SmartDashboard.putNumber("Error Acc Distance", errorAccDistance);
+
     return errorAccDistance;
   }
 
+  @Deprecated
   public Supplier<Double> getDistanceSupplier() {
     return this.distanceSupplier;
   }
 
+  @Deprecated
   public Supplier<Double> getAngleOffsetSupplier() {
     return this.horzontalOffset;
   }
 
+  @Deprecated
   public Supplier<Double> getAngleSupplier() {
     return this.angleSupplier;
+  }
+
+  @Deprecated
+  public Supplier<Double> getHypotDistance() {
+    return this.hypotDistanceSupplier;
   }
 
   @Override
@@ -323,7 +379,7 @@ public class Limelight extends SubsystemBase {
 
     SmartDashboard.getNumber("limelight angle offset", horzontalOffset.get());
     if (limelightLedOn == true) {
-      getDistance();
+      findDistance();
     }
   }
 }
