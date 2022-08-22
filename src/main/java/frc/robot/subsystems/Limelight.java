@@ -29,6 +29,10 @@ public class Limelight extends SubsystemBase {
   private final double reflectiveTapeHeight = 102.375; // this is static (in) to CENTER of reflective tape
   private final double targetHeightDifference = (reflectiveTapeHeight - limelightLensHeight);
 
+  private final NetworkTable table = NetworkTableInstance
+      .getDefault()
+      .getTable("limelight");
+
   ArrayList<Double> cachedHypotDistances = new ArrayList<>(Arrays.asList(.0, .0, .0, .0, .0, .0, .0, .0, .0, .0, .0, .0,
       .0, .0, .0, .0, .0, .0, .0, .0, .0, .0, .0, .0, .0));
 
@@ -68,24 +72,13 @@ public class Limelight extends SubsystemBase {
   }
 
   public boolean isTarget() {
-    boolean targets = false;
-    NetworkTable table = NetworkTableInstance
-        .getDefault()
-        .getTable("limelight");
     NetworkTableEntry tv = table.getEntry("tv");
     double availableTargets = tv.getDouble(0.0);
-    if (availableTargets == 1) {
-      targets = true;
-    } else {
-      targets = false; // not necessary but for safety
-    }
-    return targets;
+
+    return availableTargets == 1;
   }
 
   public double getOffset() {
-    NetworkTable table = NetworkTableInstance
-        .getDefault()
-        .getTable("limelight");
     NetworkTableEntry tx = table.getEntry("tx");
     double offsetX = tx.getDouble(0.0);
 
@@ -93,33 +86,47 @@ public class Limelight extends SubsystemBase {
   }
 
   public double calculateAccountedDistance() {
-    // from documentation, the distance can be found using a fixed camera angle
-    // distance = (height2 - height1) / tan(angle1 + angle2)
-    // height1 is limelight elevation, height2 is target height
-    // angle1 is limelight angle, angle2 is target angle
-    // What we need: limelight angle on the robot, distance from center of limelight
-    // lens to ground,
-    // distance from height of the target to the floor
+    /*
+     * from documentation, the distance can be found using a fixed camera angle
+     * distance = (height2 - height1) / tan(angle1 + angle2)
+     * height1 is limelight elevation, height2 is target height
+     * angle1 is limelight angle, angle2 is target angle
+     * What we need: limelight angle on the robot, distance from center of limelight
+     * lens to ground, distance from height of the target to the floor
+     */
 
-    NetworkTable table = NetworkTableInstance
-        .getDefault()
-        .getTable("limelight");
     NetworkTableEntry ty = table.getEntry("ty");
-    NetworkTableEntry tx = table.getEntry("tx");
 
     double verticalOffsetAngle = ty.getDouble(0.0); // angle calculated by the limelight.
 
     double angleToGoalDeg = (limelightMountedAngle + verticalOffsetAngle);
+
+    /*
+     * Converts the estimated angle from the target in degress to radians.
+     */
     double angleToGoalRad = angleToGoalDeg * (3.14159 / 180.0);
+
     double error = 0.612649568;
 
+    /*
+     * Calculates the distance using the known target height and limelight height
+     * then subtracting the difference from them and dividing them by the tangant of
+     * the estimated angle from the target in radians.
+     */
     double distance = ((reflectiveTapeHeight - limelightLensHeight) /
         (Math.tan(angleToGoalRad)));
 
-    // The following statements were used as ways to account for error that the
-    // limelight gives from distance
-    // There are a bunch of different statements to be more prescise at every
-    // distance
+    /*
+     * The following statements were used as ways to account for error that the
+     * limelight gives from distance
+     * 
+     * There are a bunch of different statements to be
+     * more prescise at every distance
+     * 
+     * NOTE: These if statements are solving the inaccurate distance reporting in a
+     * similar way as linear interpolation. For future use we should consider using
+     * linear interpolation for the limelight.
+     */
     if (32.905 <= distance && distance <= 37.6) {
       error = 0.685521;
     }
@@ -186,6 +193,9 @@ public class Limelight extends SubsystemBase {
 
     double allHypots = 0;
 
+    /*
+     * Iterates over all the cached hypot distances and add's them to allHypots
+     */
     for (double hypot : cachedHypotDistances) {
       allHypots += hypot;
     }
@@ -213,9 +223,6 @@ public class Limelight extends SubsystemBase {
     // lens to ground,
     // distance from height of the target to the floor
 
-    NetworkTable table = NetworkTableInstance
-        .getDefault()
-        .getTable("limelight");
     NetworkTableEntry ty = table.getEntry("ty");
     NetworkTableEntry tx = table.getEntry("tx");
 
