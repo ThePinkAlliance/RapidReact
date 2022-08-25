@@ -35,7 +35,7 @@ public class Drive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   /**
    * NOTE: strafing has an issue when driving as it gets closer to the end of the
-   * joystick it gets exponetialy faster
+   * joystick it gets exponentially faster
    */
   @Override
   public void execute() {
