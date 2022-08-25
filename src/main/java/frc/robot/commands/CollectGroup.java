@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Collector;
@@ -18,17 +17,17 @@ public class CollectGroup extends CommandBase {
 
   /**
    * NOTE bIntake won't be updated if this command is not being called repeatedly
+   * 
    * @param m_collector
    * @param joystick
    * @param JOYSTICK_BUTTON
    * @param bIntake
    */
   public CollectGroup(
-    Collector m_collector,
-    Joystick joystick,
-    int JOYSTICK_BUTTON,
-    boolean bIntake
-  ) {
+      Collector m_collector,
+      Joystick joystick,
+      int JOYSTICK_BUTTON,
+      boolean bIntake) {
     // Use addRequirements() here to declare subsystem dependencies.
 
     this.m_collector = m_collector;
@@ -51,13 +50,11 @@ public class CollectGroup extends CommandBase {
     if (bIntake == false) {
       this.m_collector.SetSpeedCollector(-Collector.COLLECTOR_MOTOR_FULL_SPEED);
       this.m_collector.SetSpeedTowerForOverride(
-          -Collector.TOWER_MOTOR_FULL_SPEED
-        );
+          -Collector.TOWER_MOTOR_FULL_SPEED);
     } else {
       this.m_collector.SetSpeedCollector(Collector.COLLECTOR_MOTOR_FULL_SPEED);
       this.m_collector.SetSpeedTowerForOverride(
-          Collector.TOWER_MOTOR_FULL_SPEED
-        );
+          Collector.TOWER_MOTOR_FULL_SPEED);
     }
   }
 

@@ -21,13 +21,12 @@ public class AutoTwoBall extends SequentialCommandGroup {
 
   /** Creates a new ShootLeaveTarmac. */
   public AutoTwoBall(
-    Base m_base,
-    Shooter m_shooter,
-    Collector m_collector,
-    Hood m_hood,
-    Limelight m_limelight
-  ) {
-    //seconds needed (as seen during SLF testing) to collect the second ball.
+      Base m_base,
+      Shooter m_shooter,
+      Collector m_collector,
+      Hood m_hood,
+      Limelight m_limelight) {
+    // seconds needed (as seen during SLF testing) to collect the second ball.
     double autoCollectSeconds = 1.2;
     double shootSeconds = 2;
     double targetAcquireSeconds = 0.75;
@@ -36,18 +35,16 @@ public class AutoTwoBall extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      //in parallel: move to pick up ball
-      new Navigate(m_base, 70, false)
-      //in parallel: start collecting and move the hood to shooting position
-        .alongWith(
-          new AutoCollectGroup(m_collector, autoCollectSeconds, true),
-          new AutoHood(m_hood, tp.hoodPosition)
-        ),
-      //align before shooting
-      new LimelightAlignAuto(m_base, m_limelight, targetAcquireSeconds),
-      //Shoot both balls
-      new AutoShoot(m_shooter, m_collector, m_hood, m_limelight, tp, shootSeconds, bUseLimelightInstead),
-      new AutoHood(m_hood, HoodConstants.IDLE_TICK_COUNT)
-    );
+        // in parallel: move to pick up ball
+        new Navigate(m_base, 70, false)
+            // in parallel: start collecting and move the hood to shooting position
+            .alongWith(
+                new AutoCollectGroup(m_collector, autoCollectSeconds, true),
+                new AutoHood(m_hood, tp.hoodPosition)),
+        // align before shooting
+        new LimelightAlignAuto(m_base, m_limelight, targetAcquireSeconds),
+        // Shoot both balls
+        new AutoShoot(m_shooter, m_collector, m_hood, m_limelight, tp, shootSeconds, bUseLimelightInstead),
+        new AutoHood(m_hood, HoodConstants.IDLE_TICK_COUNT));
   }
 }

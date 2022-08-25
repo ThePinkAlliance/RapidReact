@@ -4,8 +4,6 @@
 
 package frc.robot.commands;
 
-
-
 import edu.wpi.first.wpilibj.Timer;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -32,7 +30,8 @@ public class AutoShoot extends CommandBase {
 
   public static final double ONE_BALL_MAX_TIME = 1.5;
 
-  public AutoShoot(Shooter m_shooter, Collector m_collector, Hood m_hood, Limelight m_limelight, TargetPackage tp, boolean bUseCustomPackage) {
+  public AutoShoot(Shooter m_shooter, Collector m_collector, Hood m_hood, Limelight m_limelight, TargetPackage tp,
+      boolean bUseCustomPackage) {
     this.m_collector = m_collector;
     this.m_shooter = m_shooter;
     this.m_limelight = m_limelight;
@@ -43,7 +42,8 @@ public class AutoShoot extends CommandBase {
     addRequirements(this.m_shooter, this.m_collector, this.m_hood, this.m_limelight);
   }
 
-  public AutoShoot(Shooter m_shooter, Collector m_collector, Hood m_hood, Limelight m_limelight, TargetPackage tp, double maxTime, boolean bUseCustomPackage) {
+  public AutoShoot(Shooter m_shooter, Collector m_collector, Hood m_hood, Limelight m_limelight, TargetPackage tp,
+      double maxTime, boolean bUseCustomPackage) {
     this.m_collector = m_collector;
     this.m_shooter = m_shooter;
     this.m_limelight = m_limelight;
@@ -59,11 +59,11 @@ public class AutoShoot extends CommandBase {
   @Override
   public void initialize() {
     timer.reset();
-    //override TargetPackage with one based on limelight distance
+    // override TargetPackage with one based on limelight distance
     if (bUseCustomPackage == true) {
-      double distance = m_limelight.getDistanceSupplier().get();
+      double distance = m_limelight.calculateDistanceHypot();
       tp = TargetPackageFactory.getCustomPackage(distance);
-    } 
+    }
     this.m_hood.setPosition(tp.hoodPosition);
     this.m_shooter.configKp(tp.Kp);
     this.m_shooter.configFeedForward(tp.Kf);
@@ -80,16 +80,16 @@ public class AutoShoot extends CommandBase {
     } else {
       this.m_collector.disableTowerOverride();
     }
-    //System.out.println("RPM: " + tp.rpm);
+    // System.out.println("RPM: " + tp.rpm);
     this.m_collector.SetSpeedTowerForOverride(Collector.TOWER_MOTOR_FULL_SPEED);
     this.m_shooter.commandRpm(tp.rpm);
     // SmartDashboard.putNumber(
-    //   Dashboard.DASH_SHOOTER_VELOCITY,
-    //   this.m_shooter.getMotorOutputPercent()
+    // Dashboard.DASH_SHOOTER_VELOCITY,
+    // this.m_shooter.getMotorOutputPercent()
     // );
     // SmartDashboard.putNumber(
-    //   Dashboard.DASH_SHOOTER_RPMS,
-    //   this.m_shooter.getMotorRpms()
+    // Dashboard.DASH_SHOOTER_RPMS,
+    // this.m_shooter.getMotorRpms()
     // );
   }
 
