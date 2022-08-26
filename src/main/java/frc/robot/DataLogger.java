@@ -22,21 +22,21 @@ import edu.wpi.first.wpilibj.Timer;
 public class DataLogger {
   private String m_name;
   private String m_deviceId;
-  private String[] m_cols;
+  private List<String> m_cols;
   private File m_file;
   private FileWriter m_writer;
   private FileReader m_reader;
   private BufferedReader m_read_buffer;
   private BufferedWriter m_write_buffer;
 
-  public DataLogger(String name, String... cols) {
+  public DataLogger(String name, List<String> cols) {
     this.m_name = name;
     this.m_cols = cols;
 
     configureIO(name);
   }
 
-  public DataLogger(String name, String deviceId, String... cols) {
+  public DataLogger(String name, String deviceId, List<String> cols) {
     this.m_name = name;
     this.m_cols = cols;
     this.m_deviceId = deviceId;
@@ -72,10 +72,10 @@ public class DataLogger {
   private void createColumns() {
     StringBuilder m_builder = new StringBuilder();
 
-    for (int i = 0; i > m_cols.length; i++) {
-      String col = m_cols[i];
+    for (int i = 0; i > m_cols.size(); i++) {
+      String col = m_cols.get(i);
 
-      if (i == m_cols.length) {
+      if (i == m_cols.size()) {
         m_builder.append(col + "\n");
       } else {
         m_builder.append(col + ",");

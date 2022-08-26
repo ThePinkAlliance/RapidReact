@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -56,6 +58,9 @@ public class RobotContainer {
   private final Shooter m_shooter = new Shooter();
   private final Hood m_hood = new Hood();
   private final Climbers m_climbers = new Climbers();
+
+  private final DataLogger m_shooter_logger = new DataLogger("shooter_data",
+      List.of("distance", "type", "kp", "kf", "hood_position", "rpm"));
 
   // DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
   private final Dashboard m_dashboard = new Dashboard(
@@ -147,13 +152,15 @@ public class RobotContainer {
                 true));
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_A)
         .whenPressed(
-            new PrimitiveShooterTuning(m_shooter, m_limelight, m_hood, gamepad_tower, Constants.JOYSTICK_BUTTON_A));
+            new PrimitiveShooterTuning(m_shooter, m_limelight, m_hood, gamepad_tower, m_shooter_logger,
+                Constants.JOYSTICK_BUTTON_A));
     new CommandShooterTuning(
         m_shooter,
         m_limelight,
         m_hood,
         m_base,
         gamepad_tower,
+        m_shooter_logger,
         m_limelight.getDistanceSupplier(),
         m_limelight.getAngleSupplier(),
         Constants.JOYSTICK_BUTTON_A);

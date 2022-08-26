@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.DataLogger;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Limelight;
@@ -24,6 +25,7 @@ public class CommandShooterTuning extends ParallelCommandGroup {
       Hood m_hood,
       Base m_base,
       Joystick joystick,
+      DataLogger m_logger,
       Supplier<Double> distanceSupplier,
       Supplier<Double> angleSupplier,
       int button_id) {
@@ -35,6 +37,7 @@ public class CommandShooterTuning extends ParallelCommandGroup {
             m_limelight,
             m_hood,
             joystick,
+            m_logger,
             button_id));
   }
 }

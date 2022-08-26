@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.DataLogger;
 import frc.robot.HoodConstants;
 import frc.robot.TargetPackage;
 import frc.robot.TargetPackageFactory;
@@ -24,6 +25,7 @@ public class PrimitiveShooterTuning extends CommandBase {
   private Joystick joystick;
   private TargetPackage currentPackage;
   private int button_id;
+  private DataLogger m_logger;
 
   /** Creates a new PrimimitveShooter. */
   public PrimitiveShooterTuning(
@@ -31,11 +33,13 @@ public class PrimitiveShooterTuning extends CommandBase {
       Limelight m_limeLight,
       Hood m_hood,
       Joystick joystick,
+      DataLogger logger,
       int button_id) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_shooter = m_shooter;
     this.m_limelight = m_limeLight;
     this.m_hood = m_hood;
+    this.m_logger = logger;
     this.button_id = button_id;
     this.joystick = joystick;
     addRequirements(m_shooter, m_hood);
@@ -57,20 +61,28 @@ public class PrimitiveShooterTuning extends CommandBase {
     boolean tarmac = joystick.getPOV() == Constants.JOYSTICK_POV_LEFT;
     boolean high = joystick.getPOV() == Constants.JOYSTICK_POV_UP;
 
+    double distance = m_limelight.calculateDistanceHypot();
+
     if (low) {
       currentPackage = TargetPackageFactory.getLowHubPackage();
       System.out.println("Low Hub Package");
+
+      log(distance, "low", currentPackage);
     } else if (tarmac) {
       currentPackage = TargetPackageFactory.getTarmacPackage();
       System.out.println("Tarmac Package");
+
+      log(distance, "tarmac", currentPackage);
     } else if (high) {
       currentPackage = TargetPackageFactory.getHighHubPackage();
       System.out.println("High Hub Package");
-    } else {
-      double distance = m_limelight.calculateDistanceHypot();
 
+      log(distance, "high", currentPackage);
+    } else {
       System.out.println("Custom Package Distance: " + distance);
       currentPackage = TargetPackageFactory.getCustomPackage(distance);
+
+      log(distance, "custom", currentPackage);
     }
 
     m_hood.setPosition(currentPackage.hoodPosition);
@@ -91,6 +103,11 @@ public class PrimitiveShooterTuning extends CommandBase {
         this.m_shooter.getMotorRpms());
     SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_P, currentPackage.Kp);
     SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_FF, currentPackage.Kf);
+  }
+
+  private void log(double distance, String type, TargetPackage currentPackage) {
+    m_logger.write(distance, type, currentPackage.Kp, currentPackage.Kf, currentPackage.hoodPosition,
+        currentPackage.rpm);
   }
 
   // Called once the command ends or is interrupted.
