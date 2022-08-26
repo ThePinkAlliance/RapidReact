@@ -154,16 +154,6 @@ public class RobotContainer {
         .whenPressed(
             new PrimitiveShooterTuning(m_shooter, m_limelight, m_hood, gamepad_tower, m_shooter_logger,
                 Constants.JOYSTICK_BUTTON_A));
-    new CommandShooterTuning(
-        m_shooter,
-        m_limelight,
-        m_hood,
-        m_base,
-        gamepad_tower,
-        m_shooter_logger,
-        m_limelight.getDistanceSupplier(),
-        m_limelight.getAngleSupplier(),
-        Constants.JOYSTICK_BUTTON_A);
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
         .whenPressed(
             new CommandHoodTuning(
