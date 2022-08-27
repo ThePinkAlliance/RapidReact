@@ -85,6 +85,27 @@ public class Limelight extends SubsystemBase {
     return offsetX;
   }
 
+  public double calculateUnmodifiedDistance() {
+    NetworkTableEntry ty = table.getEntry("ty");
+
+    double verticalOffsetAngle = ty.getDouble(0.0); // angle calculated by the limelight.
+
+    double angleToGoalDeg = (limelightMountedAngle + verticalOffsetAngle);
+
+    /*
+     * Converts the estimated angle from the target in degress to radians.
+     */
+    double angleToGoalRad = angleToGoalDeg * (3.14159 / 180.0);
+
+    /*
+     * Calculates the distance using the known target height and limelight height
+     * then subtracting the difference from them and dividing them by the tangant of
+     * the estimated angle from the target in radians.
+     */
+    return ((reflectiveTapeHeight - limelightLensHeight) /
+        (Math.tan(angleToGoalRad)));
+  }
+
   public double calculateAccountedDistance() {
     /*
      * from documentation, the distance can be found using a fixed camera angle

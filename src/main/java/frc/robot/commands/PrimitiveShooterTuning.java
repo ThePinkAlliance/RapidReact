@@ -62,27 +62,28 @@ public class PrimitiveShooterTuning extends CommandBase {
     boolean high = joystick.getPOV() == Constants.JOYSTICK_POV_UP;
 
     double distance = m_limelight.calculateDistanceHypot();
+    double unmodifiedDistance = m_limelight.calculateUnmodifiedDistance();
 
     if (low) {
       currentPackage = TargetPackageFactory.getLowHubPackage();
       System.out.println("Low Hub Package");
 
-      log(distance, "low", currentPackage);
+      log(distance, unmodifiedDistance, "low", currentPackage);
     } else if (tarmac) {
       currentPackage = TargetPackageFactory.getTarmacPackage();
       System.out.println("Tarmac Package");
 
-      log(distance, "tarmac", currentPackage);
+      log(distance, unmodifiedDistance, "tarmac", currentPackage);
     } else if (high) {
       currentPackage = TargetPackageFactory.getHighHubPackage();
       System.out.println("High Hub Package");
 
-      log(distance, "high", currentPackage);
+      log(distance, unmodifiedDistance, "high", currentPackage);
     } else {
       System.out.println("Custom Package Distance: " + distance);
       currentPackage = TargetPackageFactory.getCustomPackage(distance);
 
-      log(distance, "custom", currentPackage);
+      log(distance, unmodifiedDistance, "custom", currentPackage);
     }
 
     m_hood.setPosition(currentPackage.hoodPosition);
@@ -105,8 +106,9 @@ public class PrimitiveShooterTuning extends CommandBase {
     SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_FF, currentPackage.Kf);
   }
 
-  private void log(double distance, String type, TargetPackage currentPackage) {
-    m_logger.write(distance, type, currentPackage.Kp, currentPackage.Kf, currentPackage.hoodPosition,
+  private void log(double distance, double unmodifiedDistance, String type, TargetPackage currentPackage) {
+    m_logger.write(distance, unmodifiedDistance, type, currentPackage.Kp, currentPackage.Kf,
+        currentPackage.hoodPosition,
         currentPackage.rpm);
   }
 

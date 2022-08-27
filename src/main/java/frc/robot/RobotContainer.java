@@ -60,7 +60,10 @@ public class RobotContainer {
   private final Climbers m_climbers = new Climbers();
 
   private final DataLogger m_shooter_logger = new DataLogger("shooter_data",
-      List.of("distance", "type", "kp", "kf", "hood_position", "rpm"));
+      List.of("distance", "unmodified_distance", "type", "kp", "kf", "hood_position", "rpm"));
+
+  private final DataLogger m_calibration_logger = new DataLogger("limelight_calibration",
+      List.of("distance", "distance_raw", "kp", "kf", "hood_position", "rpm"));
 
   // DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
   private final Dashboard m_dashboard = new Dashboard(
@@ -228,7 +231,7 @@ public class RobotContainer {
   }
 
   public Command testCommand() {
-    return new LimelightCalibration(m_limelight);
+    return new LimelightCalibration(m_limelight, m_calibration_logger);
   }
 
   public void resetHood() {

@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.List;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -49,6 +50,8 @@ public class DataLogger {
   }
 
   private void configureIO(String name, String parent) {
+    name += Calendar.getInstance().getTime().toString() + ".csv";
+
     this.m_file = new File(parent, name);
     this.m_read_buffer = new BufferedReader(this.m_reader);
     this.m_write_buffer = new BufferedWriter(this.m_writer);
