@@ -14,7 +14,7 @@ public class Drive extends CommandBase {
   private Base base;
   private Joystick js;
 
-  private static final double MAX_SPEED = 0.10;
+  private static final double MAX_SPEED = 1;
 
   /** Creates a new Drive. */
   public Drive(Base base, Joystick js) {

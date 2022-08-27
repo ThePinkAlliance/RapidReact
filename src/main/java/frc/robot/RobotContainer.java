@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.AutoDoNothing;
 import frc.robot.commands.AutoShootLeaveTarmac;
@@ -59,10 +60,12 @@ public class RobotContainer {
   private final Hood m_hood = new Hood();
   private final Climbers m_climbers = new Climbers();
 
-  private final DataLogger m_shooter_logger = new DataLogger("shooter_data",
-      List.of("distance", "unmodified_distance", "type", "kp", "kf", "hood_position", "rpm"));
-  private final DataLogger m_calibration_logger = new DataLogger("limelight_calibration",
-      List.of("distance", "distance_raw", "kp", "kf", "hood_position", "rpm"));
+  // private final DataLogger m_shooter_logger = new DataLogger("shooter_data",
+  // List.of("distance", "unmodified_distance", "type", "kp", "kf",
+  // "hood_position", "rpm"));
+  // private final DataLogger m_calibration_logger = new
+  // DataLogger("limelight_calibration",
+  // List.of("distance", "distance_raw", "kp", "kf", "hood_position", "rpm"));
 
   // DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
   private final Dashboard m_dashboard = new Dashboard(
@@ -155,7 +158,7 @@ public class RobotContainer {
                 true));
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_A)
         .whenPressed(
-            new PrimitiveShooterTuning(m_shooter, m_limelight, m_hood, gamepad_tower, m_shooter_logger,
+            new PrimitiveShooterTuning(m_shooter, m_limelight, m_hood, gamepad_tower,
                 Constants.JOYSTICK_BUTTON_A));
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
         .whenPressed(
@@ -231,7 +234,7 @@ public class RobotContainer {
   }
 
   public Command getTestCommand() {
-    return new LimelightCalibration(m_limelight, m_calibration_logger);
+    return new InstantCommand();// LimelightCalibration(m_limelight, m_calibration_logger);
   }
 
   public void resetHood() {

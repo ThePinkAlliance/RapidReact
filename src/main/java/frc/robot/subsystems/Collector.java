@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Collector extends SubsystemBase {
 
   public static int COLLECTOR_MOTOR_PORT = 10;
-  public static double COLLECTOR_MOTOR_FULL_SPEED = 1;
+  public static double COLLECTOR_MOTOR_FULL_SPEED = 0.5;
   public static double TOWER_MOTOR_FULL_SPEED = 1;
   public static final double TOWER_SENSOR_TRIGGER_DISTANCE = 150.0; // millimeters
   private final int TOWER_MOTOR_PORT = 20;
@@ -44,14 +44,11 @@ public class Collector extends SubsystemBase {
   /** Creates a new Collector. */
   public Collector() {
     // Collector
-    this.collectorMotor =
-      new CANSparkMax(Collector.COLLECTOR_MOTOR_PORT, MotorType.kBrushless);
-    this.solenoid =
-      new DoubleSolenoid(
+    this.collectorMotor = new CANSparkMax(Collector.COLLECTOR_MOTOR_PORT, MotorType.kBrushless);
+    this.solenoid = new DoubleSolenoid(
         PneumaticsModuleType.CTREPCM,
         SOLENOID_ID_OPEN,
-        SOLENOID_ID_CLOSE
-      );
+        SOLENOID_ID_CLOSE);
     this.collectorMotor.setInverted(true);
     // Tower
     this.towerMotor = new TalonFX(TOWER_MOTOR_PORT);
@@ -83,7 +80,10 @@ public class Collector extends SubsystemBase {
 
   public void SetSpeedCollector(double speed) {
     collectorMotor.set(speed);
-    if (speed != 0) collectorRunning = true; else collectorRunning = false;
+    if (speed != 0)
+      collectorRunning = true;
+    else
+      collectorRunning = false;
   }
 
   public boolean ballDetected() {
@@ -91,12 +91,12 @@ public class Collector extends SubsystemBase {
     double distance = this.ballSensor.getRange();
     boolean bDetected = distance < TOWER_SENSOR_TRIGGER_DISTANCE;
     // System.out.println(
-    //   "RANGE VALID: " +
-    //   bRangeValid +
-    //   ", Distance: " +
-    //   distance +
-    //   ", bDetected: " +
-    //   bDetected
+    // "RANGE VALID: " +
+    // bRangeValid +
+    // ", Distance: " +
+    // distance +
+    // ", bDetected: " +
+    // bDetected
     // );
     return (bDetected && bRangeValid);
   }

@@ -25,7 +25,7 @@ public class CommandShooterTuning extends ParallelCommandGroup {
       Hood m_hood,
       Base m_base,
       Joystick joystick,
-      DataLogger m_logger,
+      // DataLogger m_logger,
       Supplier<Double> distanceSupplier,
       Supplier<Double> angleSupplier,
       int button_id) {
@@ -37,7 +37,7 @@ public class CommandShooterTuning extends ParallelCommandGroup {
             m_limelight,
             m_hood,
             joystick,
-            m_logger,
+            // m_logger,
             button_id));
   }
 }

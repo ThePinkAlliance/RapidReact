@@ -25,7 +25,7 @@ public class PrimitiveShooterTuning extends CommandBase {
   private Joystick joystick;
   private TargetPackage currentPackage;
   private int button_id;
-  private DataLogger m_logger;
+  // private DataLogger m_logger;
 
   /** Creates a new PrimimitveShooter. */
   public PrimitiveShooterTuning(
@@ -33,13 +33,13 @@ public class PrimitiveShooterTuning extends CommandBase {
       Limelight m_limeLight,
       Hood m_hood,
       Joystick joystick,
-      DataLogger logger,
+      // DataLogger logger,
       int button_id) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_shooter = m_shooter;
     this.m_limelight = m_limeLight;
     this.m_hood = m_hood;
-    this.m_logger = logger;
+    // this.m_logger = logger;
     this.button_id = button_id;
     this.joystick = joystick;
     addRequirements(m_shooter, m_hood);
@@ -107,9 +107,10 @@ public class PrimitiveShooterTuning extends CommandBase {
   }
 
   private void log(double distance, double unmodifiedDistance, String type, TargetPackage currentPackage) {
-    m_logger.write(distance, unmodifiedDistance, type, currentPackage.Kp, currentPackage.Kf,
-        currentPackage.hoodPosition,
-        currentPackage.rpm);
+    // m_logger.write(distance, unmodifiedDistance, type, currentPackage.Kp,
+    // currentPackage.Kf,
+    // currentPackage.hoodPosition,
+    // currentPackage.rpm);
   }
 
   // Called once the command ends or is interrupted.

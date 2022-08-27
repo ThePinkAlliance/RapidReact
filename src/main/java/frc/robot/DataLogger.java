@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -46,13 +47,13 @@ public class DataLogger {
   }
 
   private void configureIO(String name) {
-    this.configureIO(name, "/lvuser");
+    this.configureIO(name);
   }
 
   private void configureIO(String name, String parent) {
-    name += Calendar.getInstance().getTime().toString() + ".csv";
+    name += ".csv";
 
-    this.m_file = new File(parent, name);
+    this.m_file = new File(name);
     this.m_read_buffer = new BufferedReader(this.m_reader);
     this.m_write_buffer = new BufferedWriter(this.m_writer);
 
@@ -94,7 +95,12 @@ public class DataLogger {
   }
 
   public void write(Object... objs) {
-    List<String> lines = this.m_read_buffer.lines().toList();
+    List<String> lines = Arrays.asList();
+
+    for (Object x : this.m_read_buffer.lines().toArray()) {
+      lines.add(x.toString());
+    }
+
     StringBuilder previousLines = new StringBuilder();
     StringBuilder newString = new StringBuilder();
 
