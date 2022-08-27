@@ -61,7 +61,6 @@ public class RobotContainer {
 
   private final DataLogger m_shooter_logger = new DataLogger("shooter_data",
       List.of("distance", "unmodified_distance", "type", "kp", "kf", "hood_position", "rpm"));
-
   private final DataLogger m_calibration_logger = new DataLogger("limelight_calibration",
       List.of("distance", "distance_raw", "kp", "kf", "hood_position", "rpm"));
 
@@ -74,6 +73,7 @@ public class RobotContainer {
 
   Trajectory trajectory = new Trajectory();
   SendableChooser<SelectableTrajectory> selectedPath = new SendableChooser<SelectableTrajectory>();
+
   private final SelectableTrajectory LeaveTarmac = new SelectableTrajectory(
       "Leave Tarmac",
       new LeaveTarmack(m_base));
@@ -230,7 +230,7 @@ public class RobotContainer {
     }
   }
 
-  public Command testCommand() {
+  public Command getTestCommand() {
     return new LimelightCalibration(m_limelight, m_calibration_logger);
   }
 

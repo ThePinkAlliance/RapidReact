@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
 
   private Command m_autonomousCommand;
+  private Command m_testCommand;
 
   private RobotContainer m_robotContainer;
 
@@ -125,12 +126,17 @@ public class Robot extends TimedRobot {
     if (m_robotContainer != null) {
       m_robotContainer.enableLimelight();
     }
+
+    m_testCommand = m_robotContainer.getTestCommand();
+
+    if (m_testCommand != null) {
+      m_testCommand.schedule();
+    }
   }
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    m_robotContainer.testCommand().execute();
   }
 
   @Override
