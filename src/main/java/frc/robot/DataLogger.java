@@ -47,10 +47,6 @@ public class DataLogger {
   }
 
   private void configureIO(String name) {
-    this.configureIO(name);
-  }
-
-  private void configureIO(String name, String parent) {
     name += ".csv";
 
     this.m_file = new File(name);
