@@ -260,7 +260,7 @@ public class Base extends SubsystemBase {
   public void drive(ChassisSpeeds speeds) {
     this.chassisSpeeds = speeds;
 
-    this.states = kinematics.toSwerveModuleStates(chassisSpeeds);
+    this.states = kinematics.toSwerveModuleStates(speeds);
   }
 
   /**

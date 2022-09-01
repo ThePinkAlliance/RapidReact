@@ -10,13 +10,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.BaseConstants;
 import frc.robot.subsystems.Base;
 
-public class Drive extends CommandBase {
+public class DriveFieldRelative extends CommandBase {
 
   private Base base;
   private Joystick js;
 
   /** Creates a new Drive. */
-  public Drive(Base base, Joystick js) {
+  public DriveFieldRelative(Base base, Joystick js) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.base = base;
 
@@ -42,18 +42,16 @@ public class Drive extends CommandBase {
     double axis1y = js.getRawAxis(1);
     double axis4rot = js.getRawAxis(4);
 
-    // invert right joystick axis input to match clockwise, counter clockwise robot
-    // behavior
+    /*
+     * invert right joystick axis input to match clockwise, counter clockwise robot
+     * behavior behavior
+     */
     axis4rot *= -1;
     axis0x *= -1;
     axis1y *= -1;
 
-    ChassisSpeeds speedObject = new ChassisSpeeds(
-        modifyAxisLimited(axis1y) * Base.MAX_VELOCITY_METERS_PER_SECOND,
-        modifyAxisLimited(axis0x) * Base.MAX_VELOCITY_METERS_PER_SECOND,
-        modifyAxisLimited(axis4rot) * Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND);
-
-    this.base.drive(speedObject);
+    base.drive(ChassisSpeeds.fromFieldRelativeSpeeds(modifyAxisLimited(axis0x), modifyAxisLimited(axis1y),
+        modifyAxisLimited(axis4rot), base.getRotation()));
   }
 
   private static double deadband(double value, double deadband) {
