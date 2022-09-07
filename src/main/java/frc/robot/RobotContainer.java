@@ -7,6 +7,9 @@ package frc.robot;
 import java.util.List;
 
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -16,6 +19,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.LimelightCalibration;
+import frc.robot.commands.ResetRobot;
 import frc.robot.commands.auto.AutoDoNothing;
 import frc.robot.commands.auto.AutoShootLeaveTarmac;
 import frc.robot.commands.auto.AutoTwoBall;
@@ -92,6 +97,8 @@ public class RobotContainer {
   private final SelectableTrajectory TwoBallAuto = new SelectableTrajectory(
       "Two Ball Auto",
       new AutoTwoBall(m_base, m_shooter, m_collector, m_hood, m_limelight));
+
+  private BooleanEntry enableCalibration = new BooleanEntry("debug", "enable_calibration");
 
   /**
    * This contains all the trajectories that can be selected from the dashboard.
@@ -232,7 +239,7 @@ public class RobotContainer {
   }
 
   public Command getTestCommand() {
-    return new InstantCommand();// LimelightCalibration(m_limelight, m_calibration_logger);
+    return enableCalibration.get() ? new LimelightCalibration(m_limelight) : new ResetRobot(m_hood);
   }
 
   public void resetHood() {

@@ -12,14 +12,14 @@ import frc.robot.subsystems.Limelight;
 
 public class LimelightCalibration extends CommandBase {
   Limelight m_limelight;
-  DataLogger m_logger;
+  // DataLogger m_logger;
 
   /** Creates a new LimelightCalibration. */
-  public LimelightCalibration(Limelight m_limelight, DataLogger m_logger) {
+  public LimelightCalibration(Limelight m_limelight) {
     // Use addRequirements() here to declare subsystem dependencies.
 
     this.m_limelight = m_limelight;
-    this.m_logger = m_logger;
+    // this.m_logger = m_logger;
 
     addRequirements(m_limelight);
   }
@@ -39,7 +39,7 @@ public class LimelightCalibration extends CommandBase {
     double hoodPosition = TargetPackageFactory.getCustomPackage(dist).hoodPosition;
     double rpm = TargetPackageFactory.getCustomPackage(dist).rpm;
 
-    this.m_logger.write(dist, unmoddedDistance, kP, kF, hoodPosition, rpm);
+    // this.m_logger.write(dist, unmoddedDistance, kP, kF, hoodPosition, rpm);
 
     SmartDashboard.putNumber("Hypot Distance", dist);
     SmartDashboard.putNumber("Raw Distance", unmoddedDistance);
