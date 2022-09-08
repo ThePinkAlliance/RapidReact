@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -82,6 +83,12 @@ public class Robot extends TimedRobot {
     if (m_robotContainer != null) {
       m_robotContainer.enableLimelight();
       m_robotContainer.resetHoodEncoder();
+
+      Constants.isRed = NetworkTableInstance
+          .getDefault()
+          .getTable("FMSInfo")
+          .getEntry("IsRedAlliance")
+          .getBoolean(true);
     }
 
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();

@@ -64,27 +64,31 @@ public class PrimitiveShooterTuning extends CommandBase {
     double distance = m_limelight.calculateDistanceHypot();
     double unmodifiedDistance = m_limelight.calculateUnmodifiedDistance();
 
+    String type = "";
+
     if (low) {
       currentPackage = TargetPackageFactory.getLowHubPackage();
       System.out.println("Low Hub Package");
 
-      log(distance, unmodifiedDistance, "low", currentPackage);
+      type = "low";
     } else if (tarmac) {
       currentPackage = TargetPackageFactory.getTarmacPackage();
       System.out.println("Tarmac Package");
 
-      log(distance, unmodifiedDistance, "tarmac", currentPackage);
+      type = "tarmac";
     } else if (high) {
       currentPackage = TargetPackageFactory.getHighHubPackage();
       System.out.println("High Hub Package");
 
-      log(distance, unmodifiedDistance, "high", currentPackage);
+      type = "high";
     } else {
       System.out.println("Custom Package Distance: " + distance);
       currentPackage = TargetPackageFactory.getCustomPackage(distance);
 
-      log(distance, unmodifiedDistance, "custom", currentPackage);
+      type = "custom";
     }
+
+    log(distance, unmodifiedDistance, type, currentPackage);
 
     m_hood.setPosition(currentPackage.hoodPosition);
 
@@ -95,15 +99,15 @@ public class PrimitiveShooterTuning extends CommandBase {
     this.m_shooter.configFeedForward(currentPackage.Kf);
     this.m_shooter.commandRpm(currentPackage.rpm);
 
-    SmartDashboard.putNumber(
-        Dashboard.DASH_SHOOTER_VELOCITY,
-        this.m_shooter.getMotorOutputPercent());
+    // SmartDashboard.putNumber(
+    // Dashboard.DASH_SHOOTER_VELOCITY,
+    // this.m_shooter.getMotorOutputPercent());
 
-    SmartDashboard.putNumber(
-        Dashboard.DASH_SHOOTER_RPMS,
-        this.m_shooter.getMotorRpms());
-    SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_P, currentPackage.Kp);
-    SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_FF, currentPackage.Kf);
+    // SmartDashboard.putNumber(
+    // Dashboard.DASH_SHOOTER_RPMS,
+    // this.m_shooter.getMotorRpms());
+    // SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_P, currentPackage.Kp);
+    // SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_FF, currentPackage.Kf);
   }
 
   private void log(double distance, double unmodifiedDistance, String type, TargetPackage currentPackage) {

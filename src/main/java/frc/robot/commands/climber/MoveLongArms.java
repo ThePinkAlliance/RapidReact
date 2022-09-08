@@ -34,9 +34,9 @@ public class MoveLongArms extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putNumber(
-        Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
-        climbers.longClimberModule.getPosition());
+    // SmartDashboard.putNumber(
+    // Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
+    // climbers.longClimberModule.getPosition());
     this.climbers.longClimberModule.moveArms(ARM_MOVE_UP);
   }
 

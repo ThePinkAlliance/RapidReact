@@ -45,6 +45,7 @@ public class JoystickClimb extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    // The scheduler is complaining about this being slow.
     climbers.openAllLocks();
   }
 
@@ -132,12 +133,12 @@ public class JoystickClimb extends CommandBase {
         "long right",
         climbers.longClimberModule.contactedRightPole());
 
-    SmartDashboard.putNumber(
-        Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
-        climbers.longClimberModule.getPosition());
-    SmartDashboard.putNumber(
-        Dashboard.DASH_CLIMBER_SHORT_ARM_POSITION,
-        climbers.shortClimberModule.getPosition());
+    // SmartDashboard.putNumber(
+    // Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
+    // climbers.longClimberModule.getPosition());
+    // SmartDashboard.putNumber(
+    // Dashboard.DASH_CLIMBER_SHORT_ARM_POSITION,
+    // climbers.shortClimberModule.getPosition());
   }
 
   // Called once the command ends or is interrupted.

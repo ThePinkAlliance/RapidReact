@@ -132,16 +132,16 @@ public class Hood extends SubsystemBase {
     if (this.hoodMotor != null && this.hoodEncoder != null) {
       // SmartDashboard.putNumber("hood power", this.hoodMotor.get());
 
-      SmartDashboard.putNumber(
-          Dashboard.DASH_HOOD_POSITION,
-          this.hoodEncoder.getPosition() * REV_TICKS_PER_REV);
-      SmartDashboard.putNumber(
-          Dashboard.DASH_HOOD_POSITION_RAW,
-          this.hoodEncoder.getPosition());
-      SmartDashboard.putNumber(Dashboard.DASH_HOOD_ANGLE, getHoodAngle());
-      SmartDashboard.putNumber(
-          Dashboard.DASH_HOOD_VELOCITY,
-          this.hoodEncoder.getVelocity());
+      // SmartDashboard.putNumber(
+      // Dashboard.DASH_HOOD_POSITION,
+      // this.hoodEncoder.getPosition() * REV_TICKS_PER_REV);
+      // SmartDashboard.putNumber(
+      // Dashboard.DASH_HOOD_POSITION_RAW,
+      // this.hoodEncoder.getPosition());
+      // SmartDashboard.putNumber(Dashboard.DASH_HOOD_ANGLE, getHoodAngle());
+      // SmartDashboard.putNumber(
+      // Dashboard.DASH_HOOD_VELOCITY,
+      // this.hoodEncoder.getVelocity());
     }
   }
 }

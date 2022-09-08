@@ -129,7 +129,7 @@ public class Navigate extends CommandBase {
       x_output = straightController.calculate(distance_traveled_inches, targetInches);
       x_power = (x_output / targetInches) * Base.MAX_VELOCITY_METERS_PER_SECOND;
       System.out.println("Navigate: " + x_power + ", Output" + x_output);
-      SmartDashboard.putNumber("traveled", distance_traveled_inches);
+      // SmartDashboard.putNumber("traveled", distance_traveled_inches);
     }
     // Turn: PID Controller using setpoint of zero
     else if (targetAngle != 0) {
@@ -143,11 +143,11 @@ public class Navigate extends CommandBase {
           output / 180,
           LimelightAlign.TRACKER_LIMIT_DEFAULT);
       turnPower = limitedTurnPower * Base.MAX_VELOCITY_METERS_PER_SECOND;
-      SmartDashboard.putNumber("Navigate Output: ", output);
-      SmartDashboard.putNumber("Navigate Turn Power:", turnPower);
-      SmartDashboard.putNumber("Navigate Limited Power:", limitedTurnPower);
-      SmartDashboard.putNumber("Navigate Current Angle:", currentAngle);
-      SmartDashboard.putNumber("Navigate Process Variable:", processVariable);
+      // SmartDashboard.putNumber("Navigate Output: ", output);
+      // SmartDashboard.putNumber("Navigate Turn Power:", turnPower);
+      // SmartDashboard.putNumber("Navigate Limited Power:", limitedTurnPower);
+      // SmartDashboard.putNumber("Navigate Current Angle:", currentAngle);
+      // SmartDashboard.putNumber("Navigate Process Variable:", processVariable);
     }
 
     if (bBackwards)

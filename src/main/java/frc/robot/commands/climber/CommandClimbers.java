@@ -40,13 +40,13 @@ public class CommandClimbers extends CommandBase {
     m_climbers.longClimberModule.setPosition(positionLong);
     m_climbers.shortClimberModule.setPosition(positionShort);
 
-    SmartDashboard.putNumber(
-        "shortClimbers",
-        m_climbers.shortClimberModule.getPosition());
+    // SmartDashboard.putNumber(
+    // "shortClimbers",
+    // m_climbers.shortClimberModule.getPosition());
 
-    SmartDashboard.putNumber(
-        "longClimbers",
-        m_climbers.longClimberModule.getPosition());
+    // SmartDashboard.putNumber(
+    // "longClimbers",
+    // m_climbers.longClimberModule.getPosition());
   }
 
   // Called once the command ends or is interrupted.

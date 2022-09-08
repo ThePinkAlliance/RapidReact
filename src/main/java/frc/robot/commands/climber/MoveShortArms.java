@@ -34,9 +34,9 @@ public class MoveShortArms extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putNumber(
-        Dashboard.DASH_CLIMBER_SHORT_ARM_POSITION,
-        climbers.shortClimberModule.getPosition());
+    // SmartDashboard.putNumber(
+    // Dashboard.DASH_CLIMBER_SHORT_ARM_POSITION,
+    // climbers.shortClimberModule.getPosition());
     this.climbers.shortClimberModule.moveArms(ARM_MOVE_UP);
   }
 
