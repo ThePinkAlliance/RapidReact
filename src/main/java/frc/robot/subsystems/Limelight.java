@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -33,8 +34,7 @@ public class Limelight extends SubsystemBase {
       .getDefault()
       .getTable("limelight");
 
-  ArrayList<Double> cachedHypotDistances = new ArrayList<>(Arrays.asList(.0, .0, .0, .0, .0, .0, .0, .0, .0, .0, .0, .0,
-      .0, .0, .0, .0, .0, .0, .0, .0, .0, .0, .0, .0, .0));
+  SlewRateLimiter limiter = new SlewRateLimiter(20);
 
   double errorAccDistance = 0;
   double limelightMountedAngle = 51.5; // 50 // this can change a static number though once we have found it
@@ -212,24 +212,13 @@ public class Limelight extends SubsystemBase {
     double squared = ((targetHeightDifference * targetHeightDifference) + (errorAccDistance * errorAccDistance));
     double nextHypotDistance = Math.sqrt(squared);
 
-    double allHypots = 0;
-
     /*
-     * Iterates over all the cached hypot distances and add's them to allHypots
+     * The slew rate limiter will limit the rate of change of the distance.
+     * 
+     * NOTE: This is only a temporary solution we should adjust speckel rejection to
+     * prevent noise from entering the stream.
      */
-    for (double hypot : cachedHypotDistances) {
-      allHypots += hypot;
-    }
-
-    /*
-     * Averaging the distance data over an array of x slots allows for easy
-     * noise filtering but it does not work when more then a quarter of the cache
-     * has noisy data
-     */
-    double hypotenuseDistance = allHypots / cachedHypotDistances.size();
-
-    cachedHypotDistances.add(nextHypotDistance);
-    cachedHypotDistances.remove(0);
+    double hypotenuseDistance = limiter.calculate(nextHypotDistance);
 
     return hypotenuseDistance;
   }
