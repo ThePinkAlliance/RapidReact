@@ -10,11 +10,15 @@ public class BooleanEntry {
   public BooleanEntry(String table, String entry) {
     this.entry = NetworkTableInstance.getDefault().getTable(table).getEntry(entry);
     this.defaultValue = false;
+
+    NetworkTableInstance.getDefault().getTable(table).getEntry(entry).setBoolean(defaultValue);
   }
 
   public BooleanEntry(String table, String entry, boolean defaultValue) {
     this.entry = NetworkTableInstance.getDefault().getTable(table).getEntry(entry);
     this.defaultValue = defaultValue;
+
+    NetworkTableInstance.getDefault().getTable(table).getEntry(entry).setBoolean(defaultValue);
   }
 
   public boolean get() {

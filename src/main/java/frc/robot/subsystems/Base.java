@@ -399,7 +399,8 @@ public class Base extends SubsystemBase {
     m_yaw.setNumber(gyro.getYaw());
 
     setStates(this.states);
-    // SmartDashboard.putNumber(Dashboard.DASH_BASE_ROLL, gyro.getRoll());
+    SmartDashboard.putNumber(Dashboard.DASH_BASE_ROLL, gyro.getRoll());
+    SmartDashboard.putNumber("yaw", gyro.getYaw());
   }
 
   @Override

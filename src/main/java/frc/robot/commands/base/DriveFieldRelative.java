@@ -23,9 +23,9 @@ public class DriveFieldRelative extends CommandBase {
    * The slew rate limiter will prevent sudden changes in velocity allowing for
    * smoother drivetrain movement.
    */
-  private SlewRateLimiter slewXLimiter = new SlewRateLimiter(3);
-  private SlewRateLimiter slewYLimiter = new SlewRateLimiter(3);
-  private SlewRateLimiter slewThetaLimiter = new SlewRateLimiter(3);
+  private SlewRateLimiter slewXLimiter = new SlewRateLimiter(12);
+  private SlewRateLimiter slewYLimiter = new SlewRateLimiter(12);
+  private SlewRateLimiter slewThetaLimiter = new SlewRateLimiter(12);
 
   /** Creates a new Drive. */
   public DriveFieldRelative(Base base, Joystick js) {
@@ -63,8 +63,8 @@ public class DriveFieldRelative extends CommandBase {
     axis1y *= -1;
 
     base.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
-        slewXLimiter.calculate(modifyAxisLimited(axis0x) * Base.MAX_VELOCITY_METERS_PER_SECOND),
-        slewYLimiter.calculate(modifyAxisLimited(axis1y) * Base.MAX_VELOCITY_METERS_PER_SECOND),
+        slewXLimiter.calculate(modifyAxisLimited(axis1y) * Base.MAX_VELOCITY_METERS_PER_SECOND),
+        slewYLimiter.calculate(modifyAxisLimited(axis0x) * Base.MAX_VELOCITY_METERS_PER_SECOND),
         slewThetaLimiter.calculate(modifyAxisLimited(axis4rot) * Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND),
         base.getRotation()));
   }

@@ -6,9 +6,9 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.DataLogger;
 import frc.robot.TargetPackageFactory;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.LimelightLedMode;
 
 public class LimelightCalibration extends CommandBase {
   Limelight m_limelight;
@@ -51,6 +51,7 @@ public class LimelightCalibration extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    m_limelight.setLedState(LimelightLedMode.FORCE_OFF);
   }
 
   // Returns true when the command should end.

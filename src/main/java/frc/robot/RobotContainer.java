@@ -133,6 +133,8 @@ public class RobotContainer {
     this.m_base.setDefaultCommand(new DriveFieldRelative(m_base, this.gamepad_base));
     this.m_climbers.setDefaultCommand(
         new JoystickClimb(m_climbers, this.gamepad_tower));
+
+    NetworkTableInstance.getDefault().getTable("debug").getEntry("enable_calibration").setBoolean(false);
   }
 
   /**
@@ -194,6 +196,9 @@ public class RobotContainer {
                 m_limelight,
                 gamepad_base,
                 Constants.JOYSTICK_BUTTON_A));
+    new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_X).whenPressed(() -> {
+      m_base.zeroGyro();
+    });
     // Climbers
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
         .whenPressed(
@@ -239,7 +244,7 @@ public class RobotContainer {
   }
 
   public Command getTestCommand() {
-    return enableCalibration.get() ? new LimelightCalibration(m_limelight) : new ResetRobot(m_hood);
+    return enableCalibration.get(false) ? new LimelightCalibration(m_limelight) : new ResetRobot(m_hood, m_base);
   }
 
   public void resetHood() {
