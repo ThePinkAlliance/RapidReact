@@ -48,6 +48,6 @@ public class ResetHood extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.hasElapsed(0.2);
+    return timer.hasElapsed(0.1);
   }
 }
