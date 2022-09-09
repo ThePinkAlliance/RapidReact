@@ -105,6 +105,7 @@ public class RobotContainer {
   private BooleanEntry enableCalibration;
   private BooleanEntry batterySufficient;
   private BooleanEntry pneumaticsReady;
+  private BooleanEntry shooterReady;
 
   /**
    * This contains all the trajectories that can be selected from the dashboard.
@@ -145,6 +146,7 @@ public class RobotContainer {
     // These entries are for readiness checks.
     this.batterySufficient = new BooleanEntry(Dashboard.TEST_TABLE_ID, "battery_sufficient");
     this.pneumaticsReady = new BooleanEntry(Dashboard.TEST_TABLE_ID, "pneumatics_ready");
+    this.shooterReady = new BooleanEntry(Dashboard.TEST_TABLE_ID, "shooter_ready");
   }
 
   /**
@@ -260,7 +262,8 @@ public class RobotContainer {
 
   public Command getTestCommand() {
     return enableCalibration.get(false) ? new LimelightCalibration(m_limelight)
-        : new RobotReadinessCheck(m_hood, m_base, m_compressor, batterySufficient, pneumaticsReady)
+        : new RobotReadinessCheck(m_hood, m_base, m_shooter, m_collector, m_compressor, batterySufficient,
+            pneumaticsReady, shooterReady)
             .beforeStarting(() -> {
               this.m_compressor.disable();
             }).andThen(() -> {
