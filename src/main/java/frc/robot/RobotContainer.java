@@ -258,6 +258,7 @@ public class RobotContainer {
   public void resetTestEntries() {
     this.batterySufficient.reset();
     this.pneumaticsReady.reset();
+    this.shooterReady.reset();
   }
 
   public Command getTestCommand() {
