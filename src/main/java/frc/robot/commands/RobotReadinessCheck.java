@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.BooleanEntry;
 import frc.robot.commands.base.ZeroPods;
@@ -16,10 +17,11 @@ import frc.robot.subsystems.Hood;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class RobotReadinessCheck extends SequentialCommandGroup {
   /** Creates a new ResetRobot. */
-  public RobotReadinessCheck(Hood hood, Base base, BooleanEntry batterySufficient, BooleanEntry pneumaticsReady) {
+  public RobotReadinessCheck(Hood hood, Base base, Compressor compressor, BooleanEntry batterySufficient,
+      BooleanEntry pneumaticsReady) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new ResetHood(hood), new ZeroPods(base), new BatteryCheck(batterySufficient),
-        new PneumaticsCheck(pneumaticsReady));
+        new PneumaticsCheck(compressor, pneumaticsReady));
   }
 }

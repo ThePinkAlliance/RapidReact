@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.BooleanEntry;
 
@@ -16,11 +15,11 @@ public class PneumaticsCheck extends CommandBase {
   final double requiredPSI = 120;
 
   /** Creates a new PneumaticsCheck. */
-  public PneumaticsCheck(BooleanEntry pneumaticsReady) {
+  public PneumaticsCheck(Compressor compressor, BooleanEntry pneumaticsReady) {
     // Use addRequirements() here to declare subsystem dependencies.
 
     this.pneumaticsReady = pneumaticsReady;
-    this.compressor = new Compressor(PneumaticsModuleType.CTREPCM);
+    this.compressor = compressor;
   }
 
   // Called when the command is initially scheduled.

@@ -11,8 +11,10 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.net.PortForwarder;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -62,6 +64,8 @@ public class RobotContainer {
   private final Shooter m_shooter = new Shooter();
   private final Hood m_hood = new Hood();
   private final Climbers m_climbers = new Climbers();
+
+  private final Compressor m_compressor = new Compressor(PneumaticsModuleType.CTREPCM);
 
   // private final DataLogger m_shooter_logger = new DataLogger("shooter_data",
   // List.of("distance", "unmodified_distance", "type", "kp", "kf",
@@ -256,7 +260,12 @@ public class RobotContainer {
 
   public Command getTestCommand() {
     return enableCalibration.get(false) ? new LimelightCalibration(m_limelight)
-        : new RobotReadinessCheck(m_hood, m_base, batterySufficient, pneumaticsReady);
+        : new RobotReadinessCheck(m_hood, m_base, m_compressor, batterySufficient, pneumaticsReady)
+            .beforeStarting(() -> {
+              this.m_compressor.disable();
+            }).andThen(() -> {
+              this.m_compressor.enableDigital();
+            });
   }
 
   public void resetHood() {
