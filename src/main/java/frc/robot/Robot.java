@@ -136,6 +136,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
+    // Resetting all the network enties used for subsystem readiness checks.
+    m_robotContainer.resetTestEntries();
+
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
 

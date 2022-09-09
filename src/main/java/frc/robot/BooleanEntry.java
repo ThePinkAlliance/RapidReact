@@ -25,6 +25,18 @@ public class BooleanEntry {
     return this.entry.getBoolean(defaultValue);
   }
 
+  public void setDefault(boolean defaultValue) {
+    this.entry.setDefaultBoolean(defaultValue);
+  }
+
+  public void set(boolean value) {
+    this.entry.setBoolean(value);
+  }
+
+  public void reset() {
+    set(defaultValue);
+  }
+
   public boolean get(boolean defaultValue) {
     return this.entry.getBoolean(defaultValue);
   }

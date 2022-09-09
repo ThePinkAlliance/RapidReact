@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.LimelightCalibration;
-import frc.robot.commands.ResetRobot;
+import frc.robot.commands.RobotReadinessCheck;
 import frc.robot.commands.auto.AutoDoNothing;
 import frc.robot.commands.auto.AutoShootLeaveTarmac;
 import frc.robot.commands.auto.AutoTwoBall;
@@ -98,7 +98,9 @@ public class RobotContainer {
       "Two Ball Auto",
       new AutoTwoBall(m_base, m_shooter, m_collector, m_hood, m_limelight));
 
-  private BooleanEntry enableCalibration = new BooleanEntry("debug", "enable_calibration");
+  private BooleanEntry enableCalibration;
+  private BooleanEntry batterySufficient;
+  private BooleanEntry pneumaticsReady;
 
   /**
    * This contains all the trajectories that can be selected from the dashboard.
@@ -134,7 +136,11 @@ public class RobotContainer {
     this.m_climbers.setDefaultCommand(
         new JoystickClimb(m_climbers, this.gamepad_tower));
 
-    NetworkTableInstance.getDefault().getTable("debug").getEntry("enable_calibration").setBoolean(false);
+    this.enableCalibration = new BooleanEntry(Dashboard.TEST_TABLE_ID, "enable_calibration");
+
+    // These entries are for readiness checks.
+    this.batterySufficient = new BooleanEntry(Dashboard.TEST_TABLE_ID, "battery_sufficient");
+    this.pneumaticsReady = new BooleanEntry(Dashboard.TEST_TABLE_ID, "pneumatics_ready");
   }
 
   /**
@@ -243,8 +249,14 @@ public class RobotContainer {
     }
   }
 
+  public void resetTestEntries() {
+    this.batterySufficient.reset();
+    this.pneumaticsReady.reset();
+  }
+
   public Command getTestCommand() {
-    return enableCalibration.get(false) ? new LimelightCalibration(m_limelight) : new ResetRobot(m_hood, m_base);
+    return enableCalibration.get(false) ? new LimelightCalibration(m_limelight)
+        : new RobotReadinessCheck(m_hood, m_base, batterySufficient, pneumaticsReady);
   }
 
   public void resetHood() {
