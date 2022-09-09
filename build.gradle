@@ -11,7 +11,7 @@ targetCompatibility = JavaVersion.VERSION_11
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
 def CORE_MAIN_CLASS = "com.ThePinkAlliance.core"
 
-def LIBRARIES_EXIST = file("./core").exists()
+def LIBRARIES_EXIST = file("./core/build.gradle").exists()
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project DeployUtils.
