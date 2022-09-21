@@ -10,9 +10,10 @@ import frc.robot.subsystems.Collector;
 
 public class MoveTower extends CommandBase {
 
+  int JOYSTICK_BUTTON;
+
   Collector m_collector;
   Joystick joystick;
-  int JOYSTICK_BUTTON;
   boolean bIntake;
   double shooterPowerCloseHigh;
 

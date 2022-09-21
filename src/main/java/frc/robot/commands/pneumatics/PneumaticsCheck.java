@@ -32,7 +32,7 @@ public class PneumaticsCheck extends CommandBase {
   public void execute() {
     double psi = this.compressor.getPressure();
 
-    if (psi < requiredPSI) {
+    if (psi > requiredPSI) {
       this.pneumaticsReady.set(true);
     } else {
       this.pneumaticsReady.set(false);
@@ -47,6 +47,6 @@ public class PneumaticsCheck extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return this.pneumaticsReady.get();
   }
 }

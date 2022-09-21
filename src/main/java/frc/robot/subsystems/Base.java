@@ -8,6 +8,7 @@ import com.ThePinkAlliance.swervelib.Mk4ModuleConfiguration;
 import com.ThePinkAlliance.swervelib.Mk4iSwerveModuleHelper;
 import com.ThePinkAlliance.swervelib.SdsModuleConfigurations;
 import com.ThePinkAlliance.swervelib.SwerveModule;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -220,6 +221,11 @@ public class Base extends SubsystemBase {
     this.frontRightModule.configRampRate(DRIVE_MOTOR_RAMP_RATE);
     this.backLeftModule.configRampRate(DRIVE_MOTOR_RAMP_RATE);
     this.backRightModule.configRampRate(DRIVE_MOTOR_RAMP_RATE);
+
+    this.frontLeftModule.configureStatusFrame(StatusFrame.Status_1_General, 120);
+    this.frontRightModule.configureStatusFrame(StatusFrame.Status_1_General, 120);
+    this.backLeftModule.configureStatusFrame(StatusFrame.Status_1_General, 120);
+    this.backRightModule.configureStatusFrame(StatusFrame.Status_1_General, 120);
   }
 
   public void resetDriveMotors() {

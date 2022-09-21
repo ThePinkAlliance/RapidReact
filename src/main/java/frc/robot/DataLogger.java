@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.Timer;
  * This class is responsible for logging data into a csv file to read from
  * later.
  */
+@Deprecated
 public class DataLogger {
   private String m_name;
   private String m_deviceId;
