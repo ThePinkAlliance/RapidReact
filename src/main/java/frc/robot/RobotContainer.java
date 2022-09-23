@@ -27,6 +27,7 @@ import frc.robot.commands.auto.AutoDoNothing;
 import frc.robot.commands.auto.AutoShootLeaveTarmac;
 import frc.robot.commands.auto.AutoTwoBall;
 import frc.robot.commands.auto.LeaveTarmack;
+import frc.robot.commands.base.Drive;
 import frc.robot.commands.base.DriveFieldRelative;
 import frc.robot.commands.base.LimelightAlign;
 import frc.robot.commands.climber.JoystickClimb;
@@ -137,9 +138,9 @@ public class RobotContainer {
     SmartDashboard.putData(selectedPath);
     m_dashboard.publishInitialDashboard(); // DO NOT REMOVE and DO NOT COMMENT OUT
 
-    this.m_base.setDefaultCommand(new DriveFieldRelative(m_base, this.gamepad_base));
-    this.m_climbers.setDefaultCommand(
-        new JoystickClimb(m_climbers, this.gamepad_tower));
+    this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
+    // this.m_climbers.setDefaultCommand(
+    // new JoystickClimb(m_climbers, this.gamepad_tower));
 
     this.enableCalibration = new BooleanEntry(Dashboard.TEST_TABLE_ID, "enable_calibration");
 
@@ -186,40 +187,41 @@ public class RobotContainer {
                 gamepad_tower,
                 Constants.JOYSTICK_BUTTON_B));
     // Collector Intake
-    new JoystickButton(gamepad_base, Constants.JOYSTICK_RIGHT_BUMPER)
-        .whenPressed(
-            new CollectGroup(
-                m_collector,
-                gamepad_base,
-                Constants.JOYSTICK_RIGHT_BUMPER,
-                true));
-    // Collector Outtake
-    new JoystickButton(gamepad_base, Constants.JOYSTICK_LEFT_BUMPER)
-        .whenPressed(
-            new CollectGroup(
-                m_collector,
-                gamepad_base,
-                Constants.JOYSTICK_LEFT_BUMPER,
-                false));
-    new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_A)
-        .whenPressed(
-            new LimelightAlign(
-                m_base,
-                m_limelight,
-                gamepad_base,
-                Constants.JOYSTICK_BUTTON_A));
+    // new JoystickButton(gamepad_base, Constants.JOYSTICK_RIGHT_BUMPER)
+    // .whenPressed(
+    // new CollectGroup(
+    // m_collector,
+    // gamepad_base,
+    // Constants.JOYSTICK_RIGHT_BUMPER,
+    // true));
+    // // Collector Outtake
+    // new JoystickButton(gamepad_base, Constants.JOYSTICK_LEFT_BUMPER)
+    // .whenPressed(
+    // new CollectGroup(
+    // m_collector,
+    // gamepad_base,
+    // Constants.JOYSTICK_LEFT_BUMPER,
+    // false));
+    // new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_A)
+    // .whenPressed(
+    // new LimelightAlign(
+    // m_base,
+    // m_limelight,
+    // gamepad_base,
+    // Constants.JOYSTICK_BUTTON_A));
     new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_X).whenPressed(() -> {
       m_base.zeroGyro();
     });
     // Climbers
-    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
-        .whenPressed(
-            new MoveShortArms(
-                m_climbers,
-                ClimberModule.SHORT_ARM_MID_CLIMB_START,
-                MoveShortArms.ARM_MOVE_UP)
-                .alongWith(
-                    new MoveLongArms(m_climbers, ClimberModule.LONG_ARM_MID_CLIMB_START, MoveLongArms.ARM_MOVE_UP)));
+    // new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
+    // .whenPressed(
+    // new MoveShortArms(
+    // m_climbers,
+    // ClimberModule.SHORT_ARM_MID_CLIMB_START,
+    // MoveShortArms.ARM_MOVE_UP)
+    // .alongWith(
+    // new MoveLongArms(m_climbers, ClimberModule.LONG_ARM_MID_CLIMB_START,
+    // MoveLongArms.ARM_MOVE_UP)));
   }
 
   public void selectTrajectory(SelectableTrajectory selectableTrajectory) {
