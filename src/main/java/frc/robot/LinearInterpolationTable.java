@@ -19,7 +19,7 @@ public class LinearInterpolationTable {
   public LinearInterpolationTable(List<Vector2d> points) {
     this.points = points;
 
-    this.points.sort((a, b) -> b.x > a.x ? 0 : 1);
+    this.points.sort((a, b) -> b.x > a.x ? 1 : 0);
   }
 
   public double interp(double e) {
