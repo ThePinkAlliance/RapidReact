@@ -30,7 +30,7 @@ public class LinearInterpolationTable {
       Vector2d vec = points.get(i);
       Vector2d nextVec = points.get(i + 1);
 
-      if (vec.x < e && nextVec.x > e) {
+      if (nextVec != null && vec.x < e && nextVec.x > e) {
         vec1 = vec;
         vec2 = nextVec;
       }
