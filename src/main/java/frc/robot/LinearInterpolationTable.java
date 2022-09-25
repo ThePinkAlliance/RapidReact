@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.wpi.first.wpilibj.drive.Vector2d;
@@ -19,9 +20,17 @@ public class LinearInterpolationTable {
   public LinearInterpolationTable(List<Vector2d> points) {
     this.points = points;
 
-    this.points.sort((a, b) -> b.x > a.x ? 1 : 0);
+    ArrayList<Vector2d> mutList = new ArrayList<>(points);
+
+    mutList.sort((a, b) -> b.x > a.x ? 1 : 0);
+
+    this.points = mutList;
   }
 
+  /**
+   * This will interpolate the value for the y column using input e.
+   * 
+   */
   public double interp(double e) {
     Vector2d vec1 = null;
     Vector2d vec2 = null;
