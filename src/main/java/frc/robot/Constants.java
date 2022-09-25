@@ -45,5 +45,7 @@ public final class Constants {
   public static int JOYSTICK_RIGHT_BUMPER = 6;
 
   // (ty-angle, distance)
-  List<Vector2d> distanceTable = List.of(new Vector2d(0.0, 0.0), new Vector2d(0.0, 0.0));
+  static List<Vector2d> distanceTable = List.of(new Vector2d(0.0, 0.0), new Vector2d(0.0, 0.0));
+
+  public static LinearInterpolationTable limelighInterpolationTable = new LinearInterpolationTable(distanceTable);
 }
