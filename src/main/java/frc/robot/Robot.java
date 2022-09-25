@@ -37,6 +37,9 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    // Just to make sure we don't blind people when the robot starts.
+    m_robotContainer.disableLimelight();
   }
 
   /**
@@ -116,7 +119,8 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     if (m_robotContainer != null) {
-      m_robotContainer.enableLimelight();
+      // m_robotContainer.enableLimelight();
+      m_robotContainer.disableLimelight();
       m_robotContainer.resetHoodEncoder();
     }
 
