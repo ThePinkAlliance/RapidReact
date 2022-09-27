@@ -5,7 +5,12 @@
 package frc.robot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import edu.wpi.first.wpilibj.drive.Vector2d;
 
@@ -26,22 +31,28 @@ public class LinearInterpolationTable {
     this.points = mutList;
   }
 
+  public List<Vector2d> streamListVector(Stream<Vector2d> stream) {
+    Iterator<Vector2d> iterator = stream.iterator();
+    ArrayList<Vector2d> list = new ArrayList<>();
+
+    iterator.forEachRemaining((e) -> list.add(e));
+
+    return list;
+  }
+
   /**
    * This will interpolate the value for the y column using input e.
    */
   public double interp(double e) {
-    Vector2d vec1 = null;
-    Vector2d vec2 = null;
+    ArrayList<Vector2d> greaterPoints = new ArrayList<>(streamListVector(points.stream().filter(v -> v.x > e)));
+    ArrayList<Vector2d> smallerPoints = new ArrayList<>(streamListVector(points.stream().filter(v -> v.x < e)));
 
-    for (Vector2d vec : points) {
-      if (vec.x < e) {
-        vec1 = vec;
-      }
-
-      if (vec.x > e) {
-        vec2 = vec;
-      }
+    if (greaterPoints.isEmpty() || smallerPoints.isEmpty()) {
+      return Double.NaN;
     }
+
+    Vector2d vec1 = smallerPoints.get(0);
+    Vector2d vec2 = greaterPoints.get(0);
 
     /*
      * If vector two is undefined and vector one is defined then that means the

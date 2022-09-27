@@ -23,6 +23,10 @@ public class LinearInterpolationTest {
 
   @Test
   public void CheckTableOutput() {
+    points.iterator().forEachRemaining((vec) -> {
+      System.out.println("Vector2d(" + vec.x + "," + vec.y + ")");
+    });
+
     assertEquals(128.0, table.interp(123), 0);
     assertEquals(Double.NaN, table.interp(194), 0);
   }
