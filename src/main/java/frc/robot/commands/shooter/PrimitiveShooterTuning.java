@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.DataLogger;
 import frc.robot.HoodConstants;
+import frc.robot.LinearInterpolationTable;
 import frc.robot.TargetPackage;
 import frc.robot.TargetPackageFactory;
 import frc.robot.subsystems.Dashboard;
@@ -25,6 +26,7 @@ public class PrimitiveShooterTuning extends CommandBase {
   private Joystick joystick;
   private TargetPackage currentPackage;
   private int button_id;
+  private LinearInterpolationTable distanceTable;
   // private DataLogger m_logger;
 
   /** Creates a new PrimimitveShooter. */
@@ -33,15 +35,16 @@ public class PrimitiveShooterTuning extends CommandBase {
       Limelight m_limeLight,
       Hood m_hood,
       Joystick joystick,
-      // DataLogger logger,
+      LinearInterpolationTable table,
       int button_id) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_shooter = m_shooter;
     this.m_limelight = m_limeLight;
     this.m_hood = m_hood;
-    // this.m_logger = logger;
     this.button_id = button_id;
     this.joystick = joystick;
+    this.distanceTable = table;
+
     addRequirements(m_shooter, m_hood);
   }
 
@@ -61,8 +64,8 @@ public class PrimitiveShooterTuning extends CommandBase {
     boolean tarmac = joystick.getPOV() == Constants.JOYSTICK_POV_LEFT;
     boolean high = joystick.getPOV() == Constants.JOYSTICK_POV_UP;
 
-    double distance = m_limelight.calculateDistanceHypot();
     double unmodifiedDistance = m_limelight.calculateUnmodifiedDistance();
+    double distance = distanceTable.interp(unmodifiedDistance);
 
     String type = "";
 
