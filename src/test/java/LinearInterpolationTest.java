@@ -7,10 +7,14 @@ import frc.robot.LinearInterpolationTable;
 import org.junit.Test;
 
 public class LinearInterpolationTest {
+  /**
+   * NOTE: If the signs of the vectors in the list are opposites then the
+   * interpolated result will be skewed.
+   */
   List<Vector2d> points = List.of(
-      new Vector2d(100, 105),
-      new Vector2d(110, 115),
       new Vector2d(120, 125),
+      new Vector2d(110, 115),
+      new Vector2d(100, 105),
       new Vector2d(130, 135),
       new Vector2d(140, 145),
       new Vector2d(150, 155));
@@ -19,6 +23,7 @@ public class LinearInterpolationTest {
 
   @Test
   public void CheckTableOutput() {
-    assertEquals(table.interp(123), 128.0, Double.POSITIVE_INFINITY);
+    assertEquals(128.0, table.interp(123), 0);
+    assertEquals(Double.NaN, table.interp(194), 0);
   }
 }

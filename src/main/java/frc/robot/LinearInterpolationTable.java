@@ -15,11 +15,10 @@ public class LinearInterpolationTable {
    * To get a better understanding of how linear interpolation works.
    * https://en.wikipedia.org/wiki/Linear_interpolation
    */
-  List<Vector2d> points;
+  ArrayList<Vector2d> points;
+  double lastResult;
 
   public LinearInterpolationTable(List<Vector2d> points) {
-    this.points = points;
-
     ArrayList<Vector2d> mutList = new ArrayList<>(points);
 
     mutList.sort((a, b) -> b.x > a.x ? 1 : 0);
@@ -29,20 +28,29 @@ public class LinearInterpolationTable {
 
   /**
    * This will interpolate the value for the y column using input e.
-   * 
    */
   public double interp(double e) {
     Vector2d vec1 = null;
     Vector2d vec2 = null;
 
-    for (int i = 0; i > points.size(); i++) {
-      Vector2d vec = points.get(i);
-      Vector2d nextVec = points.get(i + 1);
-
-      if (nextVec != null && vec.x < e && nextVec.x > e) {
+    for (Vector2d vec : points) {
+      if (vec.x < e) {
         vec1 = vec;
-        vec2 = nextVec;
       }
+
+      if (vec.x > e) {
+        vec2 = vec;
+      }
+    }
+
+    /*
+     * If vector two is undefined and vector one is defined then that means the
+     * input is bigger then whats in our table, so to make sure the output won't
+     * become zero in this situation we will assign the second vector to the biggest
+     * vector in our table.
+     */
+    if (vec2 == null && vec1 != null) {
+      vec2 = points.get(points.size() - 1);
     }
 
     if (vec1 == null || vec2 == null) {
