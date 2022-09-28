@@ -86,6 +86,11 @@ public class PrimitiveShooterTuning extends CommandBase {
       type = "high";
     } else {
       System.out.println("Custom Package Distance: " + distance);
+
+      if (distance == Double.NaN) {
+        distance = 0;
+      }
+
       currentPackage = TargetPackageFactory.getCustomPackage(distance);
 
       type = "custom";

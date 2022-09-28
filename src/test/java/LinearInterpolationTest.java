@@ -18,8 +18,12 @@ public class LinearInterpolationTest {
       new Vector2d(130, 135),
       new Vector2d(140, 145),
       new Vector2d(150, 155));
+  List<Vector2d> emptyPoints = List.of(
+      new Vector2d(0, 0),
+      new Vector2d(0, 0));
 
   LinearInterpolationTable table = new LinearInterpolationTable(points);
+  LinearInterpolationTable emptyTable = new LinearInterpolationTable(emptyPoints);
 
   @Test
   public void CheckTableOutput() {
@@ -28,6 +32,15 @@ public class LinearInterpolationTest {
     });
 
     assertEquals(128.0, table.interp(123), 0);
+  }
+
+  @Test
+  public void MaxTableInput() {
     assertEquals(Double.NaN, table.interp(194), 0);
+  }
+
+  @Test
+  public void CheckEmptyTable() {
+    assertEquals(Double.NaN, emptyTable.interp(20), 0);
   }
 }
