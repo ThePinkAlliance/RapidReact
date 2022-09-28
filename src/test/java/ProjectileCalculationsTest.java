@@ -16,7 +16,7 @@ public class ProjectileCalculationsTest {
   final double shooterWheelRadius = shooterWheelDiameter / 2;
   final double shooterWheelCircmfrence = 2 * shooterWheelRadius * Math.PI;
 
-  final double desiredApproachAngle = -52;
+  final double desiredApproachAngle = -59;
 
   /**
    * This converts rpm to m/s using the shooter wheels circumference.
