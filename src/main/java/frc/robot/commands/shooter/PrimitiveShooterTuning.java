@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.DataLogger;
 import frc.robot.HoodConstants;
 import frc.robot.LinearInterpolationTable;
 import frc.robot.TargetPackage;
@@ -27,7 +26,6 @@ public class PrimitiveShooterTuning extends CommandBase {
   private TargetPackage currentPackage;
   private int button_id;
   private LinearInterpolationTable distanceTable;
-  // private DataLogger m_logger;
 
   /** Creates a new PrimimitveShooter. */
   public PrimitiveShooterTuning(
@@ -101,8 +99,8 @@ public class PrimitiveShooterTuning extends CommandBase {
     m_hood.setPosition(currentPackage.hoodPosition);
 
     boolean ready = m_shooter.readyToShoot(currentPackage.rpm, 100);
-    SmartDashboard.putBoolean(Dashboard.DASH_SHOOTER_READY, ready);
 
+    SmartDashboard.putBoolean(Dashboard.DASH_SHOOTER_READY, ready);
     SmartDashboard.putNumber("hood", currentPackage.hoodPosition);
 
     this.m_shooter.configKp(currentPackage.Kp);

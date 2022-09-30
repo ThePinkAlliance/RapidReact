@@ -8,7 +8,7 @@ import com.ThePinkAlliance.core.math.Projectile;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.ShooterConstants;
 
@@ -33,11 +33,11 @@ public class Shooter extends SubsystemBase {
   // remeasure this
   public static final double SHOOTER_FROM_GROUND = 23.27;
 
-  private TalonFX motor;
+  private WPI_TalonFX motor;
 
   /** Creates a new Shooter. */
   public Shooter() {
-    motor = new TalonFX(SHOOTER_MOTOR);
+    motor = new WPI_TalonFX(SHOOTER_MOTOR);
     configureMotor();
   }
 

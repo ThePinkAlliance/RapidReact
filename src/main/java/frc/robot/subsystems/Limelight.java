@@ -119,7 +119,11 @@ public class Limelight extends SubsystemBase {
 
     NetworkTableEntry ty = table.getEntry("ty");
 
-    double verticalOffsetAngle = ty.getDouble(0.0); // angle calculated by the limelight.
+    /*
+     * angle calculated by the limelight, which needs to be corrected as its not
+     * super accurate.
+     */
+    double verticalOffsetAngle = ty.getDouble(0.0);
 
     double angleToGoalDeg = (limelightMountedAngle + verticalOffsetAngle);
 
@@ -127,8 +131,6 @@ public class Limelight extends SubsystemBase {
      * Converts the estimated angle from the target in degress to radians.
      */
     double angleToGoalRad = angleToGoalDeg * (3.14159 / 180.0);
-
-    double error = 0.612649568;
 
     /*
      * Calculates the distance using the known target height and limelight height
@@ -138,6 +140,9 @@ public class Limelight extends SubsystemBase {
     double hypot = ((reflectiveTapeHeight - limelightLensHeight) /
         (Math.tan(angleToGoalRad)));
 
+    /*
+     * Interpolates between the two closest vectors to the hypotenuse.
+     */
     double distance = Constants.limelighInterpolationTable.interp(hypot);
 
     SmartDashboard.putNumber("interp-distance", distance);
@@ -161,6 +166,15 @@ public class Limelight extends SubsystemBase {
     return hypotenuseDistance;
   }
 
+  /**
+   * 
+   * 
+   * @deprecated This method is from bayou and is using a inefficent system to
+   *             correct the
+   *             distance being reported from the limelight please don't use this
+   *             in any new
+   *             commands.
+   */
   @Deprecated
   public double findDistance() {
     // from documentation, the distance can be found using a fixed camera angle
@@ -259,21 +273,45 @@ public class Limelight extends SubsystemBase {
     return errorAccDistance;
   }
 
+  /**
+   * 
+   * 
+   * @deprecated This method uses the now deprecated method findDistance please
+   *             don't use this method in any new systems.
+   */
   @Deprecated
   public Supplier<Double> getDistanceSupplier() {
     return this.distanceSupplier;
   }
 
+  /**
+   * 
+   * 
+   * @deprecated This method uses the now deprecated method findDistance please
+   *             don't use this method in any new systems.
+   */
   @Deprecated
   public Supplier<Double> getAngleOffsetSupplier() {
     return this.horzontalOffset;
   }
 
+  /**
+   * 
+   * 
+   * @deprecated This method uses the now deprecated method findDistance please
+   *             don't use this method in any new systems.
+   */
   @Deprecated
   public Supplier<Double> getAngleSupplier() {
     return this.angleSupplier;
   }
 
+  /**
+   * 
+   * 
+   * @deprecated This method uses the now deprecated method findDistance please
+   *             don't use this method in any new systems.
+   */
   @Deprecated
   public Supplier<Double> getHypotDistance() {
     return this.hypotDistanceSupplier;
