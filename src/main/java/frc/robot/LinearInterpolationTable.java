@@ -28,6 +28,9 @@ public class LinearInterpolationTable {
     this.points = mutList;
   }
 
+  /**
+   * Converts a Vector2d stream into a Vector2d list.
+   */
   public List<Vector2d> streamListVector(Stream<Vector2d> stream) {
     Iterator<Vector2d> iterator = stream.iterator();
     ArrayList<Vector2d> list = new ArrayList<>();
@@ -39,6 +42,8 @@ public class LinearInterpolationTable {
 
   /**
    * This will interpolate the value for the y column using input e.
+   * 
+   * @param e The value to interpolate between
    */
   public double interp(double e) {
     /*
