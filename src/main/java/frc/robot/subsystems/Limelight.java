@@ -161,9 +161,9 @@ public class Limelight extends SubsystemBase {
      * NOTE: This is only a temporary solution we should adjust speckel rejection to
      * prevent noise from entering the stream.
      */
-    double hypotenuseDistance = limiter.calculate(nextHypotDistance);
+    // double hypotenuseDistance = limiter.calculate(nextHypotDistance);
 
-    return hypotenuseDistance;
+    return nextHypotDistance;
   }
 
   /**
