@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.TargetPackage;
 import frc.robot.TargetPackageFactory;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.LimelightLedMode;
@@ -34,18 +35,16 @@ public class LimelightCalibration extends CommandBase {
   public void execute() {
     double dist = m_limelight.calculateDistanceHypot();
     double unmoddedDistance = m_limelight.calculateUnmodifiedDistance();
-    double kP = TargetPackageFactory.getCustomPackage(dist).Kp;
-    double kF = TargetPackageFactory.getCustomPackage(dist).Kf;
-    double hoodPosition = TargetPackageFactory.getCustomPackage(dist).hoodPosition;
-    double rpm = TargetPackageFactory.getCustomPackage(dist).rpm;
+    TargetPackage target = TargetPackageFactory.getCustomPackage(dist);
 
     // this.m_logger.write(dist, unmoddedDistance, kP, kF, hoodPosition, rpm);
 
     SmartDashboard.putNumber("Hypot Distance", dist);
     SmartDashboard.putNumber("Raw Distance", unmoddedDistance);
-    SmartDashboard.putNumber("Target Kp", kP);
-    SmartDashboard.putNumber("Target Kf", kF);
-    SmartDashboard.putNumber("Target rpm", rpm);
+    SmartDashboard.putNumber("Hood Position", target.hoodPosition);
+    SmartDashboard.putNumber("Target Kp", target.Kp);
+    SmartDashboard.putNumber("Target Kf", target.Kf);
+    SmartDashboard.putNumber("Target rpm", target.rpm);
   }
 
   // Called once the command ends or is interrupted.
