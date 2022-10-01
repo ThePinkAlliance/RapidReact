@@ -18,20 +18,32 @@ public class LinearInterpolationTest {
       new Vector2d(130, 135),
       new Vector2d(140, 145),
       new Vector2d(150, 155));
+  List<Vector2d> negativePoints = List.of(
+      new Vector2d(-40, -145),
+      new Vector2d(-30, -135),
+      new Vector2d(-20,
+          -125),
+      new Vector2d(-10, -115),
+      new Vector2d(0, 105),
+      new Vector2d(30, 135),
+      new Vector2d(40, 145),
+      new Vector2d(50, 155));
   List<Vector2d> emptyPoints = List.of(
       new Vector2d(0, 0),
       new Vector2d(0, 0));
 
   LinearInterpolationTable table = new LinearInterpolationTable(points);
   LinearInterpolationTable emptyTable = new LinearInterpolationTable(emptyPoints);
+  LinearInterpolationTable negativeTable = new LinearInterpolationTable(negativePoints);
 
   @Test
   public void CheckTableOutput() {
-    points.iterator().forEachRemaining((vec) -> {
-      System.out.println("Vector2d(" + vec.x + "," + vec.y + ")");
-    });
-
     assertEquals(128.0, table.interp(123), 0);
+  }
+
+  @Test
+  public void NegativeTableInput() {
+    assertEquals(-140, negativeTable.interp(-35), 0);
   }
 
   @Test

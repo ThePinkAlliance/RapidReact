@@ -5,9 +5,6 @@
 package frc.robot;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
@@ -44,8 +41,22 @@ public class LinearInterpolationTable {
    * This will interpolate the value for the y column using input e.
    */
   public double interp(double e) {
-    ArrayList<Vector2d> greaterPoints = new ArrayList<>(streamListVector(points.stream().filter(v -> v.x > e)));
-    ArrayList<Vector2d> smallerPoints = new ArrayList<>(streamListVector(points.stream().filter(v -> v.x < e)));
+    /*
+     * NOTE:
+     * Now after filtering the points list we will have two lists with vectors that
+     * are bigger and smaller then our input, now normally after this we would sort
+     * each list from greatest to smallest and retrieve the greatest vector of both
+     * the newly sorted lists however whether we need to do this depends on our
+     * table makeup. For example if we have a table with all positive values then we
+     * don't need to worry about sorting however if we have a table with negative
+     * values then sorting might become necessary.
+     */
+    ArrayList<Vector2d> greaterPoints = new ArrayList<>(
+        streamListVector(
+            points.stream().filter(v -> Math.abs(v.x) > Math.abs(e) && Math.signum(e) == Math.signum(v.x))));
+    ArrayList<Vector2d> smallerPoints = new ArrayList<>(
+        streamListVector(
+            points.stream().filter(v -> Math.abs(v.x) < Math.abs(e) && Math.signum(e) == Math.signum(v.x))));
 
     if (greaterPoints.isEmpty() || smallerPoints.isEmpty()) {
       return Double.NaN;
