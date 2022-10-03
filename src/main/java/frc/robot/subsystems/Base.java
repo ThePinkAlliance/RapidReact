@@ -28,6 +28,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.debugInfo.DebugInfo;
+
 import java.util.function.Supplier;
 
 public class Base extends SubsystemBase {
@@ -410,11 +412,8 @@ public class Base extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    m_yaw.setNumber(gyro.getYaw());
-
+    DebugInfo.send("yaw", gyro.getYaw());
     setStates(this.states);
-    SmartDashboard.putNumber(Dashboard.DASH_BASE_ROLL, gyro.getRoll());
-    SmartDashboard.putNumber("yaw", gyro.getYaw());
   }
 
   @Override
