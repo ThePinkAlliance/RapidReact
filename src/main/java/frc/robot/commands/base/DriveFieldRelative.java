@@ -5,6 +5,7 @@
 package frc.robot.commands.base;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -16,6 +17,7 @@ public class DriveFieldRelative extends CommandBase {
 
   private Base base;
   private Joystick js;
+  private double offset;
 
   /*
    * The units used for these limiters needs to be in meters per second.
@@ -28,10 +30,10 @@ public class DriveFieldRelative extends CommandBase {
   private SlewRateLimiter slewThetaLimiter = new SlewRateLimiter(12);
 
   /** Creates a new Drive. */
-  public DriveFieldRelative(Base base, Joystick js) {
+  public DriveFieldRelative(Base base, Joystick js, double offset) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.base = base;
-
+    this.offset = offset;
     this.js = js;
 
     addRequirements(base);
@@ -66,7 +68,7 @@ public class DriveFieldRelative extends CommandBase {
         slewXLimiter.calculate(modifyAxisLimited(axis1y) * Base.MAX_VELOCITY_METERS_PER_SECOND),
         slewYLimiter.calculate(modifyAxisLimited(axis0x) * Base.MAX_VELOCITY_METERS_PER_SECOND),
         slewThetaLimiter.calculate(modifyAxisLimited(axis4rot) * Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND),
-        base.getRotation()));
+        base.getRotation().plus(new Rotation2d(offset))));
   }
 
   private double deadband(double value, double deadband) {

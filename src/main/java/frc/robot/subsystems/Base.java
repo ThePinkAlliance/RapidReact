@@ -8,6 +8,7 @@ import com.ThePinkAlliance.swervelib.Mk4ModuleConfiguration;
 import com.ThePinkAlliance.swervelib.Mk4iSwerveModuleHelper;
 import com.ThePinkAlliance.swervelib.SdsModuleConfigurations;
 import com.ThePinkAlliance.swervelib.SwerveModule;
+import com.ThePinkAlliance.swervelib.ZeroState;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -328,6 +329,13 @@ public class Base extends SubsystemBase {
    */
   public void zeroGyro() {
     gyro.reset();
+  }
+
+  public void setPodZeroStates(ZeroState state) {
+    this.frontLeftModule.configureDriveZeroState(state);
+    this.frontRightModule.configureDriveZeroState(state);
+    this.backLeftModule.configureDriveZeroState(state);
+    this.backRightModule.configureDriveZeroState(state);
   }
 
   /**

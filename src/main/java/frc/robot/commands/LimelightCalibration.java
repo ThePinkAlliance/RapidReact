@@ -4,23 +4,25 @@
 
 package frc.robot.commands;
 
+import com.ThePinkAlliance.swervelib.ZeroState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.TargetPackage;
 import frc.robot.TargetPackageFactory;
+import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.LimelightLedMode;
 
 public class LimelightCalibration extends CommandBase {
   Limelight m_limelight;
-  // DataLogger m_logger;
+  Base m_base;
 
   /** Creates a new LimelightCalibration. */
-  public LimelightCalibration(Limelight m_limelight) {
+  public LimelightCalibration(Limelight m_limelight, Base m_base) {
     // Use addRequirements() here to declare subsystem dependencies.
 
     this.m_limelight = m_limelight;
-    // this.m_logger = m_logger;
+    this.m_base = m_base;
 
     addRequirements(m_limelight);
   }
@@ -28,6 +30,7 @@ public class LimelightCalibration extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    this.m_base.setPodZeroStates(ZeroState.COAST);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -51,6 +54,7 @@ public class LimelightCalibration extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_limelight.setLedState(LimelightLedMode.FORCE_OFF);
+    m_base.setPodZeroStates(ZeroState.BRAKE);
   }
 
   // Returns true when the command should end.
