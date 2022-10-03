@@ -116,16 +116,6 @@ public class PrimitiveShooterTuning extends CommandBase {
     this.m_shooter.configKp(currentPackage.Kp);
     this.m_shooter.configFeedForward(currentPackage.Kf);
     this.m_shooter.commandRpm(currentPackage.rpm);
-
-    // SmartDashboard.putNumber(
-    // Dashboard.DASH_SHOOTER_VELOCITY,
-    // this.m_shooter.getMotorOutputPercent());
-
-    // SmartDashboard.putNumber(
-    // Dashboard.DASH_SHOOTER_RPMS,
-    // this.m_shooter.getMotorRpms());
-    // SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_P, currentPackage.Kp);
-    // SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_FF, currentPackage.Kf);
   }
 
   private void log(double distance, double unmodifiedDistance, String type, TargetPackage currentPackage) {

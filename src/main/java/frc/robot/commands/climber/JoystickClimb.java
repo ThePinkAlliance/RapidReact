@@ -119,26 +119,19 @@ public class JoystickClimb extends CommandBase {
     climbers.longClimberModule.moveArms(rightYstick);
     climbers.shortClimberModule.moveArms(leftYstick);
 
-    SmartDashboard.putBoolean(
-        "short left",
-        climbers.shortClimberModule.contactedLeftPole());
-    SmartDashboard.putBoolean(
-        "short right",
-        climbers.shortClimberModule.contactedRightPole());
+    // SmartDashboard.putBoolean(
+    // "short left",
+    // climbers.shortClimberModule.contactedLeftPole());
+    // SmartDashboard.putBoolean(
+    // "short right",
+    // climbers.shortClimberModule.contactedRightPole());
 
-    SmartDashboard.putBoolean(
-        "long left",
-        climbers.longClimberModule.contactedLeftPole());
-    SmartDashboard.putBoolean(
-        "long right",
-        climbers.longClimberModule.contactedRightPole());
-
-    // SmartDashboard.putNumber(
-    // Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
-    // climbers.longClimberModule.getPosition());
-    // SmartDashboard.putNumber(
-    // Dashboard.DASH_CLIMBER_SHORT_ARM_POSITION,
-    // climbers.shortClimberModule.getPosition());
+    // SmartDashboard.putBoolean(
+    // "long left",
+    // climbers.longClimberModule.contactedLeftPole());
+    // SmartDashboard.putBoolean(
+    // "long right",
+    // climbers.longClimberModule.contactedRightPole());
   }
 
   // Called once the command ends or is interrupted.

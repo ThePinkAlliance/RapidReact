@@ -169,12 +169,6 @@ public class Navigate extends CommandBase {
 
       this.angleEntry.append(currentAngle);
       this.angleEntry.setMetadata("target-angle=" + targetAngle);
-
-      // SmartDashboard.putNumber("Navigate Output: ", output);
-      // SmartDashboard.putNumber("Navigate Turn Power:", turnPower);
-      // SmartDashboard.putNumber("Navigate Limited Power:", limitedTurnPower);
-      // SmartDashboard.putNumber("Navigate Current Angle:", currentAngle);
-      // SmartDashboard.putNumber("Navigate Process Variable:", processVariable);
     }
 
     if (bBackwards)

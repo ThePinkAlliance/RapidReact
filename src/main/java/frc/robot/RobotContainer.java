@@ -141,7 +141,8 @@ public class RobotContainer {
     this.fieldSelectable.addOption("Right", 135.0);
 
     SmartDashboard.putData(selectedPath);
-    m_dashboard.publishInitialDashboard(); // DO NOT REMOVE and DO NOT COMMENT OUT
+    // m_dashboard.publishInitialDashboard(); // DO NOT REMOVE and DO NOT COMMENT
+    // OUT
 
     this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
     // this.m_climbers.setDefaultCommand(
