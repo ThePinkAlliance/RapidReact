@@ -8,6 +8,7 @@ import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -108,7 +109,8 @@ public class PrimitiveShooterTuning extends CommandBase {
 
       /*
        * If the linear interpolation table cannot find two points to interpolate
-       * between then it will return NaN and in this case we handle it
+       * between then it will return NaN and in this case we handle it by making no
+       * changes to currentPackage.
        */
       if (distance != Double.NaN) {
         currentPackage = TargetPackageFactory.getCustomPackage(distance);
@@ -120,35 +122,42 @@ public class PrimitiveShooterTuning extends CommandBase {
       type = "custom";
     }
 
+    /*
+     * Appending data to the wpilib datalogger.
+     */
     this.distanceEntry.append(distance);
     this.distanceRawEntry.append(unmodifiedDistance);
-
     this.rpmEntry.append(currentPackage.rpm);
     this.kpEntry.append(currentPackage.Kp);
     this.kfEntry.append(currentPackage.Kf);
-
     this.targetTypeEntry.append(type);
 
     m_hood.setPosition(currentPackage.hoodPosition);
 
     boolean ready = m_shooter.readyToShoot(currentPackage.rpm, 100);
 
-    SmartDashboard.putBoolean(Dashboard.DASH_SHOOTER_READY, ready);
-    SmartDashboard.putNumber("hood", currentPackage.hoodPosition);
-
     this.m_shooter.configKp(currentPackage.Kp);
     this.m_shooter.configFeedForward(currentPackage.Kf);
     this.m_shooter.commandRpm(currentPackage.rpm);
 
-    SmartDashboard.putNumber(
-        Dashboard.DASH_SHOOTER_VELOCITY,
-        this.m_shooter.getMotorOutputPercent());
+    // Shooter ready is relevant to the drivers.
+    SmartDashboard.putBoolean(Dashboard.DASH_SHOOTER_READY, ready);
 
-    SmartDashboard.putNumber(
-        Dashboard.DASH_SHOOTER_RPMS,
-        this.m_shooter.getMotorRpms());
-    SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_P, currentPackage.Kp);
-    SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_FF, currentPackage.Kf);
+    /*
+     * The rest of these SmartDashboard queries are relevant to developers.
+     */
+    if (!DriverStation.isFMSAttached()) {
+      SmartDashboard.putNumber("hood", currentPackage.hoodPosition);
+      SmartDashboard.putNumber(
+          Dashboard.DASH_SHOOTER_VELOCITY,
+          this.m_shooter.getMotorOutputPercent());
+
+      SmartDashboard.putNumber(
+          Dashboard.DASH_SHOOTER_RPMS,
+          this.m_shooter.getMotorRpms());
+      SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_P, currentPackage.Kp);
+      SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_FF, currentPackage.Kf);
+    }
   }
 
   // Called once the command ends or is interrupted.
