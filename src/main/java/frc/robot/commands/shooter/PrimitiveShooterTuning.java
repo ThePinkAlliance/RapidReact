@@ -106,16 +106,28 @@ public class PrimitiveShooterTuning extends CommandBase {
     } else {
       System.out.println("Custom Package Distance: " + distance);
 
-      if (distance == Double.NaN) {
-        distance = 0;
+      /*
+       * If the linear interpolation table cannot find two points to interpolate
+       * between then it will return NaN and in this case we handle it
+       */
+      if (distance != Double.NaN) {
+        currentPackage = TargetPackageFactory.getCustomPackage(distance);
+      } else if (currentPackage == null) {
+        currentPackage = TargetPackageFactory.getTarmacPackage();
+        distanceEntry.setMetadata("currentPackage=null");
       }
-
-      currentPackage = TargetPackageFactory.getCustomPackage(distance);
 
       type = "custom";
     }
 
-    log(distance, unmodifiedDistance, type, currentPackage);
+    this.distanceEntry.append(distance);
+    this.distanceRawEntry.append(unmodifiedDistance);
+
+    this.rpmEntry.append(currentPackage.rpm);
+    this.kpEntry.append(currentPackage.Kp);
+    this.kfEntry.append(currentPackage.Kf);
+
+    this.targetTypeEntry.append(type);
 
     m_hood.setPosition(currentPackage.hoodPosition);
 
@@ -137,17 +149,6 @@ public class PrimitiveShooterTuning extends CommandBase {
         this.m_shooter.getMotorRpms());
     SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_P, currentPackage.Kp);
     SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_FF, currentPackage.Kf);
-  }
-
-  private void log(double distance, double unmodifiedDistance, String type, TargetPackage currentPackage) {
-    this.distanceEntry.append(distance);
-    this.distanceRawEntry.append(unmodifiedDistance);
-
-    this.rpmEntry.append(currentPackage.rpm);
-    this.kpEntry.append(currentPackage.Kp);
-    this.kfEntry.append(currentPackage.Kf);
-
-    this.targetTypeEntry.append(type);
   }
 
   // Called once the command ends or is interrupted.
