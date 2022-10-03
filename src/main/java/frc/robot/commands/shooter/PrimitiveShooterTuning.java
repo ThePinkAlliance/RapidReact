@@ -41,13 +41,11 @@ public class PrimitiveShooterTuning extends CommandBase {
       Limelight m_limeLight,
       Hood m_hood,
       Joystick joystick,
-      // DataLogger logger,
       int button_id) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_shooter = m_shooter;
     this.m_limelight = m_limeLight;
     this.m_hood = m_hood;
-    // this.m_logger = logger;
     this.button_id = button_id;
     this.joystick = joystick;
 
@@ -131,10 +129,6 @@ public class PrimitiveShooterTuning extends CommandBase {
   }
 
   private void log(double distance, double unmodifiedDistance, String type, TargetPackage currentPackage) {
-    // m_logger.write(distance, unmodifiedDistance, type, currentPackage.Kp,
-    // currentPackage.Kf,
-    // currentPackage.hoodPosition,
-    // currentPackage.rpm);
     this.distanceEntry.append(distance);
     this.distanceRawEntry.append(unmodifiedDistance);
 

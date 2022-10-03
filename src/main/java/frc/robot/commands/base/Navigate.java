@@ -7,6 +7,9 @@ package frc.robot.commands.base;
 import com.ThePinkAlliance.swervelib.SdsModuleConfigurations;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.BaseConstants;
@@ -44,12 +47,16 @@ public class Navigate extends CommandBase {
   double targetAngle = 0;
   double targetInches = 0;
 
+  DoubleLogEntry distanceInchesEntry;
+  DoubleLogEntry angleEntry;
+
   /** Creates a new DriveStraight. */
   public Navigate(Base base, double targetInches, double targetAngle) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.base = base;
     this.targetInches = targetInches;
     this.targetAngle = targetAngle;
+    this.configureLogger();
     addRequirements(base);
   }
 
@@ -57,6 +64,7 @@ public class Navigate extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     this.base = base;
     this.targetInches = targetInches;
+    this.configureLogger();
     addRequirements(base);
   }
 
@@ -65,6 +73,7 @@ public class Navigate extends CommandBase {
     this.base = base;
     this.targetInches = targetInches;
     this.bBackwards = bBackwards;
+    this.configureLogger();
     addRequirements(base);
   }
 
@@ -78,7 +87,18 @@ public class Navigate extends CommandBase {
     this.targetInches = targetInches;
     this.targetAngle = targetAngle;
     this.bBackwards = bBackwards;
+
+    this.configureLogger();
+
     addRequirements(base);
+  }
+
+  private void configureLogger() {
+    DataLogManager.start("logs-navigate");
+    DataLog log = DataLogManager.getLog();
+
+    this.distanceInchesEntry = new DoubleLogEntry(log, "distance-inches");
+    this.angleEntry = new DoubleLogEntry(log, "current-angle");
   }
 
   // Called when the command is initially scheduled.
@@ -129,6 +149,9 @@ public class Navigate extends CommandBase {
       x_output = straightController.calculate(distance_traveled_inches, targetInches);
       x_power = (x_output / targetInches) * Base.MAX_VELOCITY_METERS_PER_SECOND;
       System.out.println("Navigate: " + x_power + ", Output" + x_output);
+
+      this.distanceInchesEntry.append(distance_traveled_inches);
+      this.distanceInchesEntry.setMetadata("target-distance=" + targetInches);
       // SmartDashboard.putNumber("traveled", distance_traveled_inches);
     }
     // Turn: PID Controller using setpoint of zero
@@ -143,6 +166,10 @@ public class Navigate extends CommandBase {
           output / 180,
           LimelightAlign.TRACKER_LIMIT_DEFAULT);
       turnPower = limitedTurnPower * Base.MAX_VELOCITY_METERS_PER_SECOND;
+
+      this.angleEntry.append(currentAngle);
+      this.angleEntry.setMetadata("target-angle=" + targetAngle);
+
       // SmartDashboard.putNumber("Navigate Output: ", output);
       // SmartDashboard.putNumber("Navigate Turn Power:", turnPower);
       // SmartDashboard.putNumber("Navigate Limited Power:", limitedTurnPower);
@@ -169,6 +196,9 @@ public class Navigate extends CommandBase {
   public void end(boolean interrupted) {
     base.drive(new ChassisSpeeds(0, 0, 0));
     base.resetDriveMotors();
+
+    this.angleEntry.finish();
+    this.distanceInchesEntry.finish();
 
     System.out.println(
         "END OF COMMAND: " +
