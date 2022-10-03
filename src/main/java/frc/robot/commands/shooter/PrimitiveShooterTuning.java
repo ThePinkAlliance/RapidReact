@@ -68,7 +68,7 @@ public class PrimitiveShooterTuning extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    DataLogManager.start("logs");
+    DataLogManager.start("shooter-logs");
 
     m_hood.setPID(
         HoodConstants.kGains.kP,
