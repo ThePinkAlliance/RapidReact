@@ -350,6 +350,10 @@ public class Base extends SubsystemBase {
     this.odometry.resetPosition(pose, rot);
   }
 
+  public Rotation2d getRotationSplit() {
+    return Rotation2d.fromDegrees(gyro.getYaw());
+  }
+
   /**
    * Returns the robot's current rotation.
    *
