@@ -4,11 +4,14 @@
 
 package frc.robot.commands.shooter;
 
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.StringLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.DataLogger;
 import frc.robot.HoodConstants;
 import frc.robot.TargetPackage;
 import frc.robot.TargetPackageFactory;
@@ -25,7 +28,12 @@ public class PrimitiveShooterTuning extends CommandBase {
   private Joystick joystick;
   private TargetPackage currentPackage;
   private int button_id;
-  // private DataLogger m_logger;
+  private DoubleLogEntry distanceEntry;
+  private DoubleLogEntry rpmEntry;
+  private DoubleLogEntry kpEntry;
+  private DoubleLogEntry kfEntry;
+  private DoubleLogEntry distanceRawEntry;
+  private StringLogEntry targetTypeEntry;
 
   /** Creates a new PrimimitveShooter. */
   public PrimitiveShooterTuning(
@@ -33,21 +41,31 @@ public class PrimitiveShooterTuning extends CommandBase {
       Limelight m_limeLight,
       Hood m_hood,
       Joystick joystick,
-      // DataLogger logger,
       int button_id) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_shooter = m_shooter;
     this.m_limelight = m_limeLight;
     this.m_hood = m_hood;
-    // this.m_logger = logger;
     this.button_id = button_id;
     this.joystick = joystick;
+
+    DataLog log = DataLogManager.getLog();
+
+    this.distanceEntry = new DoubleLogEntry(log, "/shooter/distance");
+    this.rpmEntry = new DoubleLogEntry(log, "/shooter/rpm");
+    this.kpEntry = new DoubleLogEntry(log, "/shooter/kp");
+    this.kfEntry = new DoubleLogEntry(log, "/shooter/kf");
+    this.distanceRawEntry = new DoubleLogEntry(log, "/shooter/distance-raw");
+    this.targetTypeEntry = new StringLogEntry(log, "/shooter/target-type");
+
     addRequirements(m_shooter, m_hood);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    DataLogManager.start("logs");
+
     m_hood.setPID(
         HoodConstants.kGains.kP,
         HoodConstants.kGains.kI,
@@ -111,10 +129,14 @@ public class PrimitiveShooterTuning extends CommandBase {
   }
 
   private void log(double distance, double unmodifiedDistance, String type, TargetPackage currentPackage) {
-    // m_logger.write(distance, unmodifiedDistance, type, currentPackage.Kp,
-    // currentPackage.Kf,
-    // currentPackage.hoodPosition,
-    // currentPackage.rpm);
+    this.distanceEntry.append(distance);
+    this.distanceRawEntry.append(unmodifiedDistance);
+
+    this.rpmEntry.append(currentPackage.rpm);
+    this.kpEntry.append(currentPackage.Kp);
+    this.kfEntry.append(currentPackage.Kf);
+
+    this.targetTypeEntry.append(type);
   }
 
   // Called once the command ends or is interrupted.
