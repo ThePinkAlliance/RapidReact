@@ -30,6 +30,7 @@ public class LimelightCalibration extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_limelight.setLedState(LimelightLedMode.FORCE_ON);
     this.m_base.setPodZeroStates(ZeroState.COAST);
   }
 
