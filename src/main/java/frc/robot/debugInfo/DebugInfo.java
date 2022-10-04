@@ -16,16 +16,12 @@ public class DebugInfo {
   private static NetworkTable metaTable = table.getSubTable("robot-debug-meta");
 
   public static void send(String title, Object value) {
-    // boolean exists = tab.getComponents().stream().anyMatch((e) -> e.getTitle() ==
-    // title);
-    boolean exists = table.getSubTable(tab.getTitle()) != null;
+    boolean exists = tab.getComponents().stream().anyMatch((e) -> e.getTitle() == title);
 
     if (exists) {
       table.getEntry(title).setValue(value);
     } else {
-      // tab.add(title, value).buildInto(table, metaTable);
-
-      tab.buildInto(table, metaTable);
+      tab.add(title, value).buildInto(table, metaTable);
     }
   }
 }
