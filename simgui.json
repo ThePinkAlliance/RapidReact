@@ -20,18 +20,29 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/Base": "Subsystem",
+      "/LiveWindow/Climbers": "Subsystem",
+      "/LiveWindow/Collector": "Subsystem",
+      "/LiveWindow/Dashboard": "Subsystem",
+      "/LiveWindow/Hood": "Subsystem",
       "/LiveWindow/Limelight": "Subsystem",
       "/LiveWindow/Shooter": "Subsystem",
+      "/LiveWindow/Ungrouped/DigitalInput[0]": "Digital Input",
+      "/LiveWindow/Ungrouped/DigitalInput[1]": "Digital Input",
+      "/LiveWindow/Ungrouped/DigitalInput[2]": "Digital Input",
+      "/LiveWindow/Ungrouped/DigitalInput[3]": "Digital Input",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[6]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[7]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/navX-Sensor[2]": "Gyro",
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
       "/Shuffleboard/Dashboard/SendableChooser[0]": "String Chooser",
-      "/Shuffleboard/dashboard/SendableChooser[0]": "String Chooser"
+      "/Shuffleboard/dashboard/SendableChooser[0]": "String Chooser",
+      "/SmartDashboard/SendableChooser[0]": "String Chooser"
     }
   },
   "NetworkTables": {
@@ -51,7 +62,10 @@
         },
         "open": true
       },
-      "open": true
+      "open": true,
+      "robo-debug": {
+        "open": true
+      }
     }
   },
   "Plot": {

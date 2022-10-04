@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 /** Add your docs here. */
 public class DebugInfo {
-  private static ShuffleboardTab tab = Shuffleboard.getTab("debug");
+  private static ShuffleboardTab tab = Shuffleboard.getTab("robo-debug");
   private static NetworkTable table = NetworkTableInstance.getDefault().getTable("robot-debug");
 
   public static void send(String title, Object value) {

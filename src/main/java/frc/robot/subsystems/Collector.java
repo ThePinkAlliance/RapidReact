@@ -99,6 +99,7 @@ public class Collector extends SubsystemBase {
     // bDetected
     // );
     return (bDetected && bRangeValid);
+    // return false;
   }
 
   public void SetSpeedTowerForOverride(double towerSpeed) {
