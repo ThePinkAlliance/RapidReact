@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.BaseConstants;
+import frc.robot.debugInfo.DebugInfo;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Dashboard;
 
@@ -152,7 +153,7 @@ public class Navigate extends CommandBase {
 
       this.distanceInchesEntry.append(distance_traveled_inches);
       this.distanceInchesEntry.setMetadata("target-distance=" + targetInches);
-      // SmartDashboard.putNumber("traveled", distance_traveled_inches);
+      DebugInfo.send("traveled", distance_traveled_inches);
     }
     // Turn: PID Controller using setpoint of zero
     else if (targetAngle != 0) {

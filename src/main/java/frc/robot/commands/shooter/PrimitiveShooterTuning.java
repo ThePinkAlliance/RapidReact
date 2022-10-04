@@ -15,6 +15,7 @@ import frc.robot.Constants;
 import frc.robot.HoodConstants;
 import frc.robot.TargetPackage;
 import frc.robot.TargetPackageFactory;
+import frc.robot.debugInfo.DebugInfo;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Limelight;
@@ -116,6 +117,11 @@ public class PrimitiveShooterTuning extends CommandBase {
     this.m_shooter.configKp(currentPackage.Kp);
     this.m_shooter.configFeedForward(currentPackage.Kf);
     this.m_shooter.commandRpm(currentPackage.rpm);
+
+    DebugInfo.send("kp", currentPackage.Kp);
+    DebugInfo.send("kf", currentPackage.Kf);
+    DebugInfo.send("rpm", currentPackage.rpm);
+    DebugInfo.send("hoodPosition", currentPackage.hoodPosition);
   }
 
   private void log(double distance, double unmodifiedDistance, String type, TargetPackage currentPackage) {

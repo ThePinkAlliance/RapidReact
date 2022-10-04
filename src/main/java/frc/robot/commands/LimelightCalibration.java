@@ -8,6 +8,7 @@ import com.ThePinkAlliance.swervelib.ZeroState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.TargetPackageFactory;
+import frc.robot.debugInfo.DebugInfo;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.LimelightLedMode;
@@ -44,11 +45,11 @@ public class LimelightCalibration extends CommandBase {
 
     // this.m_logger.write(dist, unmoddedDistance, kP, kF, hoodPosition, rpm);
 
-    SmartDashboard.putNumber("Hypot Distance", dist);
-    SmartDashboard.putNumber("Raw Distance", unmoddedDistance);
-    SmartDashboard.putNumber("Target Kp", kP);
-    SmartDashboard.putNumber("Target Kf", kF);
-    SmartDashboard.putNumber("Target rpm", rpm);
+    DebugInfo.send("Hypot Distance", dist);
+    DebugInfo.send("Raw Distance", unmoddedDistance);
+    DebugInfo.send("Target Kp", kP);
+    DebugInfo.send("Target Kf", kF);
+    DebugInfo.send("Target rpm", rpm);
   }
 
   // Called once the command ends or is interrupted.

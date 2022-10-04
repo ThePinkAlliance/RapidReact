@@ -6,6 +6,7 @@ package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.debugInfo.DebugInfo;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Dashboard;
 
@@ -34,9 +35,9 @@ public class MoveLongArms extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // SmartDashboard.putNumber(
-    // Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
-    // climbers.longClimberModule.getPosition());
+    DebugInfo.send(
+        Dashboard.DASH_CLIMBER_LONG_ARM_POSITION,
+        climbers.longClimberModule.getPosition());
     this.climbers.longClimberModule.moveArms(ARM_MOVE_UP);
   }
 

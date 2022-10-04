@@ -10,6 +10,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.debugInfo.DebugInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -316,7 +317,7 @@ public class Limelight extends SubsystemBase {
 
     double hypotenuseDistance = Math.sqrt(squared);
 
-    SmartDashboard.putNumber("Error Acc Distance", errorAccDistance);
+    DebugInfo.send("Error Acc Distance", errorAccDistance);
 
     return errorAccDistance;
   }
@@ -353,12 +354,12 @@ public class Limelight extends SubsystemBase {
     double objectArea = ta.getDouble(0.0);
     double robotSkew = ts.getDouble(0.0);
 
-    SmartDashboard.putNumber("Object Offset X: ", offsetX);
-    SmartDashboard.putNumber("Object Offset Y: ", offsetY);
-    SmartDashboard.putNumber("Limelight Area: ", objectArea);
-    SmartDashboard.putNumber("Limelight Skew: ", robotSkew);
-    SmartDashboard.putBoolean("Limelight On: ", limelightLedOn);
-    SmartDashboard.putNumber("LIMELIGHT SET ANGLE: ", limelightMountedAngle);
+    DebugInfo.send("Object Offset X: ", offsetX);
+    DebugInfo.send("Object Offset Y: ", offsetY);
+    DebugInfo.send("Limelight Area: ", objectArea);
+    DebugInfo.send("Limelight Skew: ", robotSkew);
+    DebugInfo.send("Limelight On: ", limelightLedOn);
+    DebugInfo.send("LIMELIGHT SET ANGLE: ", limelightMountedAngle);
 
     SmartDashboard.getNumber("limelight angle offset", horzontalOffset.get());
     if (limelightLedOn == true) {

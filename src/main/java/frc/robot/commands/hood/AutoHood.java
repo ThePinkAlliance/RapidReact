@@ -5,9 +5,12 @@
 package frc.robot.commands.hood;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.HoodConstants;
+import frc.robot.debugInfo.DebugInfo;
+import frc.robot.subsystems.Dashboard;
 //import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Hood;
 
@@ -50,14 +53,12 @@ public class AutoHood extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // SmartDashboard.putNumber(
-    // Dashboard.DASH_HOOD_OUTPUT,
-    // this.m_hood.getHoodPower()
-    // );
-    // SmartDashboard.putNumber(
-    // Dashboard.DASH_HOOD_DRAW,
-    // this.m_hood.getCurrentDraw()
-    // );
+    DebugInfo.send(
+        Dashboard.DASH_HOOD_OUTPUT,
+        this.m_hood.getHoodPower());
+    DebugInfo.send(
+        Dashboard.DASH_HOOD_DRAW,
+        this.m_hood.getCurrentDraw());
   }
 
   // Returns true when the command should end.
