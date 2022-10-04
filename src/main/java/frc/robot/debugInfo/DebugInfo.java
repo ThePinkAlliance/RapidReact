@@ -13,14 +13,19 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 public class DebugInfo {
   private static ShuffleboardTab tab = Shuffleboard.getTab("robo-debug");
   private static NetworkTable table = NetworkTableInstance.getDefault().getTable("robot-debug");
+  private static NetworkTable metaTable = table.getSubTable("robot-debug-meta");
 
   public static void send(String title, Object value) {
-    boolean matchFound = tab.getComponents().stream().anyMatch((e) -> e.getTitle() == title);
+    // boolean exists = tab.getComponents().stream().anyMatch((e) -> e.getTitle() ==
+    // title);
+    boolean exists = table.getSubTable(tab.getTitle()) != null;
 
-    if (matchFound) {
+    if (exists) {
       table.getEntry(title).setValue(value);
     } else {
-      tab.add(title, value).buildInto(table, table.getSubTable("robot-debug-meta"));
+      // tab.add(title, value).buildInto(table, metaTable);
+
+      tab.buildInto(table, metaTable);
     }
   }
 }
