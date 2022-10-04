@@ -192,28 +192,28 @@ public class RobotContainer {
                 gamepad_tower,
                 Constants.JOYSTICK_BUTTON_B));
     // Collector Intake
-    // new JoystickButton(gamepad_base, Constants.JOYSTICK_RIGHT_BUMPER)
-    // .whenPressed(
-    // new CollectGroup(
-    // m_collector,
-    // gamepad_base,
-    // Constants.JOYSTICK_RIGHT_BUMPER,
-    // true));
-    // // Collector Outtake
-    // new JoystickButton(gamepad_base, Constants.JOYSTICK_LEFT_BUMPER)
-    // .whenPressed(
-    // new CollectGroup(
-    // m_collector,
-    // gamepad_base,
-    // Constants.JOYSTICK_LEFT_BUMPER,
-    // false));
-    // new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_A)
-    // .whenPressed(
-    // new LimelightAlign(
-    // m_base,
-    // m_limelight,
-    // gamepad_base,
-    // Constants.JOYSTICK_BUTTON_A));
+    new JoystickButton(gamepad_base, Constants.JOYSTICK_RIGHT_BUMPER)
+        .whenPressed(
+            new CollectGroup(
+                m_collector,
+                gamepad_base,
+                Constants.JOYSTICK_RIGHT_BUMPER,
+                true));
+    // Collector Outtake
+    new JoystickButton(gamepad_base, Constants.JOYSTICK_LEFT_BUMPER)
+        .whenPressed(
+            new CollectGroup(
+                m_collector,
+                gamepad_base,
+                Constants.JOYSTICK_LEFT_BUMPER,
+                false));
+    new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_A)
+        .whenPressed(
+            new LimelightAlign(
+                m_base,
+                m_limelight,
+                gamepad_base,
+                Constants.JOYSTICK_BUTTON_A));
     new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_X).whenPressed(() -> {
       m_base.zeroGyro();
     });

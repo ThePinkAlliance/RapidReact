@@ -156,17 +156,4 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
   }
-
-  @Override
-  public void simulationInit() {
-    if (m_robotContainer != null) {
-      // m_robotContainer.disableLimelight();
-    }
-    CommandScheduler.getInstance().cancelAll();
-  }
-
-  @Override
-  public void simulationPeriodic() {
-    CommandScheduler.getInstance().run();
-  }
 }
