@@ -267,7 +267,11 @@ public class Base extends SubsystemBase {
   public void drive(ChassisSpeeds speeds) {
     this.chassisSpeeds = speeds;
 
-    this.states = kinematics.toSwerveModuleStates(speeds);
+    SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
+
+    setStates(states);
+
+    this.states = states;
   }
 
   /**
@@ -412,13 +416,7 @@ public class Base extends SubsystemBase {
 
     m_yaw.setNumber(gyro.getYaw());
 
-    setStates(this.states);
     SmartDashboard.putNumber(Dashboard.DASH_BASE_ROLL, gyro.getRoll());
     SmartDashboard.putNumber("yaw", gyro.getYaw());
-  }
-
-  @Override
-  public void simulationPeriodic() {
-    setStates(this.states);
   }
 }

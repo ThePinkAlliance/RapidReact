@@ -343,26 +343,26 @@ public class Limelight extends SubsystemBase {
 
   @Override
   public void periodic() {
-    NetworkTableEntry tx = table.getEntry("tx");
-    NetworkTableEntry ty = table.getEntry("ty");
-    NetworkTableEntry ta = table.getEntry("ta");
-    NetworkTableEntry ts = table.getEntry("ts");
+    // NetworkTableEntry tx = table.getEntry("tx");
+    // NetworkTableEntry ty = table.getEntry("ty");
+    // NetworkTableEntry ta = table.getEntry("ta");
+    // NetworkTableEntry ts = table.getEntry("ts");
 
-    double offsetX = tx.getDouble(0.0);
-    double offsetY = ty.getDouble(0.0);
-    double objectArea = ta.getDouble(0.0);
-    double robotSkew = ts.getDouble(0.0);
+    // double offsetX = tx.getDouble(0.0);
+    // double offsetY = ty.getDouble(0.0);
+    // double objectArea = ta.getDouble(0.0);
+    // double robotSkew = ts.getDouble(0.0);
 
-    SmartDashboard.putNumber("Object Offset X: ", offsetX);
-    SmartDashboard.putNumber("Object Offset Y: ", offsetY);
-    SmartDashboard.putNumber("Limelight Area: ", objectArea);
-    SmartDashboard.putNumber("Limelight Skew: ", robotSkew);
-    SmartDashboard.putBoolean("Limelight On: ", limelightLedOn);
-    SmartDashboard.putNumber("LIMELIGHT SET ANGLE: ", limelightMountedAngle);
+    // SmartDashboard.putNumber("Object Offset X: ", offsetX);
+    // SmartDashboard.putNumber("Object Offset Y: ", offsetY);
+    // SmartDashboard.putNumber("Limelight Area: ", objectArea);
+    // SmartDashboard.putNumber("Limelight Skew: ", robotSkew);
+    // SmartDashboard.putBoolean("Limelight On: ", limelightLedOn);
+    // SmartDashboard.putNumber("LIMELIGHT SET ANGLE: ", limelightMountedAngle);
 
-    SmartDashboard.getNumber("limelight angle offset", horzontalOffset.get());
-    if (limelightLedOn == true) {
-      findDistance();
-    }
+    // SmartDashboard.getNumber("limelight angle offset", horzontalOffset.get());
+    // if (limelightLedOn == true) {
+    // findDistance();
+    // }
   }
 }
