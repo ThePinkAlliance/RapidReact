@@ -114,7 +114,8 @@ public class PrimitiveShooterTuning extends CommandBase {
        */
       if (distance != Double.NaN) {
         currentPackage = TargetPackageFactory.getCustomPackage(distance);
-      } else if (currentPackage == null) {
+      }
+      if (currentPackage == null) {
         currentPackage = TargetPackageFactory.getTarmacPackage();
         distanceEntry.setMetadata("currentPackage=null");
       }
@@ -151,6 +152,7 @@ public class PrimitiveShooterTuning extends CommandBase {
       SmartDashboard.putNumber(
           Dashboard.DASH_SHOOTER_VELOCITY,
           this.m_shooter.getMotorOutputPercent());
+      SmartDashboard.putString("type", type);
 
       SmartDashboard.putNumber(
           Dashboard.DASH_SHOOTER_RPMS,
