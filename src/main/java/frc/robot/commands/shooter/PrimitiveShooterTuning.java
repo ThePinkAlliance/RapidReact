@@ -37,6 +37,7 @@ public class PrimitiveShooterTuning extends CommandBase {
   private DoubleLogEntry kfEntry;
   private DoubleLogEntry distanceRawEntry;
   private StringLogEntry targetTypeEntry;
+  private DataLog log;
 
   /** Creates a new PrimimitveShooter. */
   public PrimitiveShooterTuning(
@@ -54,7 +55,9 @@ public class PrimitiveShooterTuning extends CommandBase {
     this.joystick = joystick;
     this.distanceTable = table;
 
-    DataLog log = DataLogManager.getLog();
+    DataLogManager.start("logs");
+
+    this.log = DataLogManager.getLog();
 
     this.distanceEntry = new DoubleLogEntry(log, "/shooter/distance");
     this.rpmEntry = new DoubleLogEntry(log, "/shooter/rpm");
@@ -63,13 +66,14 @@ public class PrimitiveShooterTuning extends CommandBase {
     this.distanceRawEntry = new DoubleLogEntry(log, "/shooter/distance-raw");
     this.targetTypeEntry = new StringLogEntry(log, "/shooter/target-type");
 
+    this.log.start("shooter-logs", "subsystem");
+
     addRequirements(m_shooter, m_hood);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    DataLogManager.start("shooter-logs");
 
     m_hood.setPID(
         HoodConstants.kGains.kP,
