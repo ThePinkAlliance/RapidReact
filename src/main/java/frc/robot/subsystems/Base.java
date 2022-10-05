@@ -225,10 +225,14 @@ public class Base extends SubsystemBase {
     this.backLeftModule.configRampRate(DRIVE_MOTOR_RAMP_RATE);
     this.backRightModule.configRampRate(DRIVE_MOTOR_RAMP_RATE);
 
-    this.frontLeftModule.configureStatusFrame(StatusFrame.Status_1_General, 120);
-    this.frontRightModule.configureStatusFrame(StatusFrame.Status_1_General, 120);
-    this.backLeftModule.configureStatusFrame(StatusFrame.Status_1_General, 120);
-    this.backRightModule.configureStatusFrame(StatusFrame.Status_1_General, 120);
+    // this.frontLeftModule.configureStatusFrame(StatusFrame.Status_12_Feedback1,
+    // 200);
+    // this.frontRightModule.configureStatusFrame(StatusFrame.Status_12_Feedback1,
+    // 200);
+    // this.backLeftModule.configureStatusFrame(StatusFrame.Status_12_Feedback1,
+    // 200);
+    // this.backRightModule.configureStatusFrame(StatusFrame.Status_12_Feedback1,
+    // 200);
   }
 
   public void resetDriveMotors() {
@@ -269,7 +273,11 @@ public class Base extends SubsystemBase {
   public void drive(ChassisSpeeds speeds) {
     this.chassisSpeeds = speeds;
 
-    this.states = kinematics.toSwerveModuleStates(speeds);
+    SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
+
+    setStates(states);
+
+    this.states = states;
   }
 
   /**
@@ -412,12 +420,9 @@ public class Base extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    DebugInfo.send("yaw", gyro.getYaw());
-    setStates(this.states);
-  }
+    m_yaw.setNumber(gyro.getYaw());
 
-  @Override
-  public void simulationPeriodic() {
-    setStates(this.states);
+    SmartDashboard.putNumber(Dashboard.DASH_BASE_ROLL, gyro.getRoll());
+    SmartDashboard.putNumber("yaw", gyro.getYaw());
   }
 }

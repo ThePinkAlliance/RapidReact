@@ -68,13 +68,6 @@ public class RobotContainer {
 
   private final Compressor m_compressor = new Compressor(PneumaticsModuleType.CTREPCM);
 
-  // private final DataLogger m_shooter_logger = new DataLogger("shooter_data",
-  // List.of("distance", "unmodified_distance", "type", "kp", "kf",
-  // "hood_position", "rpm"));
-  // private final DataLogger m_calibration_logger = new
-  // DataLogger("limelight_calibration",
-  // List.of("distance", "distance_raw", "kp", "kf", "hood_position", "rpm"));
-
   // DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
   private final Dashboard m_dashboard = new Dashboard(
       m_base,
@@ -84,7 +77,6 @@ public class RobotContainer {
 
   Trajectory trajectory = new Trajectory();
   SendableChooser<SelectableTrajectory> selectedPath = new SendableChooser<SelectableTrajectory>();
-  SendableChooser<Double> fieldSelectable = new SendableChooser<Double>();
 
   private final SelectableTrajectory LeaveTarmac = new SelectableTrajectory(
       "Leave Tarmac",
@@ -136,10 +128,6 @@ public class RobotContainer {
       }
     }
 
-    this.fieldSelectable.setDefaultOption("Left", -135.0);
-    this.fieldSelectable.addOption("Center", 0.0);
-    this.fieldSelectable.addOption("Right", 135.0);
-
     SmartDashboard.putData(selectedPath);
     // m_dashboard.publishInitialDashboard(); // DO NOT REMOVE and DO NOT COMMENT
     // OUT
@@ -185,6 +173,7 @@ public class RobotContainer {
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_A)
         .whenPressed(
             new PrimitiveShooterTuning(m_shooter, m_limelight, m_hood, gamepad_tower,
+                Constants.limelighInterpolationTable,
                 Constants.JOYSTICK_BUTTON_A));
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
         .whenPressed(
@@ -193,28 +182,28 @@ public class RobotContainer {
                 gamepad_tower,
                 Constants.JOYSTICK_BUTTON_B));
     // Collector Intake
-    // new JoystickButton(gamepad_base, Constants.JOYSTICK_RIGHT_BUMPER)
-    // .whenPressed(
-    // new CollectGroup(
-    // m_collector,
-    // gamepad_base,
-    // Constants.JOYSTICK_RIGHT_BUMPER,
-    // true));
-    // // Collector Outtake
-    // new JoystickButton(gamepad_base, Constants.JOYSTICK_LEFT_BUMPER)
-    // .whenPressed(
-    // new CollectGroup(
-    // m_collector,
-    // gamepad_base,
-    // Constants.JOYSTICK_LEFT_BUMPER,
-    // false));
-    // new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_A)
-    // .whenPressed(
-    // new LimelightAlign(
-    // m_base,
-    // m_limelight,
-    // gamepad_base,
-    // Constants.JOYSTICK_BUTTON_A));
+    new JoystickButton(gamepad_base, Constants.JOYSTICK_RIGHT_BUMPER)
+        .whenPressed(
+            new CollectGroup(
+                m_collector,
+                gamepad_base,
+                Constants.JOYSTICK_RIGHT_BUMPER,
+                true));
+    // Collector Outtake
+    new JoystickButton(gamepad_base, Constants.JOYSTICK_LEFT_BUMPER)
+        .whenPressed(
+            new CollectGroup(
+                m_collector,
+                gamepad_base,
+                Constants.JOYSTICK_LEFT_BUMPER,
+                false));
+    new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_A)
+        .whenPressed(
+            new LimelightAlign(
+                m_base,
+                m_limelight,
+                gamepad_base,
+                Constants.JOYSTICK_BUTTON_A));
     new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_X).whenPressed(() -> {
       m_base.zeroGyro();
     });

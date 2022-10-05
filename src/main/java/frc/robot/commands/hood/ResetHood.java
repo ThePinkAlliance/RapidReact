@@ -31,7 +31,7 @@ public class ResetHood extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (hood.getCurrentDraw() >= 19.0) {
+    if (hood.getCurrentDraw() >= 19.9 && hood.getCurrentDraw() < 90) {
       timer.start();
     }
 
@@ -48,6 +48,6 @@ public class ResetHood extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.hasElapsed(0.1);
+    return timer.hasElapsed(0.3);
   }
 }

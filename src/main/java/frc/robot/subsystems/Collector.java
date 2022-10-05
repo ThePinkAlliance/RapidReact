@@ -102,6 +102,7 @@ public class Collector extends SubsystemBase {
     // return false;
   }
 
+  // FIX: 100ms in total using visualVM
   public void SetSpeedTowerForOverride(double towerSpeed) {
     boolean ballFound = ballDetected();
     System.out.println("OUTPUT: " + collectorRunning + ", BALL: " + ballFound);

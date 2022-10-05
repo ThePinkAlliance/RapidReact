@@ -10,7 +10,8 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.debugInfo.DebugInfo;
+import frc.robot.Constants;
+import frc.robot.Debug;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,10 +43,10 @@ public class Limelight extends SubsystemBase {
 
   /** Creates a new Limelight. */
   public Limelight() {
-    initLimelight(LimelightLedMode.FORCE_OFF);
+    configureLimelight(LimelightLedMode.FORCE_OFF);
   }
 
-  public void initLimelight(LimelightLedMode mode) {
+  public void configureLimelight(LimelightLedMode mode) {
     NetworkTableInstance
         .getDefault()
         .getTable("limelight")
@@ -69,7 +70,7 @@ public class Limelight extends SubsystemBase {
     } else {
       limelightLedOn = false;
     }
-    initLimelight(mode); // Off or On
+    configureLimelight(mode); // Off or On
   }
 
   public boolean isTarget() {
@@ -119,7 +120,11 @@ public class Limelight extends SubsystemBase {
 
     NetworkTableEntry ty = table.getEntry("ty");
 
-    double verticalOffsetAngle = ty.getDouble(0.0); // angle calculated by the limelight.
+    /*
+     * angle calculated by the limelight, which needs to be corrected as its not
+     * super accurate.
+     */
+    double verticalOffsetAngle = ty.getDouble(0.0);
 
     double angleToGoalDeg = (limelightMountedAngle + verticalOffsetAngle);
 
@@ -128,84 +133,22 @@ public class Limelight extends SubsystemBase {
      */
     double angleToGoalRad = angleToGoalDeg * (3.14159 / 180.0);
 
-    double error = 0.612649568;
-
     /*
      * Calculates the distance using the known target height and limelight height
      * then subtracting the difference from them and dividing them by the tangant of
      * the estimated angle from the target in radians.
      */
-    double distance = ((reflectiveTapeHeight - limelightLensHeight) /
+    double hypot = ((reflectiveTapeHeight - limelightLensHeight) /
         (Math.tan(angleToGoalRad)));
 
     /*
-     * The following statements were used as ways to account for error that the
-     * limelight gives from distance
-     * 
-     * There are a bunch of different statements to be
-     * more prescise at every distance
-     * 
-     * NOTE: These if statements are solving the inaccurate distance reporting in a
-     * similar way as linear interpolation. For future use we should consider using
-     * linear interpolation for the limelight.
+     * Interpolates between the two closest vectors to the hypotenuse.
      */
-    if (32.905 <= distance && distance <= 37.6) {
-      error = 0.685521;
-    }
-    if (37.7 <= distance && distance <= 43.4) {
-      error = 0.64395;
-    }
-    if (43.5 <= distance && distance <= 48.5) {
-      error = 0.6303;
-    }
-    if (48.6 <= distance && distance <= 54.5) {
-      error = 0.641166666666667;
-    }
-    if (54.6 <= distance && distance <= 62.5) {
-      error = 0.609114583333333;
-    }
-    if (62.6 <= distance && distance <= 69.40) {
-      error = 0.610555555555556;
-    }
-    if (69.41 <= distance && distance <= 76.43) {
-      error = 0.611683333333333;
-    }
-    if (79.44 <= distance && distance <= 89.4) {
-      error = 0.674242424242424;
-    }
-    if (89.41 <= distance && distance <= 91.2) {
-      error = 0.623541666666667;
-    }
-    if (91.21 <= distance && distance <= 98.416) {
-      error = 0.589606456;
-    }
-    if (98.417 <= distance && distance <= 162.5) {
-      error = 0.555793264;
-    }
+    double distance = Constants.limelighInterpolationTable.interp(hypot);
 
-    errorAccDistance = (distance / error);
+    Debug.putNumber("interp-distance", distance);
 
-    if (58.4 <= errorAccDistance && errorAccDistance <= 73.2) {
-      errorAccDistance = errorAccDistance * 0.926887142;
-    }
-    if (58.4 <= errorAccDistance && errorAccDistance <= 73.2) {
-      errorAccDistance = errorAccDistance * 0.926887142;
-    }
-    if (87.41 <= errorAccDistance && errorAccDistance <= 98.3) {
-      errorAccDistance = errorAccDistance * 0.952870388;
-    }
-    if (162.51 <= errorAccDistance && errorAccDistance <= 188.4) {
-      errorAccDistance = errorAccDistance * 0.908051108;
-    }
-    if (188.41 <= errorAccDistance && errorAccDistance <= 210.2) {
-      errorAccDistance = errorAccDistance * 0.94147961;
-    } else {
-      errorAccDistance = distance / error;
-    }
-
-    errorAccDistance = errorAccDistance * 0.73;
-
-    return errorAccDistance;
+    return distance;
   }
 
   public double calculateDistanceHypot() {
@@ -219,11 +162,20 @@ public class Limelight extends SubsystemBase {
      * NOTE: This is only a temporary solution we should adjust speckel rejection to
      * prevent noise from entering the stream.
      */
-    double hypotenuseDistance = limiter.calculate(nextHypotDistance);
+    // double hypotenuseDistance = limiter.calculate(nextHypotDistance);
 
-    return hypotenuseDistance;
+    return nextHypotDistance;
   }
 
+  /**
+   * 
+   * 
+   * @deprecated This method is from bayou and is using a inefficent system to
+   *             correct the
+   *             distance being reported from the limelight please don't use this
+   *             in any new
+   *             commands.
+   */
   @Deprecated
   public double findDistance() {
     // from documentation, the distance can be found using a fixed camera angle
@@ -317,26 +269,48 @@ public class Limelight extends SubsystemBase {
 
     double hypotenuseDistance = Math.sqrt(squared);
 
-    DebugInfo.send("Error Acc Distance", errorAccDistance);
-
     return errorAccDistance;
   }
 
+  /**
+   * 
+   * 
+   * @deprecated This method uses the now deprecated method findDistance please
+   *             don't use this method in any new systems.
+   */
   @Deprecated
   public Supplier<Double> getDistanceSupplier() {
     return this.distanceSupplier;
   }
 
+  /**
+   * 
+   * 
+   * @deprecated This method uses the now deprecated method findDistance please
+   *             don't use this method in any new systems.
+   */
   @Deprecated
   public Supplier<Double> getAngleOffsetSupplier() {
     return this.horzontalOffset;
   }
 
+  /**
+   * 
+   * 
+   * @deprecated This method uses the now deprecated method findDistance please
+   *             don't use this method in any new systems.
+   */
   @Deprecated
   public Supplier<Double> getAngleSupplier() {
     return this.angleSupplier;
   }
 
+  /**
+   * 
+   * 
+   * @deprecated This method uses the now deprecated method findDistance please
+   *             don't use this method in any new systems.
+   */
   @Deprecated
   public Supplier<Double> getHypotDistance() {
     return this.hypotDistanceSupplier;
@@ -344,26 +318,6 @@ public class Limelight extends SubsystemBase {
 
   @Override
   public void periodic() {
-    NetworkTableEntry tx = table.getEntry("tx");
-    NetworkTableEntry ty = table.getEntry("ty");
-    NetworkTableEntry ta = table.getEntry("ta");
-    NetworkTableEntry ts = table.getEntry("ts");
 
-    double offsetX = tx.getDouble(0.0);
-    double offsetY = ty.getDouble(0.0);
-    double objectArea = ta.getDouble(0.0);
-    double robotSkew = ts.getDouble(0.0);
-
-    DebugInfo.send("Object Offset X: ", offsetX);
-    DebugInfo.send("Object Offset Y: ", offsetY);
-    DebugInfo.send("Limelight Area: ", objectArea);
-    DebugInfo.send("Limelight Skew: ", robotSkew);
-    DebugInfo.send("Limelight On: ", limelightLedOn);
-    DebugInfo.send("LIMELIGHT SET ANGLE: ", limelightMountedAngle);
-
-    SmartDashboard.getNumber("limelight angle offset", horzontalOffset.get());
-    if (limelightLedOn == true) {
-      findDistance();
-    }
   }
 }

@@ -9,7 +9,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.BaseConstants;
-import frc.robot.debugInfo.DebugInfo;
+import frc.robot.Debug;
 import frc.robot.subsystems.Base;
 
 public class Drive extends CommandBase {
@@ -17,9 +17,9 @@ public class Drive extends CommandBase {
   private Base base;
   private Joystick js;
 
-  SlewRateLimiter xLimiter = new SlewRateLimiter(12, 0);
-  SlewRateLimiter yLimiter = new SlewRateLimiter(12, 0);
-  SlewRateLimiter rotLimiter = new SlewRateLimiter(12, 0);
+  SlewRateLimiter xLimiter = new SlewRateLimiter(12.9, 0);
+  SlewRateLimiter yLimiter = new SlewRateLimiter(12.9, 0);
+  SlewRateLimiter rotLimiter = new SlewRateLimiter(12.9, 0);
 
   /** Creates a new Drive. */
   public Drive(Base base, Joystick js) {
@@ -53,8 +53,6 @@ public class Drive extends CommandBase {
     axis4rot *= -1;
     axis0x *= -1;
     axis1y *= -1;
-
-    DebugInfo.send("power", axis0x);
 
     ChassisSpeeds speedObject = new ChassisSpeeds(
         xLimiter.calculate(modifyAxisLimited(axis1y) * Base.MAX_VELOCITY_METERS_PER_SECOND),
