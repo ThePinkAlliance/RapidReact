@@ -77,7 +77,6 @@ public class RobotContainer {
 
   Trajectory trajectory = new Trajectory();
   SendableChooser<SelectableTrajectory> selectedPath = new SendableChooser<SelectableTrajectory>();
-  SendableChooser<Double> fieldSelectable = new SendableChooser<Double>();
 
   private final SelectableTrajectory LeaveTarmac = new SelectableTrajectory(
       "Leave Tarmac",
@@ -128,10 +127,6 @@ public class RobotContainer {
         selectedPath.addOption(t.name, t);
       }
     }
-
-    this.fieldSelectable.setDefaultOption("Left", -135.0);
-    this.fieldSelectable.addOption("Center", 0.0);
-    this.fieldSelectable.addOption("Right", 135.0);
 
     SmartDashboard.putData(selectedPath);
     m_dashboard.publishInitialDashboard(); // DO NOT REMOVE and DO NOT COMMENT OUT

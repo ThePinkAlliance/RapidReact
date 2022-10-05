@@ -16,9 +16,9 @@ public class Drive extends CommandBase {
   private Base base;
   private Joystick js;
 
-  SlewRateLimiter xLimiter = new SlewRateLimiter(12, 0);
-  SlewRateLimiter yLimiter = new SlewRateLimiter(12, 0);
-  SlewRateLimiter rotLimiter = new SlewRateLimiter(12, 0);
+  SlewRateLimiter xLimiter = new SlewRateLimiter(12.9, 0);
+  SlewRateLimiter yLimiter = new SlewRateLimiter(12.9, 0);
+  SlewRateLimiter rotLimiter = new SlewRateLimiter(12.9, 0);
 
   /** Creates a new Drive. */
   public Drive(Base base, Joystick js) {
