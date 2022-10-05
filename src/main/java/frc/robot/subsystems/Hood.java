@@ -9,25 +9,26 @@ import com.ThePinkAlliance.core.rev.SparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Hood extends SubsystemBase {
 
   // public final double
-  public final double REV_TICKS_PER_REV = 4096;
-  public final double MAX_HOOD_WIDTH_INCHES = 5.582;
-  public final double HOOD_PARREL_SHOOTER = 2.4;
-  public final double MAX_HOOD_HEIGHT_INCHES = 7.159;
-  public final double HOOD_LENGTH_INCHES = 5.9;
-  public final double HOOD_WHEEL_CIRCUMFERENCE = 2.5132741229;
+  public static final double REV_TICKS_PER_REV = 4096;
+  public static final double MAX_HOOD_WIDTH_INCHES = 5.582;
+  public static final double HOOD_PARREL_SHOOTER = 2.4;
+  public static final double MAX_HOOD_HEIGHT_INCHES = 7.159;
+  public static final double HOOD_LENGTH_INCHES = 5.9;
+  public static final double HOOD_WHEEL_CIRCUMFERENCE = 2.5132741229;
 
-  private final double HOOD_LENGTH_X = 2.5;
-  private final double HOOD_LENGTH_Y = 4.25;
-  private final double MAX_HOOD_POSITION = -75000;
-  private final double MIN_HOOD_POSITION = -500;
-  private final double MAX_HOOD_SHOOTER_DIFF_X = 10.5;
-  private final double HOOD_DIFF_WIDTH_INCHES_PER_TICK = HOOD_LENGTH_X / MAX_HOOD_POSITION;
+  public static final double HOOD_LENGTH_X = 2.5;
+  public static final double HOOD_LENGTH_Y = 4.25;
+  public static final double MAX_HOOD_POSITION = -75000;
+  public static final double MIN_HOOD_POSITION = -500;
+  public static final double MAX_HOOD_SHOOTER_DIFF_X = 10.5;
+  public static final double HOOD_DIFF_WIDTH_INCHES_PER_TICK = HOOD_LENGTH_X / MAX_HOOD_POSITION;
   private final int HOOD_MOTOR = 31;
 
   private double lastPosition = 0;
@@ -102,18 +103,18 @@ public class Hood extends SubsystemBase {
     this.lastPosition = ticks;
   }
 
-  public double getHoodAngle() {
+  public static double getHoodAngle(double position) {
     double currentHeight = HOOD_PARREL_SHOOTER +
         (HOOD_WHEEL_CIRCUMFERENCE *
-            (hoodEncoder.getPosition() / REV_TICKS_PER_REV));
+            (position / REV_TICKS_PER_REV));
 
     double currentWidth = MAX_HOOD_SHOOTER_DIFF_X -
-        (hoodEncoder.getPosition() * Math.abs(HOOD_DIFF_WIDTH_INCHES_PER_TICK));
+        (position * Math.abs(HOOD_DIFF_WIDTH_INCHES_PER_TICK));
 
     // * to properly calculate angle of the hood its opposite / adjacent
     // ? Make sure to rework the hood distance system and PLEASE measure from the
     // inner circular area of the flywheel shaft in the cad
-    return (Math.tan(currentHeight / currentWidth) * (180 / Math.PI));
+    return Units.radiansToDegrees(currentHeight / currentWidth);
   }
 
   public void disableCloseLoopControl() {

@@ -20,6 +20,9 @@ import edu.wpi.first.wpilibj.Timer;
 /**
  * This class is responsible for logging data into a csv file to read from
  * later.
+ * 
+ * @deprecated Its a better idea to use the integrated data logger provided by
+ *             wpilib.
  */
 @Deprecated
 public class DataLogger {

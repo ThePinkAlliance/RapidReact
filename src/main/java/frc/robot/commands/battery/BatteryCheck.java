@@ -19,12 +19,12 @@ public class BatteryCheck extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
 
     this.batterySufficient = batterySufficient;
-    this.pdp = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    this.pdp = new PowerDistribution(1, PowerDistribution.ModuleType.kRev);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
