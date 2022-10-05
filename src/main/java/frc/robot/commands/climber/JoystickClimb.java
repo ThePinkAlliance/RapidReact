@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.ClimberModule;
 import frc.robot.Constants;
-import frc.robot.debugInfo.DebugInfo;
+import frc.robot.Debug;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Dashboard;
 
@@ -120,17 +120,17 @@ public class JoystickClimb extends CommandBase {
     climbers.longClimberModule.moveArms(rightYstick);
     climbers.shortClimberModule.moveArms(leftYstick);
 
-    DebugInfo.send(
+    Debug.putBoolean(
         "short left",
         climbers.shortClimberModule.contactedLeftPole());
-    DebugInfo.send(
+    Debug.putBoolean(
         "short right",
         climbers.shortClimberModule.contactedRightPole());
 
-    DebugInfo.send(
+    Debug.putBoolean(
         "long left",
         climbers.longClimberModule.contactedLeftPole());
-    DebugInfo.send(
+    Debug.putBoolean(
         "long right",
         climbers.longClimberModule.contactedRightPole());
   }

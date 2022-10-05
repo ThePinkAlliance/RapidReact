@@ -6,7 +6,7 @@ package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.debugInfo.DebugInfo;
+import frc.robot.Debug;
 import frc.robot.subsystems.Climbers;
 
 public class CommandClimbers extends CommandBase {
@@ -41,11 +41,11 @@ public class CommandClimbers extends CommandBase {
     m_climbers.longClimberModule.setPosition(positionLong);
     m_climbers.shortClimberModule.setPosition(positionShort);
 
-    DebugInfo.send(
+    Debug.putNumber(
         "shortClimbers",
         m_climbers.shortClimberModule.getPosition());
 
-    DebugInfo.send(
+    Debug.putNumber(
         "longClimbers",
         m_climbers.longClimberModule.getPosition());
   }

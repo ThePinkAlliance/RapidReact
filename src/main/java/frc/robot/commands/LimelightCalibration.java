@@ -5,11 +5,10 @@
 package frc.robot.commands;
 
 import com.ThePinkAlliance.swervelib.ZeroState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Debug;
 import frc.robot.TargetPackage;
 import frc.robot.TargetPackageFactory;
-import frc.robot.debugInfo.DebugInfo;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.LimelightLedMode;
@@ -44,12 +43,12 @@ public class LimelightCalibration extends CommandBase {
 
     // this.m_logger.write(dist, unmoddedDistance, kP, kF, hoodPosition, rpm);
 
-    SmartDashboard.putNumber("Hypot Distance", dist);
-    SmartDashboard.putNumber("Raw Distance", unmoddedDistance);
-    SmartDashboard.putNumber("Hood Position", target.hoodPosition);
-    SmartDashboard.putNumber("Target Kp", target.Kp);
-    SmartDashboard.putNumber("Target Kf", target.Kf);
-    SmartDashboard.putNumber("Target rpm", target.rpm);
+    Debug.putNumber("Hypot Distance", dist);
+    Debug.putNumber("Raw Distance", unmoddedDistance);
+    Debug.putNumber("Hood Position", target.hoodPosition);
+    Debug.putNumber("Target Kp", target.Kp);
+    Debug.putNumber("Target Kf", target.Kf);
+    Debug.putNumber("Target rpm", target.rpm);
   }
 
   // Called once the command ends or is interrupted.

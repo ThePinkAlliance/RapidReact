@@ -12,7 +12,7 @@ import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.debugInfo.DebugInfo;
+import frc.robot.Debug;
 
 public class Hood extends SubsystemBase {
 
@@ -132,16 +132,16 @@ public class Hood extends SubsystemBase {
     // This method will be called once per scheduler run
 
     if (this.hoodMotor != null && this.hoodEncoder != null) {
-      DebugInfo.send("hood power", this.hoodMotor.get());
+      Debug.putNumber("hood power", this.hoodMotor.get());
 
-      DebugInfo.send(
+      Debug.putNumber(
           Dashboard.DASH_HOOD_POSITION,
           this.hoodEncoder.getPosition() * REV_TICKS_PER_REV);
-      DebugInfo.send(
+      Debug.putNumber(
           Dashboard.DASH_HOOD_POSITION_RAW,
           this.hoodEncoder.getPosition());
-      DebugInfo.send(Dashboard.DASH_HOOD_ANGLE, getHoodAngle());
-      DebugInfo.send(
+      Debug.putNumber(Dashboard.DASH_HOOD_ANGLE, getHoodAngle(this.hoodEncoder.getPosition()));
+      Debug.putNumber(
           Dashboard.DASH_HOOD_VELOCITY,
           this.hoodEncoder.getVelocity());
     }

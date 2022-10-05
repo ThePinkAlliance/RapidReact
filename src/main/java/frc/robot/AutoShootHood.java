@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.debugInfo.DebugInfo;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Hood;
@@ -75,9 +74,9 @@ public class AutoShootHood extends CommandBase {
     // ? this might need the gear ratio added however I don't know that right now
     double rpm = velocity / Shooter.SHOOTER_FLYWHEEL_CIRCUMFRENCE * 60;
 
-    DebugInfo.send("encoder ticks", m_hood.getHoodTicks());
-    DebugInfo.send("shooter trajectory velocity", velocity);
-    DebugInfo.send("shooter trajectory angle", angle);
+    Debug.putNumber("encoder ticks", m_hood.getHoodTicks());
+    Debug.putNumber("shooter trajectory velocity", velocity);
+    Debug.putNumber("shooter trajectory angle", angle);
 
     boolean ready = m_shooter.readyToShoot(rpm, 100);
 
@@ -89,10 +88,10 @@ public class AutoShootHood extends CommandBase {
 
     this.m_collector.SetSpeedTowerForOverride(Collector.TOWER_MOTOR_FULL_SPEED);
     this.m_shooter.commandRpm(rpm);
-    DebugInfo.send(
+    Debug.putNumber(
         Dashboard.DASH_SHOOTER_VELOCITY,
         this.m_shooter.getMotorOutputPercent());
-    DebugInfo.send(
+    Debug.putNumber(
         Dashboard.DASH_SHOOTER_RPMS,
         this.m_shooter.getMotorRpms());
   }

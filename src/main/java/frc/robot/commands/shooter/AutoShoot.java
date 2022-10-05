@@ -5,18 +5,15 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Debug;
 import frc.robot.HoodConstants;
 import frc.robot.TargetPackage;
 import frc.robot.TargetPackageFactory;
-import frc.robot.debugInfo.DebugInfo;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Limelight;
-//import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Shooter;
 
 public class AutoShoot extends CommandBase {
@@ -86,10 +83,10 @@ public class AutoShoot extends CommandBase {
     // System.out.println("RPM: " + tp.rpm);
     this.m_collector.SetSpeedTowerForOverride(Collector.TOWER_MOTOR_FULL_SPEED);
     this.m_shooter.commandRpm(tp.rpm);
-    DebugInfo.send(
+    Debug.putNumber(
         Dashboard.DASH_SHOOTER_VELOCITY,
         this.m_shooter.getMotorOutputPercent());
-    DebugInfo.send(
+    Debug.putNumber(
         Dashboard.DASH_SHOOTER_RPMS,
         this.m_shooter.getMotorRpms());
   }

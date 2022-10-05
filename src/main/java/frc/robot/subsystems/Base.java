@@ -9,7 +9,6 @@ import com.ThePinkAlliance.swervelib.Mk4iSwerveModuleHelper;
 import com.ThePinkAlliance.swervelib.SdsModuleConfigurations;
 import com.ThePinkAlliance.swervelib.SwerveModule;
 import com.ThePinkAlliance.swervelib.ZeroState;
-import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -25,10 +24,8 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.debugInfo.DebugInfo;
+import frc.robot.Debug;
 
 import java.util.function.Supplier;
 
@@ -278,6 +275,9 @@ public class Base extends SubsystemBase {
     setStates(states);
 
     this.states = states;
+
+    Debug.putNumber(Dashboard.DASH_BASE_ROLL, gyro.getRoll());
+    Debug.putNumber("yaw", gyro.getYaw());
   }
 
   /**
@@ -421,8 +421,5 @@ public class Base extends SubsystemBase {
     // This method will be called once per scheduler run
 
     m_yaw.setNumber(gyro.getYaw());
-
-    SmartDashboard.putNumber(Dashboard.DASH_BASE_ROLL, gyro.getRoll());
-    SmartDashboard.putNumber("yaw", gyro.getYaw());
   }
 }

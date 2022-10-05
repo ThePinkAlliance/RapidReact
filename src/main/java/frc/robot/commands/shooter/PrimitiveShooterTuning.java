@@ -13,11 +13,11 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.Debug;
 import frc.robot.HoodConstants;
 import frc.robot.LinearInterpolationTable;
 import frc.robot.TargetPackage;
 import frc.robot.TargetPackageFactory;
-import frc.robot.debugInfo.DebugInfo;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Limelight;
@@ -155,17 +155,17 @@ public class PrimitiveShooterTuning extends CommandBase {
      * The rest of these SmartDashboard queries are relevant to developers.
      */
     if (!DriverStation.isFMSAttached()) {
-      SmartDashboard.putNumber("hood", currentPackage.hoodPosition);
-      SmartDashboard.putNumber(
+      Debug.putNumber("hood", currentPackage.hoodPosition);
+      Debug.putNumber(
           Dashboard.DASH_SHOOTER_VELOCITY,
           this.m_shooter.getMotorOutputPercent());
-      SmartDashboard.putString("type", type);
+      Debug.putString("type", type);
 
-      SmartDashboard.putNumber(
+      Debug.putNumber(
           Dashboard.DASH_SHOOTER_RPMS,
           this.m_shooter.getMotorRpms());
-      SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_P, currentPackage.Kp);
-      SmartDashboard.putNumber(Dashboard.DASH_SHOOTER_FF, currentPackage.Kf);
+      Debug.putNumber(Dashboard.DASH_SHOOTER_P, currentPackage.Kp);
+      Debug.putNumber(Dashboard.DASH_SHOOTER_FF, currentPackage.Kf);
     }
   }
 
