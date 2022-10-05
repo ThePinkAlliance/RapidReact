@@ -134,8 +134,6 @@ public class PrimitiveShooterTuning extends CommandBase {
     this.kfEntry.append(currentPackage.Kf);
     this.targetTypeEntry.append(type);
 
-    // if (currentPackage )
-
     m_hood.setPosition(currentPackage.hoodPosition);
 
     boolean ready = m_shooter.readyToShoot(currentPackage.rpm, 100);
@@ -143,9 +141,7 @@ public class PrimitiveShooterTuning extends CommandBase {
     this.m_shooter.configKp(currentPackage.Kp);
     this.m_shooter.configFeedForward(currentPackage.Kf);
 
-    if (currentPackage != null && currentPackage.rpm > 0) {
-      this.m_shooter.commandRpm(currentPackage.rpm);
-    }
+    this.m_shooter.commandRpm(currentPackage.rpm);
 
     // Shooter ready is relevant to the drivers.
     SmartDashboard.putBoolean(Dashboard.DASH_SHOOTER_READY, ready);
