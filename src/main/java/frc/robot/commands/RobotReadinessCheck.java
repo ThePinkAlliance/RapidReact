@@ -28,6 +28,6 @@ public class RobotReadinessCheck extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new ResetHood(hood), new ZeroPods(base),
-        new PneumaticsCheck(compressor, pneumaticsReady), new ShooterCheck(shooter, collector, shooterReady));
+        new PneumaticsCheck(compressor, pneumaticsReady));
   }
 }
