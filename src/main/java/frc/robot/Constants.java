@@ -47,5 +47,5 @@ public final class Constants {
   // (ty-angle, distance)
   static List<Vector2d> distanceTable = List.of(new Vector2d(0.0, 0.0), new Vector2d(0.0, 0.0));
 
-  public static LinearInterpolationTable limelighInterpolationTable = new LinearInterpolationTable(distanceTable);
+  public static LinearInterpolationTable limelightInterpolationTable = new LinearInterpolationTable(distanceTable);
 }

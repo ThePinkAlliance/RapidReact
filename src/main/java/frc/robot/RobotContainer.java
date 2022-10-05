@@ -172,7 +172,7 @@ public class RobotContainer {
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_A)
         .whenPressed(
             new PrimitiveShooterTuning(m_shooter, m_limelight, m_hood, gamepad_tower,
-                Constants.limelighInterpolationTable,
+                Constants.limelightInterpolationTable,
                 Constants.JOYSTICK_BUTTON_A));
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
         .whenPressed(

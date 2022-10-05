@@ -144,7 +144,7 @@ public class Limelight extends SubsystemBase {
     /*
      * Interpolates between the two closest vectors to the hypotenuse.
      */
-    double distance = Constants.limelighInterpolationTable.interp(hypot);
+    double distance = Constants.limelightInterpolationTable.interp(hypot);
 
     Debug.putNumber("interp-distance", distance);
 
