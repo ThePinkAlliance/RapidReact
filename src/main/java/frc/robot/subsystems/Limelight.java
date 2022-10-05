@@ -11,6 +11,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Debug;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,10 +43,10 @@ public class Limelight extends SubsystemBase {
 
   /** Creates a new Limelight. */
   public Limelight() {
-    initLimelight(LimelightLedMode.FORCE_OFF);
+    configureLimelight(LimelightLedMode.FORCE_OFF);
   }
 
-  public void initLimelight(LimelightLedMode mode) {
+  public void configureLimelight(LimelightLedMode mode) {
     NetworkTableInstance
         .getDefault()
         .getTable("limelight")
@@ -69,7 +70,7 @@ public class Limelight extends SubsystemBase {
     } else {
       limelightLedOn = false;
     }
-    initLimelight(mode); // Off or On
+    configureLimelight(mode); // Off or On
   }
 
   public boolean isTarget() {
@@ -145,7 +146,7 @@ public class Limelight extends SubsystemBase {
      */
     double distance = Constants.limelighInterpolationTable.interp(hypot);
 
-    SmartDashboard.putNumber("interp-distance", distance);
+    Debug.putNumber("interp-distance", distance);
 
     return distance;
   }
@@ -319,26 +320,6 @@ public class Limelight extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // NetworkTableEntry tx = table.getEntry("tx");
-    // NetworkTableEntry ty = table.getEntry("ty");
-    // NetworkTableEntry ta = table.getEntry("ta");
-    // NetworkTableEntry ts = table.getEntry("ts");
 
-    // double offsetX = tx.getDouble(0.0);
-    // double offsetY = ty.getDouble(0.0);
-    // double objectArea = ta.getDouble(0.0);
-    // double robotSkew = ts.getDouble(0.0);
-
-    // SmartDashboard.putNumber("Object Offset X: ", offsetX);
-    // SmartDashboard.putNumber("Object Offset Y: ", offsetY);
-    // SmartDashboard.putNumber("Limelight Area: ", objectArea);
-    // SmartDashboard.putNumber("Limelight Skew: ", robotSkew);
-    // SmartDashboard.putBoolean("Limelight On: ", limelightLedOn);
-    // SmartDashboard.putNumber("LIMELIGHT SET ANGLE: ", limelightMountedAngle);
-
-    // SmartDashboard.getNumber("limelight angle offset", horzontalOffset.get());
-    // if (limelightLedOn == true) {
-    // findDistance();
-    // }
   }
 }

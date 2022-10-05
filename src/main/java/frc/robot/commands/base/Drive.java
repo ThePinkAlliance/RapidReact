@@ -9,6 +9,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.BaseConstants;
+import frc.robot.Debug;
 import frc.robot.subsystems.Base;
 
 public class Drive extends CommandBase {
