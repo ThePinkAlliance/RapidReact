@@ -68,7 +68,7 @@ public class DriveFieldRelative extends CommandBase {
         slewXLimiter.calculate(modifyAxisLimited(axis1y) * Base.MAX_VELOCITY_METERS_PER_SECOND),
         slewYLimiter.calculate(modifyAxisLimited(axis0x) * Base.MAX_VELOCITY_METERS_PER_SECOND),
         slewThetaLimiter.calculate(modifyAxisLimited(axis4rot) * Base.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND),
-        base.getRotation().plus(new Rotation2d(offset))));
+        base.getRotation()));
   }
 
   private double deadband(double value, double deadband) {

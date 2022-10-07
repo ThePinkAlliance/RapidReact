@@ -119,8 +119,8 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     if (m_robotContainer != null) {
-      // m_robotContainer.enableLimelight();
-      m_robotContainer.disableLimelight();
+      m_robotContainer.enableLimelight();
+      // m_robotContainer.disableLimelight();
       m_robotContainer.resetHoodEncoder();
     }
 

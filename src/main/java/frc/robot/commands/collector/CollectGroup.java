@@ -5,6 +5,7 @@
 package frc.robot.commands.collector;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Collector;
 
@@ -47,12 +48,14 @@ public class CollectGroup extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    double speed = SmartDashboard.getNumber("collector-speed", Collector.COLLECTOR_MOTOR_FULL_SPEED);
+
     if (bIntake == false) {
-      this.m_collector.SetSpeedCollector(-Collector.COLLECTOR_MOTOR_FULL_SPEED);
+      this.m_collector.SetSpeedCollector(-speed);
       this.m_collector.SetSpeedTowerForOverride(
           -Collector.TOWER_MOTOR_FULL_SPEED);
     } else {
-      this.m_collector.SetSpeedCollector(Collector.COLLECTOR_MOTOR_FULL_SPEED);
+      this.m_collector.SetSpeedCollector(speed);
       this.m_collector.SetSpeedTowerForOverride(
           Collector.TOWER_MOTOR_FULL_SPEED);
     }

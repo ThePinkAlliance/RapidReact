@@ -120,10 +120,10 @@ public class PrimitiveShooterTuning extends CommandBase {
         currentPackage = TargetPackageFactory.getCustomPackage(distance);
       }
 
-      if (currentPackage == null) {
-        currentPackage = TargetPackageFactory.getTarmacPackage();
-        distanceEntry.setMetadata("currentPackage=null");
-      }
+      // if (currentPackage == null) {
+      // currentPackage = TargetPackageFactory.getTarmacPackage();
+      // distanceEntry.setMetadata("currentPackage=null");
+      // }
 
       type = "custom";
     }
@@ -138,14 +138,17 @@ public class PrimitiveShooterTuning extends CommandBase {
     this.kfEntry.append(currentPackage.Kf);
     this.targetTypeEntry.append(type);
 
-    m_hood.setPosition(currentPackage.hoodPosition);
-
     boolean ready = m_shooter.readyToShoot(currentPackage.rpm, 100);
 
-    this.m_shooter.configKp(currentPackage.Kp);
-    this.m_shooter.configFeedForward(currentPackage.Kf);
+    if (!Double.isNaN(currentPackage.Kf) || !Double.isNaN(currentPackage.rpm)) {
+      m_hood.setPosition(currentPackage.hoodPosition);
+      this.m_shooter.configKp(currentPackage.Kp);
+      this.m_shooter.configFeedForward(currentPackage.Kf);
+      this.m_shooter.commandRpm(currentPackage.rpm);
+    }
 
-    this.m_shooter.commandRpm(currentPackage.rpm);
+    System.out.println("unmod: " + unmodifiedDistance);
+    System.out.println("rpm: " + currentPackage.rpm + ", kp: " + currentPackage.Kp + ", kf: " + currentPackage.Kf);
 
     // Shooter ready is relevant to the drivers.
     SmartDashboard.putBoolean(Dashboard.DASH_SHOOTER_READY, ready);
