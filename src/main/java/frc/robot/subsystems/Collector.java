@@ -15,7 +15,6 @@ import com.revrobotics.Rev2mDistanceSensor.Unit;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Collector extends SubsystemBase {
@@ -90,14 +89,7 @@ public class Collector extends SubsystemBase {
     boolean bRangeValid = this.ballSensor.isRangeValid();
     double distance = this.ballSensor.getRange();
     boolean bDetected = distance < TOWER_SENSOR_TRIGGER_DISTANCE;
-    // System.out.println(
-    // "RANGE VALID: " +
-    // bRangeValid +
-    // ", Distance: " +
-    // distance +
-    // ", bDetected: " +
-    // bDetected
-    // );
+
     return (bDetected && bRangeValid);
   }
 

@@ -4,12 +4,7 @@
 
 package frc.robot;
 
-import java.util.List;
-
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -19,7 +14,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.LimelightCalibration;
 import frc.robot.commands.RobotReadinessCheck;
@@ -28,11 +22,7 @@ import frc.robot.commands.auto.AutoShootLeaveTarmac;
 import frc.robot.commands.auto.AutoTwoBall;
 import frc.robot.commands.auto.LeaveTarmack;
 import frc.robot.commands.base.Drive;
-import frc.robot.commands.base.DriveFieldRelative;
 import frc.robot.commands.base.LimelightAlign;
-import frc.robot.commands.climber.JoystickClimb;
-import frc.robot.commands.climber.MoveLongArms;
-import frc.robot.commands.climber.MoveShortArms;
 import frc.robot.commands.collector.CollectGroup;
 import frc.robot.commands.hood.CommandHoodTuning;
 import frc.robot.commands.shooter.PrimitiveShooterTuning;

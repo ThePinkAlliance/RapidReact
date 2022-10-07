@@ -9,7 +9,6 @@ import com.ThePinkAlliance.swervelib.Mk4iSwerveModuleHelper;
 import com.ThePinkAlliance.swervelib.SdsModuleConfigurations;
 import com.ThePinkAlliance.swervelib.SwerveModule;
 import com.ThePinkAlliance.swervelib.ZeroState;
-import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -27,7 +26,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import java.util.function.Supplier;
 
 public class Base extends SubsystemBase {
@@ -151,19 +149,6 @@ public class Base extends SubsystemBase {
       chassisSpeeds);
 
   private Mk4ModuleConfiguration configuration = new Mk4ModuleConfiguration();
-
-  NetworkTableEntry align_P = NetworkTableInstance
-      .getDefault()
-      .getTable("debug")
-      .getEntry("align-p");
-  NetworkTableEntry align_I = NetworkTableInstance
-      .getDefault()
-      .getTable("debug")
-      .getEntry("align-i");
-  NetworkTableEntry align_D = NetworkTableInstance
-      .getDefault()
-      .getTable("debug")
-      .getEntry("align-d");
 
   /** Creates a new Base. */
   public Base() {
