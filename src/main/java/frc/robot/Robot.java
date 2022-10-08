@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.LimelightCalibration;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -63,6 +64,9 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    // m_robotContainer.calibration();
+    // m_robotContainer.enableLimelight();
+    // m_robotContainer.zero();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

@@ -4,7 +4,10 @@
 
 package frc.robot;
 
+import com.ThePinkAlliance.swervelib.ZeroState;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -23,6 +26,8 @@ import frc.robot.commands.auto.AutoTwoBall;
 import frc.robot.commands.auto.LeaveTarmack;
 import frc.robot.commands.base.Drive;
 import frc.robot.commands.base.LimelightAlign;
+import frc.robot.commands.climber.MoveLongArms;
+import frc.robot.commands.climber.MoveShortArms;
 import frc.robot.commands.collector.CollectGroup;
 import frc.robot.commands.hood.CommandHoodTuning;
 import frc.robot.commands.shooter.PrimitiveShooterTuning;
@@ -91,6 +96,13 @@ public class RobotContainer {
   private BooleanEntry pneumaticsReady;
   private BooleanEntry shooterReady;
 
+  private DoubleLogEntry distanceEntry;
+  private DoubleLogEntry rpmEntry;
+  private DoubleLogEntry kpEntry;
+  private DoubleLogEntry kfEntry;
+  private DoubleLogEntry distanceRawEntry;
+  private StringLogEntry targetTypeEntry;
+
   /**
    * This contains all the trajectories that can be selected from the dashboard.
    */
@@ -131,6 +143,23 @@ public class RobotContainer {
     this.batterySufficient = new BooleanEntry(Dashboard.TEST_TABLE_ID, "battery_sufficient");
     this.pneumaticsReady = new BooleanEntry(Dashboard.TEST_TABLE_ID, "pneumatics_ready");
     this.shooterReady = new BooleanEntry(Dashboard.TEST_TABLE_ID, "shooter_ready");
+  }
+
+  public void calibration() {
+    double dist = m_limelight.calculateDistanceHypot();
+    double unmoddedDistance = m_limelight.calculateUnmodifiedDistance();
+    TargetPackage target = TargetPackageFactory.getCustomPackage(dist);
+
+    SmartDashboard.putNumber("Hypot Distance", dist);
+    SmartDashboard.putNumber("Raw Distance", unmoddedDistance);
+    SmartDashboard.putNumber("Hood Position", target.hoodPosition);
+    SmartDashboard.putNumber("Target Kp", target.Kp);
+    SmartDashboard.putNumber("Target Kf", target.Kf);
+    SmartDashboard.putNumber("Target rpm", target.rpm);
+  }
+
+  public void zero() {
+    this.m_base.setPodZeroStates(ZeroState.COAST);
   }
 
   /**
@@ -197,15 +226,15 @@ public class RobotContainer {
       m_base.zeroGyro();
     });
     // Climbers
-    // new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
-    // .whenPressed(
-    // new MoveShortArms(
-    // m_climbers,
-    // ClimberModule.SHORT_ARM_MID_CLIMB_START,
-    // MoveShortArms.ARM_MOVE_UP)
-    // .alongWith(
-    // new MoveLongArms(m_climbers, ClimberModule.LONG_ARM_MID_CLIMB_START,
-    // MoveLongArms.ARM_MOVE_UP)));
+    new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
+        .whenPressed(
+            new MoveShortArms(
+                m_climbers,
+                ClimberModule.SHORT_ARM_MID_CLIMB_START,
+                MoveShortArms.ARM_MOVE_UP)
+                .alongWith(
+                    new MoveLongArms(m_climbers, ClimberModule.LONG_ARM_MID_CLIMB_START,
+                        MoveLongArms.ARM_MOVE_UP)));
   }
 
   public void selectTrajectory(SelectableTrajectory selectableTrajectory) {
@@ -248,14 +277,20 @@ public class RobotContainer {
   }
 
   public Command getTestCommand() {
-    return enableCalibration.get(false) ? new LimelightCalibration(m_limelight, m_base)
-        : new RobotReadinessCheck(m_hood, m_base, m_shooter, m_collector, m_compressor, batterySufficient,
-            pneumaticsReady, shooterReady)
-            .beforeStarting(() -> {
-              this.m_compressor.disable();
-            }).andThen(() -> {
-              this.m_compressor.enableDigital();
-            });
+    return new LimelightCalibration(m_limelight).beforeStarting(() -> {
+      m_compressor.disable();
+    }).andThen(() -> {
+      m_compressor.enableDigital();
+    });
+    // return enableCalibration.get(false) ?
+    // : new RobotReadinessCheck(m_hood, m_base, m_shooter, m_collector,
+    // m_compressor, batterySufficient,
+    // pneumaticsReady, shooterReady)
+    // .beforeStarting(() -> {
+    // this.m_compressor.disable();
+    // }).andThen(() -> {
+    // this.m_compressor.enableDigital();
+    // });
   }
 
   public void resetHood() {
