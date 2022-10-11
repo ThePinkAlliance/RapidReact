@@ -4,9 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.LimelightCalibration;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -20,8 +23,11 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 public class Robot extends TimedRobot {
 
   private Command m_autonomousCommand;
+  private Command m_testCommand;
 
   private RobotContainer m_robotContainer;
+
+  private boolean calibration = false;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -34,6 +40,9 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    // Just to make sure we don't blind people when the robot starts.
+    m_robotContainer.disableLimelight();
   }
 
   /**
@@ -56,7 +65,13 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods. This must be called from the
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
-    CommandScheduler.getInstance().run();
+    if (!calibration) {
+      CommandScheduler.getInstance().run();
+    } else {
+      m_robotContainer.calibration();
+      m_robotContainer.enableLimelight();
+      m_robotContainer.disablePods();
+    }
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -69,7 +84,8 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+  }
 
   /**
    * This autonomous runs the autonomous command selected by your
@@ -80,6 +96,12 @@ public class Robot extends TimedRobot {
     if (m_robotContainer != null) {
       m_robotContainer.enableLimelight();
       m_robotContainer.resetHoodEncoder();
+
+      Constants.isRed = NetworkTableInstance
+          .getDefault()
+          .getTable("FMSInfo")
+          .getEntry("IsRedAlliance")
+          .getBoolean(true);
     }
 
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
@@ -88,11 +110,16 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    if (m_testCommand != null) {
+      m_testCommand.cancel();
+    }
   }
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+  }
 
   @Override
   public void teleopInit() {
@@ -102,42 +129,44 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     if (m_robotContainer != null) {
       m_robotContainer.enableLimelight();
+      // m_robotContainer.disableLimelight();
       m_robotContainer.resetHoodEncoder();
     }
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    if (m_testCommand != null) {
+      m_testCommand.cancel();
+    }
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+  }
 
   @Override
   public void testInit() {
+    // Resetting all the network enties used for subsystem readiness checks.
+    m_robotContainer.resetTestEntries();
+
     // Cancels all running commands at the start of test mode.
-    if (m_robotContainer != null) {
-      m_robotContainer.enableLimelight();
-      m_robotContainer.testInit();
-    }
     CommandScheduler.getInstance().cancelAll();
+
+    // Disabling LiveWindow reenables the scheduler.
+    LiveWindow.setEnabled(false);
+
+    m_testCommand = m_robotContainer.getTestCommand();
+
+    if (m_testCommand != null) {
+      m_testCommand.schedule();
+    }
   }
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
-
-  @Override
-  public void simulationInit() {
-    if (m_robotContainer != null) {
-      //m_robotContainer.disableLimelight();
-    }
-    CommandScheduler.getInstance().cancelAll();
-  }
-
-  @Override
-  public void simulationPeriodic() {
-    CommandScheduler.getInstance().run();
+  public void testPeriodic() {
   }
 }

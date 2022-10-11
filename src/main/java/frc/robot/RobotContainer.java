@@ -4,29 +4,38 @@
 
 package frc.robot;
 
+import com.ThePinkAlliance.swervelib.ZeroState;
+import edu.wpi.first.cscore.VideoSource;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.StringLogEntry;
+import edu.wpi.first.util.net.PortForwarder;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.AutoDoNothing;
-import frc.robot.commands.AutoLatchArms;
-import frc.robot.commands.AutoShootLeaveTarmac;
-import frc.robot.commands.AutoTwoBall;
-import frc.robot.commands.CollectGroup;
-import frc.robot.commands.CommandHoodTuning;
-import frc.robot.commands.CommandShooterTuning;
-import frc.robot.commands.Drive;
-import frc.robot.commands.JoystickClimb;
-import frc.robot.commands.LeaveTarmack;
-import frc.robot.commands.LimelightAlign;
-import frc.robot.commands.MoveLongArms;
-import frc.robot.commands.MoveShortArms;
-import frc.robot.commands.MoveTower;
-import frc.robot.commands.paths.Threeball;
+import frc.robot.commands.LimelightCalibration;
+import frc.robot.commands.RobotReadinessCheck;
+import frc.robot.commands.auto.AutoDoNothing;
+import frc.robot.commands.auto.AutoShootLeaveTarmac;
+import frc.robot.commands.auto.AutoTwoBall;
+import frc.robot.commands.auto.LeaveTarmack;
+import frc.robot.commands.base.Drive;
+import frc.robot.commands.base.LimelightAlign;
+import frc.robot.commands.climber.JoystickClimb;
+import frc.robot.commands.climber.MoveLongArms;
+import frc.robot.commands.climber.MoveShortArms;
+import frc.robot.commands.collector.CollectGroup;
+import frc.robot.commands.hood.CommandHoodTuning;
+import frc.robot.commands.shooter.PrimitiveShooterTuning;
+import frc.robot.commands.tower.MoveTower;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Climbers;
 import frc.robot.subsystems.Collector;
@@ -56,6 +65,8 @@ public class RobotContainer {
   private final Hood m_hood = new Hood();
   private final Climbers m_climbers = new Climbers();
 
+  private final Compressor m_compressor = new Compressor(PneumaticsModuleType.CTREPCM);
+
   // DASHBOARD MUST BE LAST SUBSYSTEM INSTANTIATED
   private final Dashboard m_dashboard = new Dashboard(
       m_base,
@@ -65,6 +76,7 @@ public class RobotContainer {
 
   Trajectory trajectory = new Trajectory();
   SendableChooser<SelectableTrajectory> selectedPath = new SendableChooser<SelectableTrajectory>();
+
   private final SelectableTrajectory LeaveTarmac = new SelectableTrajectory(
       "Leave Tarmac",
       new LeaveTarmack(m_base));
@@ -82,14 +94,18 @@ public class RobotContainer {
   private final SelectableTrajectory TwoBallAuto = new SelectableTrajectory(
       "Two Ball Auto",
       new AutoTwoBall(m_base, m_shooter, m_collector, m_hood, m_limelight));
-  private final SelectableTrajectory ThreeBallAuto = new SelectableTrajectory(
-      "Three Ball Auto",
-      new Threeball(m_base, m_shooter, m_collector, m_limelight, m_hood));
 
-  // private final SelectableTrajectory autoMidClimb = new SelectableTrajectory(
-  // "AutoMidClimb",
-  // new AutoMidClimb(m_base, m_climbers)
-  // );
+  private BooleanEntry enableCalibration;
+  private BooleanEntry batterySufficient;
+  private BooleanEntry pneumaticsReady;
+  private BooleanEntry shooterReady;
+
+  private DoubleLogEntry distanceEntry;
+  private DoubleLogEntry rpmEntry;
+  private DoubleLogEntry kpEntry;
+  private DoubleLogEntry kfEntry;
+  private DoubleLogEntry distanceRawEntry;
+  private StringLogEntry targetTypeEntry;
 
   /**
    * This contains all the trajectories that can be selected from the dashboard.
@@ -98,7 +114,6 @@ public class RobotContainer {
       LeaveTarmac,
       ShootLeaveTarmac,
       TwoBallAuto,
-      ThreeBallAuto,
       doNothing
   };
 
@@ -107,6 +122,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
+
+    configureNetwork();
     configureButtonBindings();
 
     for (SelectableTrajectory t : trajectories) {
@@ -123,6 +140,38 @@ public class RobotContainer {
     this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
     this.m_climbers.setDefaultCommand(
         new JoystickClimb(m_climbers, this.gamepad_tower));
+
+    this.enableCalibration = new BooleanEntry(Dashboard.TEST_TABLE_ID, "enable_calibration");
+
+    // These entries are for readiness checks.
+    this.batterySufficient = new BooleanEntry(Dashboard.TEST_TABLE_ID, "battery_sufficient");
+    this.pneumaticsReady = new BooleanEntry(Dashboard.TEST_TABLE_ID, "pneumatics_ready");
+    this.shooterReady = new BooleanEntry(Dashboard.TEST_TABLE_ID, "shooter_ready");
+  }
+
+  public void calibration() {
+    double dist = m_limelight.calculateDistanceHypot();
+    double unmoddedDistance = m_limelight.calculateUnmodifiedDistance();
+    TargetPackage target = TargetPackageFactory.getCustomPackage(dist);
+
+    SmartDashboard.putNumber("Hypot Distance", dist);
+    SmartDashboard.putNumber("Raw Distance", unmoddedDistance);
+    SmartDashboard.putNumber("Hood Position", target.hoodPosition);
+    SmartDashboard.putNumber("Target Kp", target.Kp);
+    SmartDashboard.putNumber("Target Kf", target.Kf);
+    SmartDashboard.putNumber("Target rpm", target.rpm);
+  }
+
+  public void disablePods() {
+    this.m_base.setPodZeroStates(ZeroState.COAST);
+  }
+
+  /**
+   * This is where you can configure the roboRIO's port forwarding over usb.
+   */
+  public void configureNetwork() {
+    // no longer used
+    PortForwarder.add(5800, "photonvision.local", 5800);
   }
 
   /**
@@ -145,14 +194,8 @@ public class RobotContainer {
                 true));
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_A)
         .whenPressed(
-            new CommandShooterTuning(
-                m_shooter,
-                m_limelight,
-                m_hood,
-                m_base,
-                gamepad_tower,
-                m_limelight.getDistanceSupplier(),
-                m_limelight.getAngleSupplier(),
+            new PrimitiveShooterTuning(m_shooter, m_limelight, m_hood, gamepad_tower,
+                Constants.limelightInterpolationTable,
                 Constants.JOYSTICK_BUTTON_A));
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_B)
         .whenPressed(
@@ -183,6 +226,9 @@ public class RobotContainer {
                 m_limelight,
                 gamepad_base,
                 Constants.JOYSTICK_BUTTON_A));
+    new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_X).whenPressed(() -> {
+      m_base.setPodAngles(new Rotation2d(0));
+    });
     // Climbers
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
         .whenPressed(
@@ -191,7 +237,8 @@ public class RobotContainer {
                 ClimberModule.SHORT_ARM_MID_CLIMB_START,
                 MoveShortArms.ARM_MOVE_UP)
                 .alongWith(
-                    new MoveLongArms(m_climbers, ClimberModule.LONG_ARM_MID_CLIMB_START, MoveLongArms.ARM_MOVE_UP)));
+                    new MoveLongArms(m_climbers, ClimberModule.LONG_ARM_MID_CLIMB_START,
+                        MoveLongArms.ARM_MOVE_UP)));
   }
 
   public void selectTrajectory(SelectableTrajectory selectableTrajectory) {
@@ -227,8 +274,22 @@ public class RobotContainer {
     }
   }
 
-  public void testInit() {
-    m_base.setPodAngles(0);
+  public void resetTestEntries() {
+    this.batterySufficient.reset();
+    this.pneumaticsReady.reset();
+    this.shooterReady.reset();
+  }
+
+  public Command getTestCommand() {
+    return enableCalibration.get(false) ? new LimelightCalibration(m_limelight)
+        : new RobotReadinessCheck(m_hood, m_base, m_shooter, m_collector,
+            m_compressor, batterySufficient,
+            pneumaticsReady, shooterReady)
+            .beforeStarting(() -> {
+              this.m_compressor.disable();
+            }).andThen(() -> {
+              this.m_compressor.enableDigital();
+            });
   }
 
   public void resetHood() {

@@ -2,7 +2,6 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -22,17 +21,18 @@ public class ClimberModule {
     RIGHT,
     BOTH,
   }
+
   public static final double CLIMBER_LIMITER = 0.5;
-  public static final int SHORT_ARM_MID_CLIMB_START = -355000; //-222222;
+  public static final int SHORT_ARM_MID_CLIMB_START = -355000; // -222222;
   public static final int SHORT_ARM_MID_CLIMB_FINISH = -143195;
 
-  public static final int LONG_ARM_MID_CLIMB_START = -430000; //-222222;
+  public static final int LONG_ARM_MID_CLIMB_START = -430000; // -222222;
   public static final int LONG_ARM_MID_CLIMB_FINISH = -143195;
 
   private DoubleSolenoid lockerSolenoid;
   // parent
   private TalonFX motorLeft;
-  //private TalonFX motorCenter;
+  // private TalonFX motorCenter;
   private TalonFX motorRight;
   private double RAMP_RATE = 0.25;
   private DigitalInput limitLeftSwitch;
@@ -45,25 +45,22 @@ public class ClimberModule {
   private boolean SWITCH_CLOSE = false;
 
   public ClimberModule(
-    int pneumaticsId1,
-    int pneumaticsId2,
-    int motorLeftId,
-    int motorRightId,
-    boolean inverted,
-    int limitSwitchLeftChannel,
-    int limitSwitchRightChannel
-  ) {
-    this.lockerSolenoid =
-      new DoubleSolenoid(
+      int pneumaticsId1,
+      int pneumaticsId2,
+      int motorLeftId,
+      int motorRightId,
+      boolean inverted,
+      int limitSwitchLeftChannel,
+      int limitSwitchRightChannel) {
+    this.lockerSolenoid = new DoubleSolenoid(
         PneumaticsModuleType.CTREPCM,
         pneumaticsId1,
-        pneumaticsId2
-      );
+        pneumaticsId2);
     this.motorLeft = new TalonFX(motorLeftId);
     this.motorRight = new TalonFX(motorRightId);
     // this.motorCenter = new TalonFX(motorCenterId);
     this.motorLeft.configFactoryDefault();
-    //this.motorCenter.configFactoryDefault();
+    // this.motorCenter.configFactoryDefault();
     this.motorRight.configFactoryDefault();
     this.motorLeft.setNeutralMode(NeutralMode.Brake);
     this.motorRight.setNeutralMode(NeutralMode.Brake);
@@ -73,7 +70,7 @@ public class ClimberModule {
     this.motorRight.setInverted(inverted);
     // this.motorCenter.setInverted(inverted);
     this.motorRight.follow(motorLeft);
-    //this.motorCenter.follow(motorLeft);
+    // this.motorCenter.follow(motorLeft);
     motorLeft.setSelectedSensorPosition(0);
 
     this.limitLeftSwitch = new DigitalInput(limitSwitchLeftChannel);
@@ -131,11 +128,11 @@ public class ClimberModule {
 
   public void setPosition(double pos) {
     // boolean keepGoing =
-    //   Math.abs(pos) <= MIN_ALLOWABLE_POSITION &&
-    //   Math.abs(pos) >= MAX_ALLOWABLE_POSITION;
+    // Math.abs(pos) <= MIN_ALLOWABLE_POSITION &&
+    // Math.abs(pos) >= MAX_ALLOWABLE_POSITION;
 
-    //if (keepGoing) {
+    // if (keepGoing) {
     this.motorLeft.set(ControlMode.Position, pos);
-    //}
+    // }
   }
 }

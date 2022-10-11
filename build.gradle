@@ -9,6 +9,9 @@ sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
+def CORE_MAIN_CLASS = "com.ThePinkAlliance.core"
+
+def LIBRARIES_EXIST = file("./core/build.gradle").exists()
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project DeployUtils.
@@ -35,6 +38,14 @@ deploy {
                     directory = '/home/lvuser/deploy'
                 }
             }
+        }
+    }
+}
+
+configurations.all {
+    if (LIBRARIES_EXIST) {
+        resolutionStrategy.dependencySubstitution {
+            substitute module("com.github.ThePinkAlliance:core") with project(':core')
         }
     }
 }
@@ -72,6 +83,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
+
 // Simulation configuration (e.g. environment variables).
 wpi.sim.addGui().defaultEnabled = true
 wpi.sim.addDriverstation()
@@ -80,9 +92,14 @@ wpi.sim.addDriverstation()
 // in order to make them all available at runtime. Also adding the manifest so WPILib
 // knows where to look for our Robot Class.
 jar {
-    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-    manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    if (LIBRARIES_EXIST) {
+        dependsOn ':core:compileJava'
+        dependsOn ':core:jar'
+
+        from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+        manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    }
 }
 
 // Configure jar and deploy tasks

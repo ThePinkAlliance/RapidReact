@@ -4,41 +4,42 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
+import com.ThePinkAlliance.core.rev.RevNeo550;
+import com.ThePinkAlliance.core.rev.SparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Hood extends SubsystemBase {
 
   // public final double
-  public final double REV_TICKS_PER_REV = 4096;
-  public final double MAX_HOOD_WIDTH_INCHES = 5.582;
-  public final double HOOD_PARREL_SHOOTER = 2.4;
-  public final double MAX_HOOD_HEIGHT_INCHES = 7.159;
-  public final double HOOD_LENGTH_INCHES = 5.9;
-  public final double HOOD_WHEEL_CIRCUMFERENCE = 2.5132741229;
+  public static final double REV_TICKS_PER_REV = 4096;
+  public static final double MAX_HOOD_WIDTH_INCHES = 5.582;
+  public static final double HOOD_PARREL_SHOOTER = 2.4;
+  public static final double MAX_HOOD_HEIGHT_INCHES = 7.159;
+  public static final double HOOD_LENGTH_INCHES = 5.9;
+  public static final double HOOD_WHEEL_CIRCUMFERENCE = 2.5132741229;
 
-  private final double HOOD_LENGTH_X = 2.5;
-  private final double HOOD_LENGTH_Y = 4.25;
-  private final double MAX_HOOD_POSITION = -75000;
-  private final double MIN_HOOD_POSITION = -500;
-  private final double MAX_HOOD_SHOOTER_DIFF_X = 10.5;
-  private final double HOOD_DIFF_WIDTH_INCHES_PER_TICK =
-    HOOD_LENGTH_X / MAX_HOOD_POSITION;
+  public static final double HOOD_LENGTH_X = 2.5;
+  public static final double HOOD_LENGTH_Y = 4.25;
+  public static final double MAX_HOOD_POSITION = -75000;
+  public static final double MIN_HOOD_POSITION = -500;
+  public static final double MAX_HOOD_SHOOTER_DIFF_X = 10.5;
+  public static final double HOOD_DIFF_WIDTH_INCHES_PER_TICK = HOOD_LENGTH_X / MAX_HOOD_POSITION;
   private final int HOOD_MOTOR = 31;
 
-  private CANSparkMax hoodMotor = null;
+  private double lastPosition = 0;
+
+  private RevNeo550 hoodMotor = null;
   private SparkMaxPIDController hoodPid;
   private RelativeEncoder hoodEncoder;
 
   /** Creates a new Hood. */
   public Hood() {
-    hoodMotor = new CANSparkMax(HOOD_MOTOR, MotorType.kBrushless);
-    //hoodMotor.restoreFactoryDefaults();
+    hoodMotor = new RevNeo550(HOOD_MOTOR);
+    // hoodMotor.restoreFactoryDefaults();
 
     // configure the hood motor and the encoder
     this.hoodEncoder = this.hoodMotor.getEncoder();
@@ -46,13 +47,6 @@ public class Hood extends SubsystemBase {
     this.hoodPid = this.hoodMotor.getPIDController();
 
     this.hoodPid.setOutputRange(-0.15, 0.15);
-
-    // this.hoodPid.setP(0);
-    // this.hoodPid.setI(0);
-    // this.hoodPid.setD(0);
-    // this.hoodPid.setFF(0);
-
-    this.hoodMotor.setSmartCurrentLimit(30);
   }
 
   public double getCurrentDraw() {
@@ -60,13 +54,13 @@ public class Hood extends SubsystemBase {
   }
 
   public double hoodDesiredTicks(double angle) {
-    return (
-      (
-        (Math.tan(angle) * (HOOD_LENGTH_X - HOOD_PARREL_SHOOTER)) /
-        HOOD_WHEEL_CIRCUMFERENCE
-      ) *
-      REV_TICKS_PER_REV
-    );
+    return (((Math.tan(angle) * (HOOD_LENGTH_X - HOOD_PARREL_SHOOTER)) /
+        HOOD_WHEEL_CIRCUMFERENCE) *
+        REV_TICKS_PER_REV);
+  }
+
+  public SparkMax getController() {
+    return hoodMotor;
   }
 
   public void setPID(double p, double i, double d, double ff) {
@@ -101,28 +95,30 @@ public class Hood extends SubsystemBase {
   public void setPosition(double ticks) {
     double rotations = ticks / REV_TICKS_PER_REV;
 
-    this.hoodPid.setReference(rotations, ControlType.kPosition);
+    if (Math.abs(lastPosition - ticks) > 1000) {
+      this.hoodPid.setReference(rotations, ControlType.kPosition);
+    }
+
+    this.lastPosition = ticks;
   }
 
-  public double getHoodAngle() {
-    double currentHeight =
-      HOOD_PARREL_SHOOTER +
-      (
-        HOOD_WHEEL_CIRCUMFERENCE *
-        (hoodEncoder.getPosition() / REV_TICKS_PER_REV)
-      );
+  public static double getHoodAngle(double position) {
+    double currentHeight = HOOD_PARREL_SHOOTER +
+        (HOOD_WHEEL_CIRCUMFERENCE *
+            (position / REV_TICKS_PER_REV));
 
-    double currentWidth =
-      MAX_HOOD_SHOOTER_DIFF_X -
-      (hoodEncoder.getPosition() * Math.abs(HOOD_DIFF_WIDTH_INCHES_PER_TICK));
+    double currentWidth = MAX_HOOD_SHOOTER_DIFF_X -
+        (position * Math.abs(HOOD_DIFF_WIDTH_INCHES_PER_TICK));
 
     // * to properly calculate angle of the hood its opposite / adjacent
-    // ? Make sure to rework the hood distance system and PLEASE measure from the inner circular area of the flywheel shaft in the cad
-    return (Math.tan(currentHeight / currentWidth) * (180 / Math.PI));
+    // ? Make sure to rework the hood distance system and PLEASE measure from the
+    // inner circular area of the flywheel shaft in the cad
+    return Units.radiansToDegrees(currentHeight / currentWidth);
   }
 
   public void disableCloseLoopControl() {
-    this.hoodPid.setReference(0, ControlType.kCurrent);
+    this.hoodMotor.disableCloseLoopControl();
+    // this.hoodPid.setReference(0, ControlType.kCurrent);
   }
 
   public double getHoodPower() {
@@ -134,20 +130,18 @@ public class Hood extends SubsystemBase {
     // This method will be called once per scheduler run
 
     if (this.hoodMotor != null && this.hoodEncoder != null) {
-      //SmartDashboard.putNumber("hood power", this.hoodMotor.get());
-      SmartDashboard.putNumber(
-        Dashboard.DASH_HOOD_POSITION,
-        this.hoodEncoder.getPosition() * REV_TICKS_PER_REV
-      );
-      SmartDashboard.putNumber(
-        Dashboard.DASH_HOOD_POSITION_RAW,
-        this.hoodEncoder.getPosition()
-      );
-      SmartDashboard.putNumber(Dashboard.DASH_HOOD_ANGLE, getHoodAngle());
-      SmartDashboard.putNumber(
-        Dashboard.DASH_HOOD_VELOCITY,
-        this.hoodEncoder.getVelocity()
-      );
+      // SmartDashboard.putNumber("hood power", this.hoodMotor.get());
+
+      // SmartDashboard.putNumber(
+      // Dashboard.DASH_HOOD_POSITION,
+      // this.hoodEncoder.getPosition() * REV_TICKS_PER_REV);
+      // SmartDashboard.putNumber(
+      // Dashboard.DASH_HOOD_POSITION_RAW,
+      // this.hoodEncoder.getPosition());
+      // SmartDashboard.putNumber(Dashboard.DASH_HOOD_ANGLE, getHoodAngle());
+      // SmartDashboard.putNumber(
+      // Dashboard.DASH_HOOD_VELOCITY,
+      // this.hoodEncoder.getVelocity());
     }
   }
 }

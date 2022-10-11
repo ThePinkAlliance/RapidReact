@@ -8,6 +8,7 @@ import com.ThePinkAlliance.swervelib.Mk4ModuleConfiguration;
 import com.ThePinkAlliance.swervelib.Mk4iSwerveModuleHelper;
 import com.ThePinkAlliance.swervelib.SdsModuleConfigurations;
 import com.ThePinkAlliance.swervelib.SwerveModule;
+import com.ThePinkAlliance.swervelib.ZeroState;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -25,48 +26,45 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.BaseConstants;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 public class Base extends SubsystemBase {
 
   public static final double FULL_TALON_ROTATION_TICKS = 2048;
 
-  public static final Mk4iSwerveModuleHelper.GearRatio motorRatio =
-    Mk4iSwerveModuleHelper.GearRatio.L1;
+  public static final Mk4iSwerveModuleHelper.GearRatio motorRatio = Mk4iSwerveModuleHelper.GearRatio.L1;
 
   public static final double MAX_VOLTAGE = 12.0;
 
   public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(
-    23.4
-  );
+      23.4);
   public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(
-    23.1
-  );
+      23.1);
 
   public static final double MAX_VELOCITY_METERS_PER_SECOND =
-    // 6380 is the theoretical max rpm (e.g. NO LOAD RPM)
-    5000.0 /
-    60.0 *
-    SdsModuleConfigurations.MK4I_L1.getDriveReduction() *
-    SdsModuleConfigurations.MK4I_L1.getWheelDiameter() *
-    Math.PI; // 5.107;
+      // 6380 is the theoretical max rpm (e.g. NO LOAD RPM)
+      5000.0 /
+          60.0 *
+          SdsModuleConfigurations.MK4I_L1.getDriveReduction() *
+          SdsModuleConfigurations.MK4I_L1.getWheelDiameter() *
+          Math.PI; // 5.107;
 
   public static final double MAX_ACCELERATION_METERS_PER_SECOND = 4.346;
-  public static double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND =
-    MAX_VELOCITY_METERS_PER_SECOND /
-    Math.hypot(
-      DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-      DRIVETRAIN_WHEELBASE_METERS / 2.0
-    );
+  public static double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
+      Math.hypot(
+          DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+          DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
   // physical constants
   public static double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(44.82);
   public static double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(226.48); // 179.20
   public static double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(132.71); // 316.66
   public static double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(
-    274.65
-  ); // 245.97
+      274.65); // 245.97
 
   public static double circumference = 12.875;
 
@@ -104,143 +102,124 @@ public class Base extends SubsystemBase {
   public final SwerveModule backRightModule;
 
   public SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-    // Front Left Pod
-    new Translation2d(
-      Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-      Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
-    ),
-    // Front Right
-    new Translation2d(
-      Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-      -Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
-    ),
-    // Back Left
-    new Translation2d(
-      -Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-      Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
-    ),
-    // Back Right
-    new Translation2d(
-      -Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-      -Base.DRIVETRAIN_WHEELBASE_METERS / 2.0
-    )
-  );
+      // Front Left Pod
+      new Translation2d(
+          Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+          Base.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+      // Front Right
+      new Translation2d(
+          Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+          -Base.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+      // Back Left
+      new Translation2d(
+          -Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+          Base.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+      // Back Right
+      new Translation2d(
+          -Base.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+          -Base.DRIVETRAIN_WHEELBASE_METERS / 2.0));
 
   NetworkTableEntry m_xEntry = NetworkTableInstance
-    .getDefault()
-    .getTable("troubleshooting")
-    .getEntry("X");
+      .getDefault()
+      .getTable("troubleshooting")
+      .getEntry("X");
 
   NetworkTableEntry m_yEntry = NetworkTableInstance
-    .getDefault()
-    .getTable("troubleshooting")
-    .getEntry("Y");
+      .getDefault()
+      .getTable("troubleshooting")
+      .getEntry("Y");
 
   NetworkTableEntry m_rotEntry = NetworkTableInstance
-    .getDefault()
-    .getTable("troubleshooting")
-    .getEntry("rot");
+      .getDefault()
+      .getTable("troubleshooting")
+      .getEntry("rot");
 
   NetworkTableEntry m_yaw = NetworkTableInstance
-    .getDefault()
-    .getTable("debug")
-    .getEntry("yaw");
+      .getDefault()
+      .getTable("debug")
+      .getEntry("yaw");
 
   NetworkTableEntry m_yaw_diff = NetworkTableInstance
-    .getDefault()
-    .getTable("debug")
-    .getEntry("yaw_diff");
+      .getDefault()
+      .getTable("debug")
+      .getEntry("yaw_diff");
 
   private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(
-    kinematics,
-    Rotation2d.fromDegrees(gyro.getFusedHeading())
-  );
+      kinematics,
+      Rotation2d.fromDegrees(gyro.getFusedHeading()));
 
   private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
   private SwerveModuleState[] states = kinematics.toSwerveModuleStates(
-    chassisSpeeds
-  );
+      chassisSpeeds);
 
   private Mk4ModuleConfiguration configuration = new Mk4ModuleConfiguration();
-
-  NetworkTableEntry align_P = NetworkTableInstance
-    .getDefault()
-    .getTable("debug")
-    .getEntry("align-p");
-  NetworkTableEntry align_I = NetworkTableInstance
-    .getDefault()
-    .getTable("debug")
-    .getEntry("align-i");
-  NetworkTableEntry align_D = NetworkTableInstance
-    .getDefault()
-    .getTable("debug")
-    .getEntry("align-d");
 
   /** Creates a new Base. */
   public Base() {
     this.tab = Shuffleboard.getTab("debug");
 
-    this.backRightModule =
-      Mk4iSwerveModuleHelper.createFalcon500(
+    this.backRightModule = Mk4iSwerveModuleHelper.createFalcon500(
         tab
-          .getLayout("Back Right Module", BuiltInLayouts.kList)
-          .withSize(2, 4)
-          .withPosition(0, 0),
+            .getLayout("Back Right Module", BuiltInLayouts.kList)
+            .withSize(2, 4)
+            .withPosition(0, 0),
         configuration,
         Base.motorRatio,
         Base.BACK_RIGHT_DRIVE_MOTOR_PORT,
         Base.BACK_RIGHT_STEER_MOTOR_PORT,
         Base.BACK_RIGHT_CANCODER_ID,
-        Base.BACK_RIGHT_MODULE_STEER_OFFSET
-      );
+        Base.BACK_RIGHT_MODULE_STEER_OFFSET);
 
-    this.backLeftModule =
-      Mk4iSwerveModuleHelper.createFalcon500(
+    this.backLeftModule = Mk4iSwerveModuleHelper.createFalcon500(
         tab
-          .getLayout("Back Left Module", BuiltInLayouts.kList)
-          .withSize(2, 4)
-          .withPosition(12, 0),
+            .getLayout("Back Left Module", BuiltInLayouts.kList)
+            .withSize(2, 4)
+            .withPosition(12, 0),
         configuration,
         Base.motorRatio,
         Base.BACK_LEFT_DRIVE_MOTOR_PORT,
         Base.BACK_LEFT_STEER_MOTOR_PORT,
         Base.BACK_LEFT_CANCODER_ID,
-        Base.BACK_LEFT_MODULE_STEER_OFFSET
-      );
+        Base.BACK_LEFT_MODULE_STEER_OFFSET);
 
-    this.frontRightModule =
-      Mk4iSwerveModuleHelper.createFalcon500(
+    this.frontRightModule = Mk4iSwerveModuleHelper.createFalcon500(
         tab
-          .getLayout("Front Right Module", BuiltInLayouts.kList)
-          .withSize(2, 4)
-          .withPosition(4, 0),
+            .getLayout("Front Right Module", BuiltInLayouts.kList)
+            .withSize(2, 4)
+            .withPosition(4, 0),
         configuration,
         Base.motorRatio,
         Base.FRONT_RIGHT_DRIVE_MOTOR_PORT,
         Base.FRONT_RIGHT_STEER_MOTOR_PORT,
         Base.FRONT_RIGHT_CANCODER_ID,
-        Base.FRONT_RIGHT_MODULE_STEER_OFFSET
-      );
+        Base.FRONT_RIGHT_MODULE_STEER_OFFSET);
 
-    this.frontLeftModule =
-      Mk4iSwerveModuleHelper.createFalcon500(
+    this.frontLeftModule = Mk4iSwerveModuleHelper.createFalcon500(
         tab
-          .getLayout("Front Left Module", BuiltInLayouts.kList)
-          .withSize(2, 4)
-          .withPosition(8, 0),
+            .getLayout("Front Left Module", BuiltInLayouts.kList)
+            .withSize(2, 4)
+            .withPosition(8, 0),
         configuration,
         Base.motorRatio,
         Base.FRONT_LEFT_DRIVE_MOTOR_PORT,
         Base.FRONT_LEFT_STEER_MOTOR_PORT,
         Base.FRONT_LEFT_CANCODER_ID,
-        Base.FRONT_LEFT_MODULE_STEER_OFFSET
-      );
+        Base.FRONT_LEFT_MODULE_STEER_OFFSET);
 
     // Setting the drive motor ramp rate
     this.frontLeftModule.configRampRate(DRIVE_MOTOR_RAMP_RATE);
     this.frontRightModule.configRampRate(DRIVE_MOTOR_RAMP_RATE);
     this.backLeftModule.configRampRate(DRIVE_MOTOR_RAMP_RATE);
     this.backRightModule.configRampRate(DRIVE_MOTOR_RAMP_RATE);
+
+    // this.frontLeftModule.configureStatusFrame(StatusFrame.Status_12_Feedback1,
+    // 200);
+    // this.frontRightModule.configureStatusFrame(StatusFrame.Status_12_Feedback1,
+    // 200);
+    // this.backLeftModule.configureStatusFrame(StatusFrame.Status_12_Feedback1,
+    // 200);
+    // this.backRightModule.configureStatusFrame(StatusFrame.Status_12_Feedback1,
+    // 200);
   }
 
   public void resetDriveMotors() {
@@ -280,8 +259,6 @@ public class Base extends SubsystemBase {
    */
   public void drive(ChassisSpeeds speeds) {
     this.chassisSpeeds = speeds;
-
-    this.states = kinematics.toSwerveModuleStates(chassisSpeeds);
   }
 
   /**
@@ -291,9 +268,8 @@ public class Base extends SubsystemBase {
     odometry.update(getRotation(), states);
 
     SwerveDriveKinematics.desaturateWheelSpeeds(
-      states,
-      Base.MAX_VELOCITY_METERS_PER_SECOND
-    );
+        states,
+        Base.MAX_VELOCITY_METERS_PER_SECOND);
 
     var translation = odometry.getPoseMeters().getTranslation();
     m_xEntry.setNumber(translation.getX());
@@ -301,27 +277,23 @@ public class Base extends SubsystemBase {
 
     this.frontLeftModule.set(
         (states[0].speedMetersPerSecond / Base.MAX_VELOCITY_METERS_PER_SECOND) *
-        Base.MAX_VOLTAGE,
-        states[0].angle.getRadians()
-      );
+            Base.MAX_VOLTAGE,
+        states[0].angle.getRadians());
 
     this.frontRightModule.set(
         (states[1].speedMetersPerSecond / Base.MAX_VELOCITY_METERS_PER_SECOND) *
-        Base.MAX_VOLTAGE,
-        states[1].angle.getRadians()
-      );
+            Base.MAX_VOLTAGE,
+        states[1].angle.getRadians());
 
     this.backLeftModule.set(
         (states[2].speedMetersPerSecond / Base.MAX_VELOCITY_METERS_PER_SECOND) *
-        Base.MAX_VOLTAGE,
-        states[2].angle.getRadians()
-      );
+            Base.MAX_VOLTAGE,
+        states[2].angle.getRadians());
 
     this.backRightModule.set(
         (states[3].speedMetersPerSecond / Base.MAX_VELOCITY_METERS_PER_SECOND) *
-        Base.MAX_VOLTAGE,
-        states[3].angle.getRadians()
-      );
+            Base.MAX_VOLTAGE,
+        states[3].angle.getRadians());
   }
 
   public double getRoll() {
@@ -344,6 +316,13 @@ public class Base extends SubsystemBase {
    */
   public void zeroGyro() {
     gyro.reset();
+  }
+
+  public void setPodZeroStates(ZeroState state) {
+    this.frontLeftModule.configureDriveZeroState(state);
+    this.frontRightModule.configureDriveZeroState(state);
+    this.backLeftModule.configureDriveZeroState(state);
+    this.backRightModule.configureDriveZeroState(state);
   }
 
   /**
@@ -375,6 +354,10 @@ public class Base extends SubsystemBase {
     return Rotation2d.fromDegrees(360.0 - gyro.getYaw());
   }
 
+  public AHRS getGyro() {
+    return this.gyro;
+  }
+
   public double getSensorYaw() {
     return gyro.getYaw();
   }
@@ -383,12 +366,10 @@ public class Base extends SubsystemBase {
    * Returns if the robot inverted.
    */
   public boolean isInverted() {
-    return (
-      getRotation().getDegrees() <= 190 &&
-      getRotation().getDegrees() > 90 ||
-      getRotation().getDegrees() >= 290 &&
-      getRotation().getDegrees() < 90
-    );
+    return (getRotation().getDegrees() <= 190 &&
+        getRotation().getDegrees() > 90 ||
+        getRotation().getDegrees() >= 290 &&
+            getRotation().getDegrees() < 90);
   }
 
   /**
@@ -422,19 +403,21 @@ public class Base extends SubsystemBase {
 
     m_yaw.setNumber(gyro.getYaw());
 
-    Constants.isRed =
-      NetworkTableInstance
-        .getDefault()
-        .getTable("FMSInfo")
-        .getEntry("IsRedAlliance")
-        .getBoolean(true);
+    SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
+    SwerveDriveKinematics.desaturateWheelSpeeds(states, Base.MAX_VELOCITY_METERS_PER_SECOND);
 
-    setStates(this.states);
+    // ArrayList<SwerveModuleState> newStates = new
+    // ArrayList<>(Arrays.asList(states));
+    // ArrayList<SwerveModuleState> currentStates = new
+    // ArrayList<>(Arrays.asList(this.states));
+
+    // boolean update = !newStates.containsAll(currentStates);
+
+    // if (update) {
+    // }
+    setStates(states);
+
     SmartDashboard.putNumber(Dashboard.DASH_BASE_ROLL, gyro.getRoll());
-  }
-
-  @Override
-  public void simulationPeriodic() {
-    setStates(this.states);
+    SmartDashboard.putNumber("yaw", gyro.getYaw());
   }
 }

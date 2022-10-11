@@ -1,22 +1,27 @@
+# 2022 Robot code
 
-<!-- ## Controller Layout -->
-RAWR!!!!!!!
+Robot code for the pink teams 2k22 robot.  
 
-# DInput
-| ID | Button | Purpose |
-|---:|-------:|--------:|
-| 0  | X      |
-| 1  | A      |
-| 2  | B      |
-| 3  | Y      |
-| 4  | LB     | Collector (Hold)
-| 5  | RB     |
-| 6  | LT     |
-| 7  | RT     |
-| 8  | Back   |
-| 9  | Start  |
-| 10 | LSD    |
-| 11 | RSD    |
+- [`frc.robot.commands.collector`](src/main/java/frc/robot/commands/collector)
 
+  It houses all the robot commands related to the collector.
 
-*note that LSD is Left Stick Down
+- [`frc.robot.commands.base`](src/main/java/frc/robot/commands/base)
+
+  It houses all the robot commands related to the base.
+
+- [`frc.robot.commands.shooter`](src/main/java/frc/robot/commands/shooter)
+
+  It houses all the robot commands related to the shooter.
+
+- [`frc.robot.commands.hood`](src/main/java/frc/robot/commands/hood)
+
+  It houses all the robot commands related to the hood.
+
+- [`frc.robot.commands.auto`](src/main/java/frc/robot/commands/auto)
+
+  It houses all the robot autonomous routines.
+
+- [`frc.robot.subsystems.Base`](src/main/java/frc/robot/subsystems/Base.java)
+
+  Its the subsystem for the drivetrain.

@@ -4,11 +4,15 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Debug;
+
 import java.util.function.Supplier;
 
 // ADDRESS FOR THE LIMELIGHT FEED: http://limelight.local:5801/
@@ -19,33 +23,43 @@ public class Limelight extends SubsystemBase {
 
   private Supplier<Double> horzontalOffset = () -> 0.0;
   private Supplier<Double> distanceSupplier = () -> 0.0;
+  private Supplier<Double> hypotDistanceSupplier = () -> 0.0;
   private Supplier<Double> angleSupplier = () -> 0.0;
 
-  double errorAccDistance = 0;
-  double limelightMountedAngle = 50; //this can change a static number though once we have found it
+  private final double limelightLensHeight = 25; // 33.5; // this can change (in) will be static, should NEVER change
+  private final double reflectiveTapeHeight = 102.375; // this is static (in) to CENTER of reflective tape
+  private final double targetHeightDifference = (reflectiveTapeHeight - limelightLensHeight);
 
+  private final NetworkTable table = NetworkTableInstance
+      .getDefault()
+      .getTable("limelight");
+
+  SlewRateLimiter limiter = new SlewRateLimiter(20);
+
+  double errorAccDistance = 0;
+  double limelightMountedAngle = 51.5; // 50 // this can change a static number though once we have found it
 
   /** Creates a new Limelight. */
   public Limelight() {
-    initLimelight(LimelightLedMode.FORCE_OFF);
+    configureLimelight(LimelightLedMode.FORCE_OFF);
   }
 
-  public void initLimelight(LimelightLedMode mode) {
+  public void configureLimelight(LimelightLedMode mode) {
     NetworkTableInstance
-      .getDefault()
-      .getTable("limelight")
-      .getEntry("ledMode")
-      .setNumber(mode.get());
+        .getDefault()
+        .getTable("limelight")
+        .getEntry("ledMode")
+        .setNumber(mode.get());
     NetworkTableInstance
-      .getDefault()
-      .getTable("limelight")
-      .getEntry("camMode")
-      .setNumber(0);
+        .getDefault()
+        .getTable("limelight")
+        .getEntry("camMode")
+        .setNumber(0);
     NetworkTableInstance
-      .getDefault()
-      .getTable("limelight")
-      .getEntry("pipeline")
-      .setNumber(0);
+        .getDefault()
+        .getTable("limelight")
+        .getEntry("pipeline")
+        .setNumber(0);
   }
 
   public void setLedState(LimelightLedMode mode) {
@@ -54,68 +68,143 @@ public class Limelight extends SubsystemBase {
     } else {
       limelightLedOn = false;
     }
-    initLimelight(mode); //Off or On
+    configureLimelight(mode); // Off or On
   }
 
   public boolean isTarget() {
-    boolean targets = false;
-    NetworkTable table = NetworkTableInstance
-      .getDefault()
-      .getTable("limelight");
     NetworkTableEntry tv = table.getEntry("tv");
     double availableTargets = tv.getDouble(0.0);
-    if (availableTargets == 1) {
-      targets = true;
-    } else {
-      targets = false; //not necessary but for safety
-    }
-    return targets;
+
+    return availableTargets == 1;
   }
 
   public double getOffset() {
-    NetworkTable table = NetworkTableInstance
-      .getDefault()
-      .getTable("limelight");
     NetworkTableEntry tx = table.getEntry("tx");
     double offsetX = tx.getDouble(0.0);
 
     return offsetX;
   }
 
-  public void getDistance() {
-    //from documentation, the distance can be found using a fixed camera angle
-    //distance = (height2 - height1) / tan(angle1 + angle2)
-    //height1 is limelight elevation, height2 is target height
-    //angle1 is limelight angle, angle2 is target angle
-    //What we need: limelight angle on the robot, distance from center of limelight lens to ground,
-    //distance from height of the target to the floor
+  public double calculateUnmodifiedDistance() {
+    NetworkTableEntry ty = table.getEntry("ty");
 
-    NetworkTable table = NetworkTableInstance
-      .getDefault()
-      .getTable("limelight");
+    double verticalOffsetAngle = ty.getDouble(0.0); // angle calculated by the limelight.
+
+    double angleToGoalDeg = (limelightMountedAngle + verticalOffsetAngle);
+
+    /*
+     * Converts the estimated angle from the target in degress to radians.
+     */
+    double angleToGoalRad = angleToGoalDeg * (3.14159 / 180.0);
+
+    /*
+     * Calculates the distance using the known target height and limelight height
+     * then subtracting the difference from them and dividing them by the tangant of
+     * the estimated angle from the target in radians.
+     */
+    return ((reflectiveTapeHeight - limelightLensHeight) /
+        (Math.tan(angleToGoalRad)));
+  }
+
+  public double calculateAccountedDistance() {
+    /*
+     * from documentation, the distance can be found using a fixed camera angle
+     * distance = (height2 - height1) / tan(angle1 + angle2)
+     * height1 is limelight elevation, height2 is target height
+     * angle1 is limelight angle, angle2 is target angle
+     * What we need: limelight angle on the robot, distance from center of limelight
+     * lens to ground, distance from height of the target to the floor
+     */
+
+    NetworkTableEntry ty = table.getEntry("ty");
+
+    /*
+     * angle calculated by the limelight, which needs to be corrected as its not
+     * super accurate.
+     */
+    double verticalOffsetAngle = ty.getDouble(0.0);
+
+    double angleToGoalDeg = (limelightMountedAngle + verticalOffsetAngle);
+
+    /*
+     * Converts the estimated angle from the target in degress to radians.
+     */
+    double angleToGoalRad = angleToGoalDeg * (3.14159 / 180.0);
+
+    /*
+     * Calculates the distance using the known target height and limelight height
+     * then subtracting the difference from them and dividing them by the tangant of
+     * the estimated angle from the target in radians.
+     */
+    double hypot = ((reflectiveTapeHeight - limelightLensHeight) /
+        (Math.tan(angleToGoalRad)));
+
+    /*
+     * Interpolates between the two closest vectors to the hypotenuse.
+     */
+    double distance = Constants.limelightInterpolationTable.interp(hypot);
+
+    Debug.putNumber("interp-distance", distance);
+
+    return distance;
+  }
+
+  public double calculateDistanceHypot() {
+    double errorAccDistance = calculateAccountedDistance();
+    double squared = ((targetHeightDifference * targetHeightDifference) + (errorAccDistance * errorAccDistance));
+    double nextHypotDistance = Math.sqrt(squared);
+
+    /*
+     * The slew rate limiter will limit the rate of change of the distance.
+     * 
+     * NOTE: This is only a temporary solution we should adjust speckel rejection to
+     * prevent noise from entering the stream.
+     */
+    // double hypotenuseDistance = limiter.calculate(nextHypotDistance);
+
+    return nextHypotDistance;
+  }
+
+  /**
+   * 
+   * 
+   * @deprecated This method is from bayou and is using a inefficent system to
+   *             correct the
+   *             distance being reported from the limelight please don't use this
+   *             in any new
+   *             commands.
+   */
+  @Deprecated
+  public double findDistance() {
+    // from documentation, the distance can be found using a fixed camera angle
+    // distance = (height2 - height1) / tan(angle1 + angle2)
+    // height1 is limelight elevation, height2 is target height
+    // angle1 is limelight angle, angle2 is target angle
+    // What we need: limelight angle on the robot, distance from center of limelight
+    // lens to ground,
+    // distance from height of the target to the floor
+
     NetworkTableEntry ty = table.getEntry("ty");
     NetworkTableEntry tx = table.getEntry("tx");
 
     double offsetX = tx.getDouble(0.0) + horzontalOffset.get();
 
-    double limelightLensHeight = 33.5; //this can change (in) will be static, should NEVER change
-    // double changeAngle = SmartDashboard.getNumber("LIMELIGHT SET ANGLE: ", limelightMountedAngle);
+    // double changeAngle = SmartDashboard.getNumber("LIMELIGHT SET ANGLE: ",
+    // limelightMountedAngle);
 
-    double reflectiveTapeHeight = 102.375; //this is static (in) to CENTER of reflective tape
-    double verticalOffsetAngle = ty.getDouble(0.0); //angle calculated by the limelight.
+    double verticalOffsetAngle = ty.getDouble(0.0); // angle calculated by the limelight.
 
     double angleToGoalDeg = (limelightMountedAngle + verticalOffsetAngle);
     double angleToGoalRad = angleToGoalDeg * (3.14159 / 180.0);
     double error = 0.612649568;
 
-    double distance =
-      (
-        (reflectiveTapeHeight - limelightLensHeight) /
-        (Math.tan(angleToGoalRad))
-      );
+    double distance = ((reflectiveTapeHeight - limelightLensHeight) /
+        (Math.tan(angleToGoalRad)));
 
-    //The following statements were used as ways to account for error that the limelight gives from distance
-    //There are a bunch of different statements to be more prescise at every distance
+    // The following statements were used as ways to account for error that the
+    // limelight gives from distance
+    // There are a bunch of different statements to be more prescise at every
+    // distance
     if (32.905 <= distance && distance <= 37.6) {
       error = 0.685521;
     }
@@ -178,52 +267,57 @@ public class Limelight extends SubsystemBase {
 
     double hypotenuseDistance = Math.sqrt(squared);
 
-    this.distanceSupplier = () -> errorAccDistance;
-    this.angleSupplier = () -> offsetX;
+    SmartDashboard.putNumber("Error Acc Distance", errorAccDistance);
 
-    SmartDashboard.putNumber("Distance: ", errorAccDistance);
-    SmartDashboard.putNumber("Hypotenuse Distance: ", hypotenuseDistance);
-    SmartDashboard.putNumber("Object Offset X: ", offsetX);
-    SmartDashboard.putNumber("Object Offset Y: ", verticalOffsetAngle);
+    return errorAccDistance;
   }
 
+  /**
+   * 
+   * 
+   * @deprecated This method uses the now deprecated method findDistance please
+   *             don't use this method in any new systems.
+   */
+  @Deprecated
   public Supplier<Double> getDistanceSupplier() {
     return this.distanceSupplier;
   }
 
+  /**
+   * 
+   * 
+   * @deprecated This method uses the now deprecated method findDistance please
+   *             don't use this method in any new systems.
+   */
+  @Deprecated
   public Supplier<Double> getAngleOffsetSupplier() {
     return this.horzontalOffset;
   }
 
+  /**
+   * 
+   * 
+   * @deprecated This method uses the now deprecated method findDistance please
+   *             don't use this method in any new systems.
+   */
+  @Deprecated
   public Supplier<Double> getAngleSupplier() {
     return this.angleSupplier;
   }
 
+  /**
+   * 
+   * 
+   * @deprecated This method uses the now deprecated method findDistance please
+   *             don't use this method in any new systems.
+   */
+  @Deprecated
+  public Supplier<Double> getHypotDistance() {
+    return this.hypotDistanceSupplier;
+  }
+
   @Override
   public void periodic() {
-    NetworkTable table = NetworkTableInstance
-      .getDefault()
-      .getTable("limelight");
-    NetworkTableEntry tx = table.getEntry("tx");
-    NetworkTableEntry ty = table.getEntry("ty");
-    NetworkTableEntry ta = table.getEntry("ta");
-    NetworkTableEntry ts = table.getEntry("ts");
 
-    double offsetX = tx.getDouble(0.0);
-    double offsetY = ty.getDouble(0.0);
-    double objectArea = ta.getDouble(0.0);
-    double robotSkew = ts.getDouble(0.0);
-
-    SmartDashboard.putNumber("Object Offset X: ", offsetX);
-    SmartDashboard.putNumber("Object Offset Y: ", offsetY);
-    SmartDashboard.putNumber("Limelight Area: ", objectArea);
-    SmartDashboard.putNumber("Limelight Skew: ", robotSkew);
-    SmartDashboard.putBoolean("Limelight On: ", limelightLedOn);
-    SmartDashboard.putNumber("LIMELIGHT SET ANGLE: ", limelightMountedAngle);
-
-    SmartDashboard.getNumber("limelight angle offset", horzontalOffset.get());
-    if (limelightLedOn == true) {
-      getDistance();
-    }
   }
 }

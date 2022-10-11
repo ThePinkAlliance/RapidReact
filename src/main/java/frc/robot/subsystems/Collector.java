@@ -15,8 +15,8 @@ import com.revrobotics.Rev2mDistanceSensor.Unit;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Debug;
 
 public class Collector extends SubsystemBase {
 
@@ -44,14 +44,12 @@ public class Collector extends SubsystemBase {
   /** Creates a new Collector. */
   public Collector() {
     // Collector
-    this.collectorMotor =
-      new CANSparkMax(Collector.COLLECTOR_MOTOR_PORT, MotorType.kBrushless);
-    this.solenoid =
-      new DoubleSolenoid(
+    this.collectorMotor = new CANSparkMax(Collector.COLLECTOR_MOTOR_PORT, MotorType.kBrushless);
+    // this.collectorMotor.setSmartCurrentLimit(30);
+    this.solenoid = new DoubleSolenoid(
         PneumaticsModuleType.CTREPCM,
         SOLENOID_ID_OPEN,
-        SOLENOID_ID_CLOSE
-      );
+        SOLENOID_ID_CLOSE);
     this.collectorMotor.setInverted(true);
     // Tower
     this.towerMotor = new TalonFX(TOWER_MOTOR_PORT);
@@ -83,24 +81,22 @@ public class Collector extends SubsystemBase {
 
   public void SetSpeedCollector(double speed) {
     collectorMotor.set(speed);
-    if (speed != 0) collectorRunning = true; else collectorRunning = false;
+    Debug.putNumber("amps", collectorMotor.getOutputCurrent());
+    if (speed != 0)
+      collectorRunning = true;
+    else
+      collectorRunning = false;
   }
 
   public boolean ballDetected() {
     boolean bRangeValid = this.ballSensor.isRangeValid();
     double distance = this.ballSensor.getRange();
     boolean bDetected = distance < TOWER_SENSOR_TRIGGER_DISTANCE;
-    // System.out.println(
-    //   "RANGE VALID: " +
-    //   bRangeValid +
-    //   ", Distance: " +
-    //   distance +
-    //   ", bDetected: " +
-    //   bDetected
-    // );
+
     return (bDetected && bRangeValid);
   }
 
+  // FIX: 100ms in total using visualVM
   public void SetSpeedTowerForOverride(double towerSpeed) {
     boolean ballFound = ballDetected();
     System.out.println("OUTPUT: " + collectorRunning + ", BALL: " + ballFound);

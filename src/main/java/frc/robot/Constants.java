@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import java.util.List;
+
+import edu.wpi.first.wpilibj.drive.Vector2d;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
@@ -39,4 +43,18 @@ public final class Constants {
 
   public static int JOYSTICK_LEFT_BUMPER = 5;
   public static int JOYSTICK_RIGHT_BUMPER = 6;
+
+  // (ty-angle, distance)
+  static List<Vector2d> distanceTable = List.of(
+      new Vector2d(46, 95),
+      new Vector2d(54, 101),
+      new Vector2d(64, 109),
+      new Vector2d(77, 119),
+      new Vector2d(90, 129),
+      new Vector2d(
+          101, 140),
+      new Vector2d(
+          112, 149));
+
+  public static LinearInterpolationTable limelightInterpolationTable = new LinearInterpolationTable(distanceTable);
 }
