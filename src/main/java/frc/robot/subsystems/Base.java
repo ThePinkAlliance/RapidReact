@@ -406,14 +406,16 @@ public class Base extends SubsystemBase {
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, Base.MAX_VELOCITY_METERS_PER_SECOND);
 
-    ArrayList<SwerveModuleState> newStates = new ArrayList<>(Arrays.asList(states));
-    ArrayList<SwerveModuleState> currentStates = new ArrayList<>(Arrays.asList(this.states));
+    // ArrayList<SwerveModuleState> newStates = new
+    // ArrayList<>(Arrays.asList(states));
+    // ArrayList<SwerveModuleState> currentStates = new
+    // ArrayList<>(Arrays.asList(this.states));
 
-    boolean update = !newStates.containsAll(currentStates);
+    // boolean update = !newStates.containsAll(currentStates);
 
-    if (update) {
-      setStates(states);
-    }
+    // if (update) {
+    // }
+    setStates(states);
 
     SmartDashboard.putNumber(Dashboard.DASH_BASE_ROLL, gyro.getRoll());
     SmartDashboard.putNumber("yaw", gyro.getYaw());
