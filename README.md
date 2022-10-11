@@ -1,5 +1,7 @@
 # 2022 Robot code
 
+Robot code for The Pink Teams 2k22 robot. 
+
 - [`frc.robot.commands.collector`](src/main/java/frc/robot/commands/collector)
 
   It houses all the robot commands related to the collector.
