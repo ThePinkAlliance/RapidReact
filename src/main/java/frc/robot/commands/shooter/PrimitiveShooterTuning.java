@@ -87,6 +87,7 @@ public class PrimitiveShooterTuning extends CommandBase {
     boolean low = joystick.getPOV() == Constants.JOYSTICK_POV_DOWN;
     boolean tarmac = joystick.getPOV() == Constants.JOYSTICK_POV_LEFT;
     boolean high = joystick.getPOV() == Constants.JOYSTICK_POV_UP;
+    boolean ceilingShot = joystick.getPOV() == Constants.JOYSTICK_POV_RIGHT;
 
     double unmodifiedDistance = m_limelight.calculateUnmodifiedDistance();
     double distance = distanceTable.interp(unmodifiedDistance);
@@ -108,6 +109,11 @@ public class PrimitiveShooterTuning extends CommandBase {
       System.out.println("High Hub Package");
 
       type = "high";
+    } else if (ceilingShot) {
+      currentPackage = TargetPackageFactory.getCustomPackage(300);
+
+      currentPackage.hoodPosition = 0;
+      type = "ceiling";
     } else {
       System.out.println("Custom Package Distance: " + distance);
 
@@ -140,11 +146,14 @@ public class PrimitiveShooterTuning extends CommandBase {
 
     boolean ready = m_shooter.readyToShoot(currentPackage.rpm, 100);
 
-    if (!Double.isNaN(currentPackage.Kf) || !Double.isNaN(currentPackage.rpm)) {
+    if ((!Double.isNaN(currentPackage.Kf) || !Double.isNaN(currentPackage.rpm)) && !ceilingShot) {
       m_hood.setPosition(currentPackage.hoodPosition);
       this.m_shooter.configKp(currentPackage.Kp);
       this.m_shooter.configFeedForward(currentPackage.Kf);
       this.m_shooter.commandRpm(currentPackage.rpm);
+    } else if (ceilingShot) {
+      m_hood.setPosition(0);
+      m_shooter.command(1);
     }
 
     System.out.println("unmod: " + unmodifiedDistance);

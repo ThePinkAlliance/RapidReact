@@ -27,6 +27,8 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+  private boolean calibration = false;
+
   /**
    * This function is run when the robot is first started up and should be used
    * for any
@@ -63,10 +65,13 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods. This must be called from the
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
-    CommandScheduler.getInstance().run();
-    // m_robotContainer.calibration();
-    // m_robotContainer.enableLimelight();
-    // m_robotContainer.zero();
+    if (!calibration) {
+      CommandScheduler.getInstance().run();
+    } else {
+      m_robotContainer.calibration();
+      m_robotContainer.enableLimelight();
+      m_robotContainer.disablePods();
+    }
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

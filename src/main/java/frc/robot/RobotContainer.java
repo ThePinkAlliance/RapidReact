@@ -5,6 +5,8 @@
 package frc.robot;
 
 import com.ThePinkAlliance.swervelib.ZeroState;
+import edu.wpi.first.cscore.VideoSource;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.util.datalog.StringLogEntry;
@@ -14,6 +16,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,6 +29,7 @@ import frc.robot.commands.auto.AutoTwoBall;
 import frc.robot.commands.auto.LeaveTarmack;
 import frc.robot.commands.base.Drive;
 import frc.robot.commands.base.LimelightAlign;
+import frc.robot.commands.climber.JoystickClimb;
 import frc.robot.commands.climber.MoveLongArms;
 import frc.robot.commands.climber.MoveShortArms;
 import frc.robot.commands.collector.CollectGroup;
@@ -134,8 +138,8 @@ public class RobotContainer {
     m_dashboard.publishInitialDashboard(); // DO NOT REMOVE and DO NOT COMMENT OUT
 
     this.m_base.setDefaultCommand(new Drive(m_base, this.gamepad_base));
-    // this.m_climbers.setDefaultCommand(
-    // new JoystickClimb(m_climbers, this.gamepad_tower));
+    this.m_climbers.setDefaultCommand(
+        new JoystickClimb(m_climbers, this.gamepad_tower));
 
     this.enableCalibration = new BooleanEntry(Dashboard.TEST_TABLE_ID, "enable_calibration");
 
@@ -158,7 +162,7 @@ public class RobotContainer {
     SmartDashboard.putNumber("Target rpm", target.rpm);
   }
 
-  public void zero() {
+  public void disablePods() {
     this.m_base.setPodZeroStates(ZeroState.COAST);
   }
 
@@ -223,7 +227,7 @@ public class RobotContainer {
                 gamepad_base,
                 Constants.JOYSTICK_BUTTON_A));
     new JoystickButton(gamepad_base, Constants.JOYSTICK_BUTTON_X).whenPressed(() -> {
-      m_base.zeroGyro();
+      m_base.setPodAngles(new Rotation2d(0));
     });
     // Climbers
     new JoystickButton(gamepad_tower, Constants.JOYSTICK_BUTTON_Y)
@@ -277,20 +281,15 @@ public class RobotContainer {
   }
 
   public Command getTestCommand() {
-    return new LimelightCalibration(m_limelight).beforeStarting(() -> {
-      m_compressor.disable();
-    }).andThen(() -> {
-      m_compressor.enableDigital();
-    });
-    // return enableCalibration.get(false) ?
-    // : new RobotReadinessCheck(m_hood, m_base, m_shooter, m_collector,
-    // m_compressor, batterySufficient,
-    // pneumaticsReady, shooterReady)
-    // .beforeStarting(() -> {
-    // this.m_compressor.disable();
-    // }).andThen(() -> {
-    // this.m_compressor.enableDigital();
-    // });
+    return enableCalibration.get(false) ? new LimelightCalibration(m_limelight)
+        : new RobotReadinessCheck(m_hood, m_base, m_shooter, m_collector,
+            m_compressor, batterySufficient,
+            pneumaticsReady, shooterReady)
+            .beforeStarting(() -> {
+              this.m_compressor.disable();
+            }).andThen(() -> {
+              this.m_compressor.enableDigital();
+            });
   }
 
   public void resetHood() {

@@ -16,11 +16,12 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Debug;
 
 public class Collector extends SubsystemBase {
 
   public static int COLLECTOR_MOTOR_PORT = 10;
-  public static double COLLECTOR_MOTOR_FULL_SPEED = 0.5;
+  public static double COLLECTOR_MOTOR_FULL_SPEED = 1;
   public static double TOWER_MOTOR_FULL_SPEED = 1;
   public static final double TOWER_SENSOR_TRIGGER_DISTANCE = 150.0; // millimeters
   private final int TOWER_MOTOR_PORT = 20;
@@ -44,6 +45,7 @@ public class Collector extends SubsystemBase {
   public Collector() {
     // Collector
     this.collectorMotor = new CANSparkMax(Collector.COLLECTOR_MOTOR_PORT, MotorType.kBrushless);
+    // this.collectorMotor.setSmartCurrentLimit(30);
     this.solenoid = new DoubleSolenoid(
         PneumaticsModuleType.CTREPCM,
         SOLENOID_ID_OPEN,
@@ -79,6 +81,7 @@ public class Collector extends SubsystemBase {
 
   public void SetSpeedCollector(double speed) {
     collectorMotor.set(speed);
+    Debug.putNumber("amps", collectorMotor.getOutputCurrent());
     if (speed != 0)
       collectorRunning = true;
     else

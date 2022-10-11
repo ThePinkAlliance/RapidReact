@@ -1,7 +1,6 @@
-import static org.junit.Assert.assertEquals;
 
 import edu.wpi.first.math.util.Units;
-import frc.robot.TargetPackage;
+import frc.robot.HoodConstants;
 import frc.robot.TargetPackageFactory;
 import frc.robot.subsystems.Hood;
 import org.junit.Test;
@@ -44,6 +43,7 @@ public class ProjectileCalculationsTest {
     System.out.println("Target Angle: " + estAngle);
     System.out.println("Calculated Velocity: " + velocity);
     System.out.println("Target Velocity: " + eVelocity);
+    System.out.println("Hood Angle: " + (Hood.getHoodAngle(HoodConstants.HUB_LOW_SHOT_COUNT)));
 
     // assertEquals(velocity, eVelocity, 0);
     // assertEquals(velocity, convertRpm(rpm), 0.1);

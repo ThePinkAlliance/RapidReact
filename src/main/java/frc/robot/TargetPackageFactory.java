@@ -2,7 +2,7 @@ package frc.robot;
 
 public class TargetPackageFactory {
 
-  private static final double RPM_CONSTANT_1 = 7.5; // 7.5, 8.456, 8.856;
+  private static final double RPM_CONSTANT_1 = 5.63; // 7.5, 8.456, 8.856;
   private static final double RPM_CONSTANT_2 = 2118;// 2000, 2118;
   private static final double HOOD_POSITION_CONSTANT_1 = -244.8;
   private static final double HOOD_POSITION_CONSTANT_2 = 37634;

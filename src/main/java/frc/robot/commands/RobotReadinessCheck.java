@@ -27,7 +27,6 @@ public class RobotReadinessCheck extends SequentialCommandGroup {
       BooleanEntry pneumaticsReady, BooleanEntry shooterReady) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new ResetHood(hood), new ZeroPods(base),
-        new PneumaticsCheck(compressor, pneumaticsReady));
+    addCommands(new ResetHood(hood));
   }
 }
