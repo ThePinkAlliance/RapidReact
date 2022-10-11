@@ -26,6 +26,10 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.BaseConstants;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 public class Base extends SubsystemBase {
@@ -255,12 +259,6 @@ public class Base extends SubsystemBase {
    */
   public void drive(ChassisSpeeds speeds) {
     this.chassisSpeeds = speeds;
-
-    SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
-
-    setStates(states);
-
-    this.states = states;
   }
 
   /**
@@ -404,6 +402,18 @@ public class Base extends SubsystemBase {
     // This method will be called once per scheduler run
 
     m_yaw.setNumber(gyro.getYaw());
+
+    SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
+    SwerveDriveKinematics.desaturateWheelSpeeds(states, Base.MAX_VELOCITY_METERS_PER_SECOND);
+
+    ArrayList<SwerveModuleState> newStates = new ArrayList<>(Arrays.asList(states));
+    ArrayList<SwerveModuleState> currentStates = new ArrayList<>(Arrays.asList(this.states));
+
+    boolean update = !newStates.containsAll(currentStates);
+
+    if (update) {
+      setStates(states);
+    }
 
     SmartDashboard.putNumber(Dashboard.DASH_BASE_ROLL, gyro.getRoll());
     SmartDashboard.putNumber("yaw", gyro.getYaw());
