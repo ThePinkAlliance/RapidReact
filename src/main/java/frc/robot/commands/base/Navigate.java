@@ -97,6 +97,8 @@ public class Navigate extends CommandBase {
     DataLogManager.start("logs-navigate");
     DataLog log = DataLogManager.getLog();
 
+    log.start("/navigate", "");
+
     this.distanceInchesEntry = new DoubleLogEntry(log, "distance-inches");
     this.angleEntry = new DoubleLogEntry(log, "current-angle");
   }
